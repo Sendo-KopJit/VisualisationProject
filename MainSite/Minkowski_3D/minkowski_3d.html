@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minkowski Spacetime 3D</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#020408;overflow:hidden;font-family:'Share Tech Mono',monospace;color:#7ab8d4;height:100vh;display:flex;flex-direction:column}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(0,3,10,0.95);border-bottom:1px solid #0d2840;flex-shrink:0}
+h1{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#00b4ff}
+.sub{font-size:7px;letter-spacing:2px;opacity:.45;margin-top:1px}
+.stats{display:flex;gap:14px}
+.stat{display:flex;flex-direction:column;align-items:flex-end}
+.slbl{font-size:7px;letter-spacing:1px;opacity:.38}
+.sval{font-size:10px;color:#00ffcc;font-family:'Orbitron',sans-serif}
+#main{flex:1;display:flex;min-height:0}
+#sidebar{width:200px;background:rgba(0,3,12,0.95);border-right:1px solid #0d2840;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+.pnl{border-bottom:1px solid #0d2840;padding:10px}
+.pt{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:#00b4ff;margin-bottom:7px;opacity:.75}
+.btn{width:100%;padding:6px 8px;margin-bottom:3px;background:transparent;border:1px solid #0d2840;color:#7ab8d4;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:5px}
+.btn:hover{border-color:#00b4ff;color:#cce8ff}
+.abtn{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;justify-content:center}
+#startBtn{border-color:#00ff88;color:#00ff88}
+#startBtn:hover:not(:disabled){background:rgba(0,255,136,.09)}
+#startBtn:disabled{opacity:.22;cursor:not-allowed}
+#clearBtn{border-color:#ff3c64;color:#ff3c64}
+#clearBtn:hover{background:rgba(255,60,100,.08)}
+.sr{margin-bottom:7px}
+.rl{display:flex;justify-content:space-between;font-size:8px;margin-bottom:2px}
+.rl span:last-child{color:#00b4ff}
+input[type=range]{width:100%;height:2px;-webkit-appearance:none;background:#0d2840;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;height:10px;border-radius:50%;background:#00b4ff;cursor:pointer}
+.crow{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #081825;font-size:9px}
+.crow span:last-child{color:#00ffcc}
+.ppts{font-size:8px;line-height:1.8}
+.leg{display:flex;flex-direction:column;gap:4px}
+.li{display:flex;align-items:center;gap:6px;font-size:8px}
+.lc{width:12px;height:2px;flex-shrink:0}
+#canvasArea{flex:1;position:relative;overflow:hidden}
+#c3d{display:block;cursor:grab}
+#pathPanel{position:absolute;bottom:0;right:0;width:330px;background:rgba(0,3,14,0.97);border-left:1px solid #0d2840;border-top:1px solid #0d2840;transform:translateY(calc(100% - 32px));transition:transform .25s ease;z-index:10}
+#pathPanel.open{transform:translateY(0)}
+#ppHead{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid #0d2840;cursor:pointer;height:32px}
+#ppTitle{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:3px;color:#00ffcc}
+#ppToggle{font-size:9px;color:#7ab8d4;background:none;border:none;cursor:pointer;font-family:'Share Tech Mono',monospace}
+#ppInner{padding:9px;display:flex;flex-direction:column;gap:7px}
+#ppTabs{display:flex;gap:3px}
+.pptab{flex:1;padding:4px;background:transparent;border:1px solid #0d2840;color:#7ab8d4;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;text-align:center;transition:all .15s}
+.pptab.active{background:rgba(0,180,255,.1);border-color:#00b4ff;color:#00b4ff}
+#axHint{display:flex;justify-content:space-between;font-size:7px;color:rgba(0,180,255,.5);letter-spacing:1px}
+#dc{background:#010810;border:1px solid #0d2840;cursor:crosshair;display:block}
+#ppBtns{display:flex;gap:4px;flex-wrap:wrap}
+.ppbtn{padding:4px 7px;background:transparent;border:1px solid #0d2840;color:#7ab8d4;font-family:'Share Tech Mono',monospace;font-size:8px;cursor:pointer;letter-spacing:1px}
+.ppbtn:hover{border-color:#00b4ff;color:#cce8ff}
+#ppApply{border-color:#00ff88!important;color:#00ff88!important}
+#ppNote{font-size:7px;color:rgba(255,149,0,.7);letter-spacing:1px;line-height:1.5}
+.preset-btn{width:100%;padding:6px 8px;margin-bottom:4px;background:rgba(0,20,40,0.6);border:1px solid #0d2840;color:#7ab8d4;font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+.preset-btn:hover{border-color:#00b4ff;background:rgba(0,50,100,0.4);color:#cce8ff}
+.preset-tag{font-size:7px;padding:1px 5px;border-radius:2px;font-family:'Orbitron',sans-serif;letter-spacing:1px}
+.preset-tag.tl{background:rgba(0,60,120,0.7);color:#00b4ff;border:1px solid #00b4ff}
+.preset-tag.sl{background:rgba(100,10,20,0.7);color:#ff3c64;border:1px solid #ff3c64}
+.preset-tag.ll{background:rgba(0,80,60,0.7);color:#00ffcc;border:1px solid #00ffcc}
+.preset-tag.mx{background:rgba(60,40,0,0.7);color:#ff9500;border:1px solid #ff9500}
+.preset-group{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:#1a4a7a;margin:6px 0 3px 2px}
+#bottombar{display:flex;align-items:center;gap:14px;padding:4px 12px;background:rgba(0,3,10,0.9);border-top:1px solid #0d2840;font-size:7px;flex-shrink:0}
+#bottombar span{opacity:.45}
+#bottombar span b{opacity:1;color:#7ab8d4}
+#hcoords{margin-left:auto;color:#00ffcc;opacity:1!important}
+#drawBtn{padding:3px 10px;background:rgba(0,255,204,.05);border:1px solid rgba(0,255,204,.3);color:#00ffcc;font-family:'Share Tech Mono',monospace;font-size:7px;letter-spacing:1px;cursor:pointer}
+#drawBtn:hover{background:rgba(0,255,204,.12)}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div>
+    <h1>MINKOWSKI SPACETIME</h1>
+    <div class="sub">3D · OBSERVER FRAME · AXES SCROLL · ORIENTED CONES</div>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="slbl">PROPER TIME τ</span><span class="sval" id="s_tau">0.000</span></div>
+    <div class="stat"><span class="slbl">COORD ct</span><span class="sval" id="s_ct">0.000</span></div>
+    <div class="stat"><span class="slbl">INTERVAL s²</span><span class="sval" id="s_int">—</span></div>
+    <div class="stat"><span class="slbl">TYPE</span><span class="sval" id="s_type">—</span></div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="sidebar">
+    <div class="pnl">
+      <div class="pt">Simulation</div>
+      <button class="btn abtn" id="startBtn" onclick="startSim()" disabled>&#9654; START</button>
+      <button class="btn abtn" id="pauseBtn" onclick="pauseSim()" style="display:none">&#9646;&#9646; PAUSE</button>
+      <button class="btn abtn" id="clearBtn" onclick="clearAll()">&#x2715; CLEAR</button>
+      <div class="sr" style="margin-top:9px">
+        <div class="rl"><span>Speed</span><span id="speedVal">1.5x</span></div>
+        <input type="range" id="speedSlider" min="1" max="20" value="6">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>Cone Size</span><span id="csVal">1.0</span></div>
+        <input type="range" id="csSlider" min="3" max="15" value="8">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>Cones on Path</span><span id="ccVal">4</span></div>
+        <input type="range" id="ccSlider" min="0" max="10" value="4">
+      </div>
+    </div>
+    <div class="pnl">
+      <div class="pt">View</div>
+      <button class="btn" onclick="resetView()"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;display:inline-block"></span>Reset Camera</button>
+      <div class="sr" style="margin-top:6px">
+        <div class="rl"><span>Pitch</span><span id="rxVal">25°</span></div>
+        <input type="range" id="rxSlider" min="-80" max="80" value="25">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>Yaw</span><span id="ryVal">30°</span></div>
+        <input type="range" id="rySlider" min="-180" max="180" value="30">
+      </div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Current Event</div>
+      <div class="crow"><span>ct</span><span id="cd_ct">—</span></div>
+      <div class="crow"><span>x</span><span id="cd_x">—</span></div>
+      <div class="crow"><span>y</span><span id="cd_y">—</span></div>
+      <div class="crow"><span>ds²</span><span id="cd_ds">—</span></div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Worldline</div>
+      <div class="ppts" id="pathList">Use ✎ DRAW PATH to begin.</div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Legend</div>
+      <div class="leg">
+        <div class="li"><div class="lc" style="background:#00b4ff"></div>Future cone</div>
+        <div class="li"><div class="lc" style="background:#ff3c64"></div>Past cone</div>
+        <div class="li"><div class="lc" style="background:#ff9500;height:3px"></div>Worldline</div>
+        <div class="li"><div class="lc" style="background:#00ffcc"></div>Light-like rim</div>
+        <div class="li"><div class="lc" style="background:#ffffff"></div>Observer (NOW)</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="canvasArea">
+    <canvas id="c3d"></canvas>
+    <div id="pathPanel">
+      <div id="ppHead" onclick="togglePanel()">
+        <span id="ppTitle">2D PATH EDITOR</span>
+        <button id="ppToggle">&#9650; OPEN</button>
+      </div>
+      <div id="ppInner">
+        <div id="ppTabs">
+          <button class="pptab active" id="tabXT" onclick="setPlane('xt')">x–ct</button>
+          <button class="pptab"        id="tabYT" onclick="setPlane('yt')">y–ct</button>
+          <button class="pptab"        id="tabPR" onclick="setPlane('pr')">Presets</button>
+        </div>
+        <div id="axHint"><span id="axH">→ x (spatial)</span><span id="axV">↑ ct (time)</span></div>
+        <canvas id="dc" width="308" height="190" style="display:block"></canvas>
+        <div id="presetPanel" style="display:none;width:308px;height:190px;overflow-y:auto;background:#010810;border:1px solid #0d2840;box-sizing:border-box;padding:6px"></div>
+        <div id="ppBtns">
+          <button class="ppbtn" id="btnClearPlane" onclick="clearPlane()">Clear plane</button>
+          <button class="ppbtn" onclick="clearAll2D()">Clear all</button>
+          <button class="ppbtn" id="btnSmooth" onclick="doSmooth()">Smooth</button>
+          <button class="ppbtn" id="ppApply" onclick="applyPath()">&#10003; Apply to 3D</button>
+        </div>
+        <div id="ppNote">Draw upward on x–ct to define time evolution. y–ct adds y-motion.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bottombar">
+  <span><b>Drag</b> Orbit</span>
+  <span><b>Scroll</b> Zoom</span>
+  <span id="hcoords"></span>
+  <button id="drawBtn" onclick="togglePanel()">&#9998; DRAW PATH</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// RENDERER — pure Canvas 2D, custom perspective projection
+// Camera tracks the current worldline event.
+// The object/observer is always at the screen centre.
+// Axes, grid, and worldline scroll past naturally.
+// ═══════════════════════════════════════════════════════════════
+
+var canvas = document.getElementById('c3d');
+var ctx    = canvas.getContext('2d');
+var SC     = 1.3;  // spacetime unit → scene unit
+
+// ── Camera ───────────────────────────────────────────────────────
+var cam = {
+  rotX: 25 * Math.PI/180,
+  rotY: 30 * Math.PI/180,
+  dist: 22,
+  fov:  0,
+  panX: 0, panY: 0
+};
+var camTarget = {x:0, y:0, z:0};
+var drawOffset = {x:0, y:0, z:0};
+
+// ── Cached trig — recomputed only when camera angles change ──────
+var _cosY=0,_sinY=0,_cosX=0,_sinX=0,_camDist=0,_camFov=0,_cx=0,_cy=0;
+function updateCamCache(){
+  _cosY=Math.cos(cam.rotY); _sinY=Math.sin(cam.rotY);
+  _cosX=Math.cos(cam.rotX); _sinX=Math.sin(cam.rotX);
+  _camDist=cam.dist*SC; _camFov=cam.fov;
+  _cx=canvas.width/2+cam.panX; _cy=canvas.height/2+cam.panY;
+}
+var _lastRotX=NaN,_lastRotY=NaN,_lastDist=NaN,_lastFov=NaN,_lastPanX=NaN,_lastPanY=NaN;
+function syncCamCache(){
+  if(cam.rotX!==_lastRotX||cam.rotY!==_lastRotY||cam.dist!==_lastDist||
+     cam.fov!==_lastFov||cam.panX!==_lastPanX||cam.panY!==_lastPanY){
+    updateCamCache();
+    _lastRotX=cam.rotX;_lastRotY=cam.rotY;_lastDist=cam.dist;
+    _lastFov=cam.fov;_lastPanX=cam.panX;_lastPanY=cam.panY;
+  }
+}
+
+// ── Projection ───────────────────────────────────────────────────
+function project(sx, sy, sz) {
+  var tx=sx-drawOffset.x, ty=sy-drawOffset.y, tz=sz-drawOffset.z;
+  var rx= tx*_cosY+tz*_sinY, rz=-tx*_sinY+tz*_cosY;
+  var ry2=ty*_cosX-rz*_sinX, rz2=ty*_sinX+rz*_cosX;
+  var depth=_camDist+rz2; if(depth<0.5)depth=0.5;
+  var scale=_camFov/depth;
+  return{sx:_cx+rx*scale, sy:_cy-ry2*scale, scale:scale, depth:rz2};
+}
+function projectFixed(sx, sy, sz) {
+  var rx= sx*_cosY+sz*_sinY, rz=-sx*_sinY+sz*_cosY;
+  var ry2=sy*_cosX-rz*_sinX, rz2=sy*_sinX+rz*_cosX;
+  var depth=_camDist+rz2; if(depth<0.5)depth=0.5;
+  var scale=_camFov/depth;
+  return{sx:_cx+rx*scale, sy:_cy-ry2*scale, scale:scale, depth:rz2};
+}
+
+// Scene coords helpers: spacetime (x, ct, y_sp) → scene (sx, sy, sz)
+// Scene X = spacetime x * SC
+// Scene Y = spacetime ct * SC   (up)
+// Scene Z = spacetime y_sp * SC
+function sp2sc(p) {
+  return { sx: p.x*SC, sy: p.ct*SC, sz: p.y*SC };
+}
+
+// ── Primitive draw helpers ────────────────────────────────────────
+// No save/restore — caller manages state. Set props directly.
+function line3(x1,y1,z1, x2,y2,z2, col, alpha, lw) {
+  var a=project(x1,y1,z1), b=project(x2,y2,z2);
+  ctx.globalAlpha=alpha||1; ctx.strokeStyle=col||'#fff'; ctx.lineWidth=lw||1;
+  ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+}
+
+function ellipse3(cx,cy,cz, R, t1, t2, col, alpha, lw) {
+  var segs=32;
+  ctx.globalAlpha=alpha||1; ctx.strokeStyle=col||'#fff'; ctx.lineWidth=lw||1;
+  ctx.beginPath();
+  for(var i=0;i<=segs;i++){
+    var a=(i/segs)*Math.PI*2;
+    var p=project(cx+t1[0]*Math.cos(a)*R+t2[0]*Math.sin(a)*R,
+                  cy+t1[1]*Math.cos(a)*R+t2[1]*Math.sin(a)*R,
+                  cz+t1[2]*Math.cos(a)*R+t2[2]*Math.sin(a)*R);
+    if(i===0) ctx.moveTo(p.sx,p.sy); else ctx.lineTo(p.sx,p.sy);
+  }
+  ctx.stroke();
+}
+
+function fillCone3(tipX,tipY,tipZ, bx,by,bz, R, t1, t2, col, alpha) {
+  var segs=24, tip=project(tipX,tipY,tipZ);
+  ctx.globalAlpha=alpha||0.1; ctx.fillStyle=col||'#fff';
+  for(var i=0;i<segs;i++){
+    var a0=(i/segs)*Math.PI*2, a1=((i+1)/segs)*Math.PI*2;
+    var q0=project(bx+t1[0]*Math.cos(a0)*R+t2[0]*Math.sin(a0)*R,
+                   by+t1[1]*Math.cos(a0)*R+t2[1]*Math.sin(a0)*R,
+                   bz+t1[2]*Math.cos(a0)*R+t2[2]*Math.sin(a0)*R);
+    var q1=project(bx+t1[0]*Math.cos(a1)*R+t2[0]*Math.sin(a1)*R,
+                   by+t1[1]*Math.cos(a1)*R+t2[1]*Math.sin(a1)*R,
+                   bz+t1[2]*Math.cos(a1)*R+t2[2]*Math.sin(a1)*R);
+    ctx.beginPath(); ctx.moveTo(tip.sx,tip.sy);
+    ctx.lineTo(q0.sx,q0.sy); ctx.lineTo(q1.sx,q1.sy); ctx.closePath(); ctx.fill();
+  }
+}
+
+// ── Perpendicular basis for a 3D direction ────────────────────────
+function perpBasis(dx,dy,dz) {
+  var len=Math.sqrt(dx*dx+dy*dy+dz*dz)||1;
+  dx/=len; dy/=len; dz/=len;
+  var rx=0,ry=1,rz=0;
+  if (Math.abs(dy)>0.9){rx=1;ry=0;rz=0;}
+  var t1x=dy*rz-dz*ry, t1y=dz*rx-dx*rz, t1z=dx*ry-dy*rx;
+  var t1l=Math.sqrt(t1x*t1x+t1y*t1y+t1z*t1z)||1;
+  t1x/=t1l; t1y/=t1l; t1z/=t1l;
+  var t2x=dy*t1z-dz*t1y, t2y=dz*t1x-dx*t1z, t2z=dx*t1y-dy*t1x;
+  return {ax:dx,ay:dy,az:dz, t1:[t1x,t1y,t1z], t2:[t2x,t2y,t2z]};
+}
+
+// ── Draw oriented double light cone at scene position ─────────────
+// intervalCol: optional override for interior fill (shows timelike/spacelike status)
+function drawCone(sx,sy,sz, dirX,dirY,dirZ, op, intervalCol) {
+  var H  = coneSize*SC;
+  var b  = perpBasis(dirX,dirY,dirZ);
+  var t1=b.t1, t2=b.t2;
+  var ftx=sx+b.ax*H, fty=sy+b.ay*H, ftz=sz+b.az*H;
+  var ptx=sx-b.ax*H, pty=sy-b.ay*H, ptz=sz-b.az*H;
+
+  // Interior fill — tinted by interval type if provided
+  var futFill = intervalCol || '#0044ff';
+  var pastFill= intervalCol || '#ff2244';
+  fillCone3(sx,sy,sz, ftx,fty,ftz, H, t1,t2, futFill,  op*0.14);
+  fillCone3(sx,sy,sz, ptx,pty,ptz, H, t1,t2, pastFill, op*0.11);
+
+  // Edge lines
+  for (var i=0;i<8;i++) {
+    var a=(i/8)*Math.PI*2;
+    var rx=t1[0]*Math.cos(a)*H+t2[0]*Math.sin(a)*H;
+    var ry=t1[1]*Math.cos(a)*H+t2[1]*Math.sin(a)*H;
+    var rz=t1[2]*Math.cos(a)*H+t2[2]*Math.sin(a)*H;
+    line3(sx,sy,sz, ftx+rx,fty+ry,ftz+rz, '#00b4ff',op,0.8);
+    line3(sx,sy,sz, ptx+rx,pty+ry,ptz+rz, '#ff3c64',op*0.85,0.8);
+  }
+
+  // Rims
+  ellipse3(ftx,fty,ftz, H, t1,t2, '#00b4ff',op*0.8,1);
+  ellipse3(ptx,pty,ptz, H, t1,t2, '#ff3c64',op*0.65,1);
+  // Light-like equator
+  ellipse3(sx,sy,sz, 0.15, t1,t2, '#00ffcc',0.9,1.2);
+}
+
+// ── Cached background gradient — only rebuilt on resize ──────────
+var _bgGrad=null, _bgW=0, _bgH=0;
+function getBg(W,H){
+  if(!_bgGrad||W!==_bgW||H!==_bgH){
+    _bgGrad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.7);
+    _bgGrad.addColorStop(0,'#030d1a'); _bgGrad.addColorStop(1,'#020408');
+    _bgW=W; _bgH=H;
+  }
+  return _bgGrad;
+}
+
+// ── Draw grid & axes ─────────────────────────────────────────────
+var _pulseT=0; // updated once per frame in render()
+function drawGrid() {
+  var N=20, dim=N*SC;
+
+  // All grid/axis lines go through projectFixed — no drawOffset
+  function fline(x1,y1,z1,x2,y2,z2,col,alpha,lw){
+    var a=projectFixed(x1,y1,z1), b=projectFixed(x2,y2,z2);
+    ctx.globalAlpha=alpha; ctx.strokeStyle=col; ctx.lineWidth=lw;
+    ctx.beginPath(); ctx.moveTo(a.sx,a.sy); ctx.lineTo(b.sx,b.sy); ctx.stroke();
+  }
+
+  // Floor grid — batch all faint lines in one pass, near lines in another
+  ctx.globalAlpha=0.35; ctx.strokeStyle='#091825'; ctx.lineWidth=0.5;
+  ctx.beginPath();
+  for(var i=-N;i<=N;i++){
+    if(Math.abs(i)<8) continue;
+    var v=i*SC;
+    ctx.moveTo(projectFixed(-dim,0,v).sx,projectFixed(-dim,0,v).sy);
+    ctx.lineTo(projectFixed( dim,0,v).sx,projectFixed( dim,0,v).sy);
+    ctx.moveTo(projectFixed(v,0,-dim).sx,projectFixed(v,0,-dim).sy);
+    ctx.lineTo(projectFixed(v,0, dim).sx,projectFixed(v,0, dim).sy);
+  }
+  ctx.stroke();
+  ctx.globalAlpha=0.7; ctx.beginPath();
+  for(var i=-7;i<=7;i++){
+    var v=i*SC;
+    ctx.moveTo(projectFixed(-dim,0,v).sx,projectFixed(-dim,0,v).sy);
+    ctx.lineTo(projectFixed( dim,0,v).sx,projectFixed( dim,0,v).sy);
+    ctx.moveTo(projectFixed(v,0,-dim).sx,projectFixed(v,0,-dim).sy);
+    ctx.lineTo(projectFixed(v,0, dim).sx,projectFixed(v,0, dim).sy);
+  }
+  ctx.stroke();
+
+  // Spatial axes
+  fline(-dim,0,0, dim,0,0, '#1a4a7a',1,1);
+  fline(0,0,-dim, 0,0,dim, '#1a4a7a',1,1);
+
+  // ct axis — gradient segments
+  var ctSegs=32;
+  for(var i=0;i<ctSegs;i++){
+    var t0=i/ctSegs, t1=(i+1)/ctSegs;
+    var y0=(-dim)+t0*(2*dim), y1=(-dim)+t1*(2*dim);
+    var normPos=(y0+dim)/(2*dim);
+    var r,g,b;
+    if(normPos<0.5){var f=normPos*2; r=Math.round(80+f*(-54)); g=Math.round(10+f*30); b=Math.round(30+f*60);}
+    else           {var f=(normPos-0.5)*2; r=Math.round(26+f*(-10)); g=Math.round(40+f*140); b=Math.round(90+f*165);}
+    fline(0,y0,0, 0,y1,0, 'rgb('+r+','+g+','+b+')', 0.85, (normPos>0.45&&normPos<0.55)?2.5:1.2);
+  }
+
+  // Arrowhead at ct axis top
+  var tipP=projectFixed(0,dim,0), baseP=projectFixed(0,dim-0.4,0);
+  var leftP=projectFixed(-0.18,dim-0.4,0), rightP=projectFixed(0.18,dim-0.4,0);
+  ctx.globalAlpha=0.9; ctx.fillStyle='#00b4ff';
+  ctx.beginPath(); ctx.moveTo(tipP.sx,tipP.sy);
+  ctx.lineTo(leftP.sx,leftP.sy); ctx.lineTo(rightP.sx,rightP.sy);
+  ctx.closePath(); ctx.fill();
+
+  // Pulsing ring at origin (uses pre-computed _pulseT)
+  var nowP=projectFixed(0,0,0);
+  var pulse=3+Math.sin(_pulseT/400)*1.5;
+  ctx.strokeStyle='#00b4ff'; ctx.lineWidth=1.5; ctx.globalAlpha=0.6;
+  ctx.beginPath(); ctx.arc(nowP.sx,nowP.sy,pulse+3,0,Math.PI*2); ctx.stroke();
+  ctx.globalAlpha=0.25; ctx.fillStyle='#00b4ff';
+  ctx.beginPath(); ctx.arc(nowP.sx,nowP.sy,pulse+3,0,Math.PI*2); ctx.fill();
+
+  // ct tick labels — batch by font style
+  var ctNow=drawOffset.y/SC;
+  // Near ticks (bold 11px)
+  ctx.font='bold 11px monospace';
+  for(var i=-N;i<=N;i++){
+    var sy=i*SC, distFromOrigin=Math.abs(i), isNear=distFromOrigin<=1;
+    if(!isNear) continue;
+    var tickCol=i>0?'#1a5a8a':'#4a1a2a';
+    fline(-0.18,sy,0, 0.18,sy,0, tickCol, 1.0, 1.5);
+    var p=projectFixed(0.25,sy,0);
+    ctx.globalAlpha=1.0; ctx.fillStyle=i>0?'#4a9acc':'#aa4a5a';
+    ctx.fillText((i+ctNow).toFixed(1), p.sx+3, p.sy+4);
+  }
+  // Far ticks (9px monospace)
+  ctx.font='9px monospace';
+  for(var i=-N;i<=N;i++){
+    var sy=i*SC, distFromOrigin=Math.abs(i), isNear=distFromOrigin<=1;
+    if(isNear) continue;
+    var alpha=Math.max(0.18,0.8-distFromOrigin*0.04);
+    var tickCol=i>0?'#1a5a8a':'#4a1a2a';
+    fline(-0.18,sy,0, 0.18,sy,0, tickCol, alpha, 0.6);
+    var p=projectFixed(0.25,sy,0);
+    ctx.globalAlpha=alpha; ctx.fillStyle=i>0?'#4a9acc':'#aa4a5a';
+    ctx.fillText((i+ctNow).toFixed(1), p.sx+3, p.sy+4);
+  }
+
+  // x ticks
+  var xNow=drawOffset.x/SC;
+  ctx.font='9px monospace'; ctx.fillStyle='#3a7aaa'; ctx.globalAlpha=0.75;
+  for(var i=-N;i<=N;i++){
+    if(!i) continue;
+    fline(i*SC,-0.12,0, i*SC,0.12,0, '#1a3a5a',0.65,0.6);
+    var p=projectFixed(i*SC,0,0);
+    ctx.fillText((i+xNow).toFixed(1), p.sx-7, p.sy+12);
+  }
+
+  // y ticks
+  var yNow=drawOffset.z/SC;
+  ctx.font='9px monospace'; ctx.fillStyle='#3a7aaa'; ctx.globalAlpha=0.75;
+  for(var i=-N;i<=N;i++){
+    if(!i) continue;
+    fline(0,-0.12,i*SC, 0,0.12,i*SC, '#1a3a5a',0.65,0.6);
+    var p=projectFixed(0,0,i*SC);
+    ctx.fillText((i+yNow).toFixed(1), p.sx+4, p.sy+4);
+  }
+
+  // Axis labels
+  ctx.font='bold 14px Orbitron,monospace'; ctx.globalAlpha=0.95;
+  function axLabel(sx,sy,sz,txt,col){
+    var p=projectFixed(sx,sy,sz); ctx.fillStyle=col||'#2a6090';
+    ctx.fillText(txt,p.sx-6,p.sy+5);
+  }
+  axLabel(0,dim+0.9,0,'ct','#00b4ff');
+  axLabel(dim+0.6,0,0,'x','#7ab8d4');
+  axLabel(0,0,dim+0.6,'y','#7ab8d4');
+
+  ctx.globalAlpha=1;
+}
+
+// ── Draw worldline — depth sorted, one project pass ──────────────
+function drawWorldline() {
+  if(worldline.length<2) return;
+  var p0=worldline[0];
+
+  // Project all worldline points once
+  var proj=new Array(worldline.length);
+  for(var i=0;i<worldline.length;i++){
+    var w=worldline[i];
+    proj[i]=project(w.x*SC, w.ct*SC, w.y*SC);
+  }
+
+  // Build segments with depth + colour
+  var segs=[];
+  for(var i=0;i<worldline.length-1;i++){
+    var a=worldline[i], b=worldline[i+1];
+    var mx=(a.x+b.x)/2, my=(a.y+b.y)/2, mct=(a.ct+b.ct)/2;
+    var Dct=mct-p0.ct, Dx=mx-p0.x, Dy=my-p0.y;
+    var ds2=Dct*Dct-Dx*Dx-Dy*Dy;
+    var col=ds2>0.01?'#00b4ff':ds2<-0.01?'#ff3c64':'#00ffcc';
+    segs.push({i:i, col:col, depth:(proj[i].depth+proj[i+1].depth)*0.5});
+  }
+
+  // Sort back to front (highest depth first)
+  segs.sort(function(a,b){return b.depth-a.depth;});
+
+  // Draw sorted — batch consecutive same-colour segments to minimise strokeStyle changes
+  ctx.lineWidth=2.0; ctx.globalAlpha=0.9;
+  var j=0;
+  while(j<segs.length){
+    var col=segs[j].col;
+    ctx.strokeStyle=col;
+    ctx.beginPath();
+    var k=j;
+    while(k<segs.length && segs[k].col===col){
+      var idx=segs[k].i;
+      ctx.moveTo(proj[idx].sx,  proj[idx].sy);
+      ctx.lineTo(proj[idx+1].sx,proj[idx+1].sy);
+      k++;
+    }
+    ctx.stroke();
+    j=k;
+  }
+
+  // Start dot (always on top)
+  ctx.globalAlpha=0.95; ctx.fillStyle='#00ffcc';
+  ctx.beginPath(); ctx.arc(proj[0].sx,proj[0].sy,5,0,Math.PI*2); ctx.fill();
+  // End dot
+  var last=proj[worldline.length-1];
+  ctx.globalAlpha=0.9; ctx.fillStyle='#ff9500';
+  ctx.beginPath(); ctx.arc(last.sx,last.sy,4,0,Math.PI*2); ctx.fill();
+  ctx.globalAlpha=1;
+}
+
+// ── Start cone cache — rebuild only on camera/worldline change ────
+var _scCache=null; // {ox,oy,oz, tip, futurePts, pastPts, ribsFut, ribsPast, rimsFut, rimsPast, apex, label}
+var _scCamKey='';
+var _scWLKey='';
+
+function _startConeKey(){
+  return _cosY.toFixed(4)+','+_cosX.toFixed(4)+','+_camDist.toFixed(2)+','+_camFov.toFixed(1)
+        +','+drawOffset.x.toFixed(3)+','+drawOffset.y.toFixed(3)+','+drawOffset.z.toFixed(3);
+}
+function _startWLKey(){
+  if(!worldline.length) return '';
+  var p0=worldline[0];
+  return p0.x.toFixed(4)+','+p0.ct.toFixed(4)+','+p0.y.toFixed(4);
+}
+
+function buildStartConeCache(){
+  if(!worldline.length) return;
+  var p0=worldline[0];
+  var ox=p0.x*SC, oy=p0.ct*SC, oz=p0.y*SC;
+  var reach=22*SC;
+  var b=perpBasis(0,1,0); var t1=b.t1,t2=b.t2;
+  var nRim=24; // reduced from 48 — imperceptible difference at this scale
+
+  // Pre-project tip
+  var tip=project(ox,oy,oz);
+
+  // Future + past fill fan points
+  var futurePts=[], pastPts=[];
+  for(var i=0;i<=nRim;i++){
+    var a=(i/nRim)*Math.PI*2;
+    var ca=Math.cos(a),sa=Math.sin(a);
+    var rx=t1[0]*ca*reach+t2[0]*sa*reach;
+    var rz=t1[2]*ca*reach+t2[2]*sa*reach;
+    futurePts.push(project(ox+rx, oy+reach, oz+rz));
+    pastPts.push( project(ox+rx, oy-reach, oz+rz));
+  }
+
+  // Rib endpoints (8 ribs, future+past)
+  var nRibs=8, ribsFut=[], ribsPast=[];
+  for(var i=0;i<nRibs;i++){
+    var a=(i/nRibs)*Math.PI*2;
+    var rx=t1[0]*Math.cos(a)*reach+t2[0]*Math.sin(a)*reach;
+    var rz=t1[2]*Math.cos(a)*reach+t2[2]*Math.sin(a)*reach;
+    ribsFut.push( project(ox+rx, oy+reach, oz+rz));
+    ribsPast.push(project(ox+rx, oy-reach, oz+rz));
+  }
+
+  // Rim ellipses (4 levels, reduced from 6)
+  var nLevels=4, rimSegs=24, rimsFut=[], rimsPast=[];
+  for(var li=1;li<=nLevels;li++){
+    var h=li*(reach/nLevels);
+    var rf=[],rp=[];
+    for(var i=0;i<=rimSegs;i++){
+      var a=(i/rimSegs)*Math.PI*2;
+      var ca=Math.cos(a),sa=Math.sin(a);
+      rf.push(project(ox+t1[0]*ca*h+t2[0]*sa*h, oy+h, oz+t1[2]*ca*h+t2[2]*sa*h));
+      rp.push(project(ox+t1[0]*ca*h+t2[0]*sa*h, oy-h, oz+t1[2]*ca*h+t2[2]*sa*h));
+    }
+    rimsFut.push({pts:rf,  alpha:0.12+li*0.03});
+    rimsPast.push({pts:rp, alpha:0.10+li*0.02});
+  }
+
+  // Apex ring
+  var apexSegs=16, apexPts=[];
+  for(var i=0;i<=apexSegs;i++){
+    var a=(i/apexSegs)*Math.PI*2;
+    apexPts.push(project(ox+t1[0]*Math.cos(a)*0.12+t2[0]*Math.sin(a)*0.12,
+                         oy+t1[1]*Math.cos(a)*0.12+t2[1]*Math.sin(a)*0.12,
+                         oz+t1[2]*Math.cos(a)*0.12+t2[2]*Math.sin(a)*0.12));
+  }
+
+  _scCache={tip,futurePts,pastPts,ribsFut,ribsPast,rimsFut,rimsPast,apexPts,
+            labelX:tip.sx+8,labelY:tip.sy-8, nRim,nLevels,nRibs};
+}
+
+function drawStartCone(){
+  if(!worldline.length) return;
+
+  // Rebuild cache if camera or worldline changed
+  var ck=_startConeKey(), wk=_startWLKey();
+  if(!_scCache||ck!==_scCamKey||wk!==_scWLKey){
+    buildStartConeCache();
+    _scCamKey=ck; _scWLKey=wk;
+  }
+
+  var c=_scCache;
+  var tip=c.tip;
+
+  // Determine which cone half (future/past) is further from camera — draw that first
+  var futDepth=0, pastDepth=0;
+  for(var i=0;i<c.nRim;i++){
+    futDepth+=c.futurePts[i].depth;
+    pastDepth+=c.pastPts[i].depth;
+  }
+  futDepth/=c.nRim; pastDepth/=c.nRim;
+
+  function drawFutureFill(){
+    ctx.globalAlpha=0.06; ctx.fillStyle='#0044ff';
+    for(var i=0;i<c.nRim;i++){
+      ctx.beginPath(); ctx.moveTo(tip.sx,tip.sy);
+      ctx.lineTo(c.futurePts[i].sx,c.futurePts[i].sy);
+      ctx.lineTo(c.futurePts[i+1].sx,c.futurePts[i+1].sy);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+  function drawPastFill(){
+    ctx.globalAlpha=0.05; ctx.fillStyle='#ff2244';
+    for(var i=0;i<c.nRim;i++){
+      ctx.beginPath(); ctx.moveTo(tip.sx,tip.sy);
+      ctx.lineTo(c.pastPts[i].sx,c.pastPts[i].sy);
+      ctx.lineTo(c.pastPts[i+1].sx,c.pastPts[i+1].sy);
+      ctx.closePath(); ctx.fill();
+    }
+  }
+
+  if(futDepth>pastDepth){ drawFutureFill(); drawPastFill(); }
+  else                  { drawPastFill();   drawFutureFill(); }
+
+  // Ribs — batch by colour
+  ctx.lineWidth=1.0;
+  ctx.globalAlpha=0.55; ctx.strokeStyle='#00b4ff';
+  ctx.beginPath();
+  for(var i=0;i<c.nRibs;i++){
+    ctx.moveTo(tip.sx,tip.sy); ctx.lineTo(c.ribsFut[i].sx,c.ribsFut[i].sy);
+  }
+  ctx.stroke();
+  ctx.globalAlpha=0.4; ctx.strokeStyle='#ff3c64';
+  ctx.beginPath();
+  for(var i=0;i<c.nRibs;i++){
+    ctx.moveTo(tip.sx,tip.sy); ctx.lineTo(c.ribsPast[i].sx,c.ribsPast[i].sy);
+  }
+  ctx.stroke();
+
+  // Rims — batch by colour group
+  ctx.lineWidth=0.8;
+  for(var li=0;li<c.nLevels;li++){
+    var rf=c.rimsFut[li], rp=c.rimsPast[li];
+    ctx.globalAlpha=rf.alpha; ctx.strokeStyle='#00b4ff';
+    ctx.beginPath(); ctx.moveTo(rf.pts[0].sx,rf.pts[0].sy);
+    for(var i=1;i<rf.pts.length;i++) ctx.lineTo(rf.pts[i].sx,rf.pts[i].sy);
+    ctx.stroke();
+    ctx.globalAlpha=rp.alpha; ctx.strokeStyle='#ff3c64';
+    ctx.beginPath(); ctx.moveTo(rp.pts[0].sx,rp.pts[0].sy);
+    for(var i=1;i<rp.pts.length;i++) ctx.lineTo(rp.pts[i].sx,rp.pts[i].sy);
+    ctx.stroke();
+  }
+
+  // Apex ring
+  ctx.globalAlpha=0.9; ctx.strokeStyle='#00ffcc'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(c.apexPts[0].sx,c.apexPts[0].sy);
+  for(var i=1;i<c.apexPts.length;i++) ctx.lineTo(c.apexPts[i].sx,c.apexPts[i].sy);
+  ctx.stroke();
+
+  // Label
+  ctx.fillStyle='rgba(0,255,204,0.7)'; ctx.globalAlpha=1;
+  ctx.font='bold 8px Orbitron,monospace';
+  ctx.fillText('OBSERVER FROM START', c.labelX, c.labelY);
+  ctx.globalAlpha=1;
+}
+
+// ── Draw static preview cones along worldline — depth sorted ─────
+function drawStaticCones() {
+  if(!worldline.length||coneCount===0) return;
+  var nC=Math.min(coneCount,worldline.length);
+  // Build list with depth
+  var cones=[];
+  for(var ci=0;ci<nC;ci++){
+    var idx=Math.floor((ci/(nC-1||1))*(worldline.length-1));
+    var p=worldline[idx];
+    var pr=project(p.x*SC,p.ct*SC,p.y*SC);
+    cones.push({idx:idx,depth:pr.depth});
+  }
+  // Sort back to front
+  cones.sort(function(a,b){return b.depth-a.depth;});
+  for(var i=0;i<cones.length;i++){
+    var idx=cones[i].idx;
+    var p=worldline[idx], d=dir4At(worldline,idx);
+    drawCone(p.x*SC,p.ct*SC,p.y*SC, d.dx,d.dct,d.dy, 0.35);
+  }
+}
+
+// ── Glow gradient cache — one per interval type ───────────────────
+var _glowGrads={}, _glowCX=-1, _glowCY=-1;
+function getGlowGrad(cx,cy,type,col){
+  if(cx!==_glowCX||cy!==_glowCY){ _glowGrads={}; _glowCX=cx; _glowCY=cy; }
+  if(!_glowGrads[type]){
+    var glowR=type==='TIMELIKE'?0  :type==='SPACELIKE'?255:0;
+    var glowG=type==='TIMELIKE'?180:type==='SPACELIKE'?60 :255;
+    var glowB=type==='TIMELIKE'?255:type==='SPACELIKE'?100:200;
+    var g=ctx.createRadialGradient(cx,cy,0,cx,cy,30);
+    g.addColorStop(0,'rgba('+glowR+','+glowG+','+glowB+',0.22)');
+    g.addColorStop(1,'rgba('+glowR+','+glowG+','+glowB+',0)');
+    _glowGrads[type]=g;
+  }
+  return _glowGrads[type];
+}
+
+// ── Draw the observer marker — colour-coded by interval type ──────
+function drawNowMarker(ts) {
+  var cx=_cx, cy=_cy;
+  var col=currentInterval.col, type=currentInterval.type, ds2=currentInterval.ds2;
+
+  // Outer glow
+  ctx.fillStyle=getGlowGrad(cx,cy,type,col); ctx.globalAlpha=1;
+  ctx.beginPath(); ctx.arc(cx,cy,30,0,Math.PI*2); ctx.fill();
+
+  // Pulsing ring
+  var pr=animating
+    ?(type==='SPACELIKE'?13+Math.sin(ts/110)*4.5
+     :type==='LIGHTLIKE'?10
+     :9+Math.sin(ts/290)*2.5)
+    :10;
+  ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.globalAlpha=0.7;
+  ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.stroke();
+
+  // Extra dashed ring for spacelike
+  if(type==='SPACELIKE'&&animating){
+    ctx.lineWidth=0.8; ctx.globalAlpha=0.28;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.arc(cx,cy,pr+7,0,Math.PI*2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Crosshair
+  ctx.strokeStyle=col; ctx.lineWidth=1; ctx.globalAlpha=0.4;
+  ctx.beginPath(); ctx.moveTo(cx-16,cy); ctx.lineTo(cx+16,cy);
+  ctx.moveTo(cx,cy-16); ctx.lineTo(cx,cy+16); ctx.stroke();
+
+  // Centre dot
+  ctx.globalAlpha=1; ctx.fillStyle='#ffffff';
+  ctx.beginPath(); ctx.arc(cx,cy,4,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle=col; ctx.lineWidth=2; ctx.stroke();
+
+  if(animating){
+    // Type badge
+    var bx=cx+22, by=cy-24;
+    var bgcol=type==='TIMELIKE'?'rgba(0,50,110,0.85)':type==='SPACELIKE'?'rgba(90,8,18,0.85)':'rgba(0,70,55,0.85)';
+    ctx.font='bold 8px Orbitron,monospace';
+    var tw=ctx.measureText(type).width;
+    ctx.fillStyle=bgcol; ctx.globalAlpha=1;
+    ctx.fillRect(bx-3,by-10,tw+8,14);
+    ctx.strokeStyle=col; ctx.lineWidth=1; ctx.globalAlpha=0.95;
+    ctx.strokeRect(bx-3,by-10,tw+8,14);
+    ctx.fillStyle=col; ctx.globalAlpha=1;
+    ctx.fillText(type,bx+1,by+1);
+
+    // ds² bar
+    var barW=64, barH=5, bx2=cx-barW/2, by2=cy+22;
+    ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.globalAlpha=1;
+    ctx.fillRect(bx2,by2,barW,barH);
+    ctx.strokeStyle='#00ffcc'; ctx.lineWidth=1; ctx.globalAlpha=0.35;
+    ctx.beginPath(); ctx.moveTo(cx,by2-2); ctx.lineTo(cx,by2+barH+2); ctx.stroke();
+    var norm=Math.max(-1,Math.min(1,ds2/1.5));
+    ctx.globalAlpha=0.8;
+    if(norm>=0){ctx.fillStyle='#00b4ff'; ctx.fillRect(cx,by2,norm*(barW/2),barH);}
+    else{ctx.fillStyle='#ff3c64'; ctx.fillRect(cx+norm*(barW/2),by2,Math.abs(norm)*(barW/2),barH);}
+    ctx.font='6px monospace'; ctx.globalAlpha=1;
+    ctx.fillStyle='rgba(0,180,255,0.35)'; ctx.fillText('TIME',cx+4,by2+barH+8);
+    ctx.fillStyle='rgba(255,60,100,0.35)'; ctx.fillText('SPACE',bx2,by2+barH+8);
+    ctx.fillStyle=col; ctx.font='7px monospace';
+    ctx.fillText('ds²='+ds2.toFixed(3),cx-14,by2+barH+17);
+  } else {
+    ctx.fillStyle='rgba(0,255,200,0.45)'; ctx.font='7px Share Tech Mono,monospace';
+    ctx.fillText('NOW',cx+7,cy-7);
+  }
+  ctx.globalAlpha=1;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════════
+var worldline=[], animating=false, paused=false;
+var animT=0, animSpeed=1.5, tau=0, lastTS=null, animRAF=null;
+var coneSize=1.0, coneCount=4;
+var currentDir={dx:0, dct:1, dy:0};  // current worldline tangent
+var currentInterval={type:'TIMELIKE', col:'#00b4ff', ds2:0};
+var properTimeLookup=[];  // cumulative proper time per worldline point, pre-computed
+
+function dir4At(pts,idx) {
+  var i0=Math.max(0,idx-2), i1=Math.min(pts.length-1,idx+2);
+  var a=pts[i0], b=pts[i1];
+  var dct=b.ct-a.ct, dx=b.x-a.x, dy=b.y-a.y;
+  var len=Math.sqrt(dct*dct+dx*dx+dy*dy)||1;
+  return {dct:dct/len, dx:dx/len, dy:dy/len};
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER LOOP
+// ═══════════════════════════════════════════════════════════════
+function render(ts) {
+  var W=canvas.width, H=canvas.height;
+
+  // Sync camera trig cache once per frame
+  syncCamCache();
+  // Cache timestamp for pulse animation — avoids repeated Date.now() calls
+  _pulseT=ts;
+
+  ctx.fillStyle=getBg(W,H); ctx.globalAlpha=1; ctx.fillRect(0,0,W,H);
+
+  drawGrid();
+  drawStartCone();   // cone fill is transparent — draw before worldline so line is visible over fill
+  drawWorldline();   // depth-sorted segments
+  if(!animating) drawStaticCones();  // depth-sorted cones on top of worldline
+  drawNowMarker(ts); // 2D overlay, always on top
+
+  // Restore clean state for next frame
+  ctx.globalAlpha=1; ctx.setLineDash([]);
+  requestAnimationFrame(render);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ANIMATION
+// camTarget walks along the worldline. Since project() subtracts
+// camTarget from every scene point, the worldline slides past the
+// fixed screen centre as camTarget advances.
+// ═══════════════════════════════════════════════════════════════
+function startSim() {
+  if(worldline.length<2) return;
+  animating=true; paused=false; animT=0; tau=0; lastTS=-1; // -1 = "skip first delta"
+  drawOffset.x=0; drawOffset.y=0; drawOffset.z=0;
+  document.getElementById('startBtn').style.display='none';
+  document.getElementById('pauseBtn').style.display='block';
+  requestAnimationFrame(animStep);
+}
+
+function pauseSim() {
+  paused=!paused;
+  document.getElementById('pauseBtn').textContent=paused?'RESUME':'PAUSE';
+  if(!paused){ lastTS=-1; requestAnimationFrame(animStep); } // skip stale delta on resume too
+}
+
+function animStep(ts) {
+  if(!animating||paused) return;
+  // First frame (or resume): record timestamp and return — no position jump
+  if(lastTS===-1){ lastTS=ts; animRAF=requestAnimationFrame(animStep); return; }
+  var dt=Math.min((ts-lastTS)/1000, 0.05);
+  lastTS=ts;
+
+  var N=worldline.length;
+  animT+=dt*animSpeed/(N/60);
+  if (animT>=1) {
+    animT=1; animating=false;
+    drawOffset.x=0; drawOffset.y=0; drawOffset.z=0;
+    document.getElementById('startBtn').style.display='block';
+    document.getElementById('startBtn').textContent='REPLAY';
+    document.getElementById('pauseBtn').style.display='none';
+  }
+
+  // Interpolate current position along worldline
+  var fi=animT*(N-1);
+  var idx=Math.min(Math.floor(fi),N-2);
+  var f=fi-idx;
+  var a=worldline[idx], b=worldline[idx+1];
+  var cur={
+    x:  a.x  + (b.x  -a.x )*f,
+    y:  a.y  + (b.y  -a.y )*f,
+    ct: a.ct + (b.ct -a.ct)*f
+  };
+
+  // ── KEY: shift all geometry so current event sits at origin ──
+  // Camera never moves. drawOffset is subtracted in project() from
+  // every point, so the current event always projects to screen centre.
+  var s = sp2sc(cur);
+  drawOffset.x = s.sx;
+  drawOffset.y = s.sy;
+  drawOffset.z = s.sz;
+
+  // Update current cone direction
+  currentDir=dir4At(worldline,idx);
+
+  // Proper time — interpolate from pre-computed lookup table
+  var tauA=properTimeLookup[idx]||0;
+  var tauB=properTimeLookup[idx+1]||0;
+  tau = tauA + (tauB-tauA)*f;
+
+  // ── Interval type: is the current position inside the START cone? ──
+  // The start cone is the reference. We compute the Minkowski interval
+  // from the START EVENT to the CURRENT EVENT:
+  //   ds² = (Δct)² − (Δx)² − (Δy)²
+  // ds² > 0 → current event is inside the future cone   → TIMELIKE
+  // ds² < 0 → current event is outside the cone          → SPACELIKE
+  // ds² ≈ 0 → current event is on the cone surface       → LIGHTLIKE
+  // Also require Δct > 0 (future-directed); if Δct < 0 it's in the past cone.
+  var p0=worldline[0];
+  var Dct=cur.ct-p0.ct, Dx=cur.x-p0.x, Dy=cur.y-p0.y;
+  var ds2=Dct*Dct-Dx*Dx-Dy*Dy;
+  var rtype=ds2>0.01?'TIMELIKE':ds2<-0.01?'SPACELIKE':'LIGHTLIKE';
+  var tcol =ds2>0.01?'#00b4ff' :ds2<-0.01?'#ff3c64'  :'#00ffcc';
+  currentInterval={type:rtype, col:tcol, ds2:ds2};
+
+  document.getElementById('s_tau').textContent=tau.toFixed(3);
+  document.getElementById('s_ct').textContent=cur.ct.toFixed(3);
+  document.getElementById('s_int').textContent=ds2.toFixed(3);
+  var te=document.getElementById('s_type'); te.textContent=rtype; te.style.color=tcol;
+  document.getElementById('cd_ct').textContent=cur.ct.toFixed(2);
+  document.getElementById('cd_x').textContent=cur.x.toFixed(2);
+  document.getElementById('cd_y').textContent=cur.y.toFixed(2);
+  document.getElementById('cd_ds').textContent=ds2.toFixed(3);
+
+  if (animating) animRAF=requestAnimationFrame(animStep);
+}
+
+// sp2sc helper
+function sp2sc(p){return{sx:p.x*SC, sy:p.ct*SC, sz:p.y*SC};}
+
+// ═══════════════════════════════════════════════════════════════
+// 2D PATH EDITOR — with pan, zoom, bigger labels
+// ═══════════════════════════════════════════════════════════════
+var plane='xt', strokes={xt:[],yt:[]}, drawing=false, panelOpen=false;
+var DC=document.getElementById('dc'), DCX=DC.getContext('2d');
+var DW=DC.width, DH=DC.height;
+
+var views = {
+  xt:{ ox: DW/2, oy: DH*0.75, ppu: 22 },
+  yt:{ ox: DW/2, oy: DH*0.75, ppu: 22 }
+};
+var hints={xt:{h:'→ x (spatial)',v:'↑ ct (time)'},yt:{h:'→ y (spatial)',v:'↑ ct (time)'}};
+
+function px2sp(pl,px,py){ var v=views[pl]; return{h:(px-v.ox)/v.ppu, v:-(py-v.oy)/v.ppu}; }
+function sp2px(pl,h,vv){  var v=views[pl]; return{px:v.ox+h*v.ppu, py:v.oy-vv*v.ppu}; }
+
+// Convert pixel → spacetime using current view
+function px2sp(pl,px,py){ var v=views[pl]; return{h:(px-v.ox)/v.ppu, v:-(py-v.oy)/v.ppu}; }
+function sp2px(pl,h,vv){  var v=views[pl]; return{px:v.ox+h*v.ppu,   py:v.oy-vv*v.ppu}; }
+
+function drawDC(){
+  DCX.clearRect(0,0,DW,DH); DCX.fillStyle='#010810'; DCX.fillRect(0,0,DW,DH);
+  var v=views[plane];
+
+  // How many units fit on screen
+  var hUnits=DW/v.ppu, vUnits=DH/v.ppu;
+  var hMin=-(v.ox/v.ppu), hMax=(DW-v.ox)/v.ppu;
+  var vMin=-(( DH-v.oy)/v.ppu), vMax=(v.oy/v.ppu);
+
+  // Grid lines
+  var step = v.ppu < 10 ? 5 : v.ppu < 25 ? 2 : 1;
+  DCX.strokeStyle='#0d1e30'; DCX.lineWidth=0.5;
+  for(var i=Math.floor(hMin/step)*step; i<=Math.ceil(hMax/step)*step; i+=step){
+    var p=sp2px(plane,i,0); DCX.beginPath(); DCX.moveTo(p.px,0); DCX.lineTo(p.px,DH); DCX.stroke();
+  }
+  for(var j=Math.floor(vMin/step)*step; j<=Math.ceil(vMax/step)*step; j+=step){
+    var p=sp2px(plane,0,j); DCX.beginPath(); DCX.moveTo(0,p.py); DCX.lineTo(DW,p.py); DCX.stroke();
+  }
+
+  // Main axes
+  var ox=sp2px(plane,0,0);
+  DCX.strokeStyle='#1a4a7a'; DCX.lineWidth=1.2;
+  DCX.beginPath(); DCX.moveTo(ox.px,0); DCX.lineTo(ox.px,DH); DCX.stroke();
+  DCX.beginPath(); DCX.moveTo(0,ox.py); DCX.lineTo(DW,ox.py); DCX.stroke();
+
+  // Light cone guide lines (45° from origin) — always shown on time planes
+  DCX.strokeStyle='rgba(0,255,200,0.22)'; DCX.lineWidth=1.2; DCX.setLineDash([5,4]);
+  var ext=Math.max(hUnits,vUnits)*2;
+  [[1,1],[1,-1],[-1,-1],[-1,1]].forEach(function(e){
+    var ep=sp2px(plane,e[0]*ext,e[1]*ext);
+    DCX.beginPath(); DCX.moveTo(ox.px,ox.py); DCX.lineTo(ep.px,ep.py); DCX.stroke();
+  });
+  DCX.setLineDash([]);
+
+  // Tick labels — bigger and brighter
+  DCX.font='bold 11px monospace';
+  for(var i=Math.floor(hMin/step)*step; i<=Math.ceil(hMax/step)*step; i+=step){
+    if(!i) continue;
+    var p=sp2px(plane,i,0);
+    var ly=Math.max(12, Math.min(DH-3, ox.py+14));
+    DCX.fillStyle='#3a8aaa'; DCX.globalAlpha=0.9;
+    DCX.fillText(i, p.px-8, ly);
+    DCX.globalAlpha=1;
+  }
+  for(var j=Math.floor(vMin/step)*step; j<=Math.ceil(vMax/step)*step; j+=step){
+    if(!j) continue;
+    var p=sp2px(plane,0,j);
+    var lx=Math.max(4, Math.min(DW-20, ox.px+5));
+    DCX.fillStyle= j>0?'#3a8aaa':'#8a3a4a';
+    DCX.globalAlpha=0.9;
+    DCX.fillText(j, lx, p.py+4);
+    DCX.globalAlpha=1;
+  }
+  // Origin label
+  DCX.fillStyle='#1a5a7a'; DCX.font='10px monospace';
+  DCX.fillText('0', ox.px+3, ox.py+12);
+
+  // Axis labels
+  DCX.font='bold 10px Orbitron,monospace';
+  DCX.fillStyle='#3a8aaa'; DCX.fillText(hints[plane].h.split(' ')[1]||'x', DW-20, ox.py-6);
+  DCX.fillStyle= plane!=='xy'?'#4a9acc':'#3a8aaa';
+  DCX.fillText(plane==='xt'?'ct':plane==='yt'?'ct':'y', ox.px+5, 14);
+
+  // Drawn stroke — convert stored pixel coords through the view
+  var s=strokes[plane];
+  if(s.length>1){
+    DCX.strokeStyle='#00b4ff';
+    DCX.lineWidth=2.2; DCX.lineJoin='round'; DCX.lineCap='round';
+    DCX.beginPath(); DCX.moveTo(s[0].px,s[0].py);
+    for(var i=1;i<s.length;i++) DCX.lineTo(s[i].px,s[i].py);
+    DCX.stroke();
+    DCX.fillStyle='#00ffcc'; DCX.beginPath(); DCX.arc(s[0].px,s[0].py,5,0,Math.PI*2); DCX.fill();
+    DCX.fillStyle='#ff9500';  DCX.beginPath(); DCX.arc(s[s.length-1].px,s[s.length-1].py,4,0,Math.PI*2); DCX.fill();
+  }
+}
+
+// Mouse/touch state for draw canvas
+var dcDraw={active:false}, dcPan={active:false,lx:0,ly:0};
+
+function getDCPt(e){ var r=DC.getBoundingClientRect(); return{px:(e.clientX-r.left)*(DW/r.width),py:(e.clientY-r.top)*(DH/r.height)}; }
+
+DC.addEventListener('mousedown',function(e){
+  if(plane==='pr') return;
+  e.preventDefault();
+  if(e.button===2||e.button===1){ dcPan.active=true; dcPan.lx=e.clientX; dcPan.ly=e.clientY; }
+  else { dcDraw.active=true; strokes[plane]=[]; strokes[plane].push(getDCPt(e)); drawDC(); }
+});
+window.addEventListener('mousemove',function(e){
+  if(dcPan.active && plane!=='pr'){
+    var dx=e.clientX-dcPan.lx, dy=e.clientY-dcPan.ly;
+    views[plane].ox+=dx; views[plane].oy+=dy;
+    dcPan.lx=e.clientX; dcPan.ly=e.clientY; drawDC();
+  }
+  if(dcDraw.active && plane!=='pr'){ strokes[plane].push(getDCPt(e)); drawDC(); }
+});
+window.addEventListener('mouseup',function(e){ dcDraw.active=false; dcPan.active=false; });
+DC.addEventListener('contextmenu',function(e){e.preventDefault();});
+DC.addEventListener('wheel',function(e){
+  if(plane==='pr') return;
+  e.preventDefault();
+  var pt=getDCPt(e);
+  var factor=e.deltaY<0?1.12:0.89;
+  var v=views[plane];
+  v.ox=pt.px+(v.ox-pt.px)*factor;
+  v.oy=pt.py+(v.oy-pt.py)*factor;
+  v.ppu=Math.max(4,Math.min(120,v.ppu*factor));
+  drawDC();
+},{passive:false});
+
+DC.addEventListener('touchstart',function(e){
+  if(plane==='pr') return;
+  e.preventDefault();
+  if(e.touches.length===1){ dcDraw.active=true; strokes[plane]=[]; var r=DC.getBoundingClientRect(),t=e.touches[0]; strokes[plane].push({px:(t.clientX-r.left)*(DW/r.width),py:(t.clientY-r.top)*(DH/r.height)}); drawDC(); }
+},{passive:false});
+DC.addEventListener('touchmove',function(e){
+  if(plane==='pr') return;
+  e.preventDefault();
+  if(dcDraw.active&&e.touches.length===1){ var r=DC.getBoundingClientRect(),t=e.touches[0]; strokes[plane].push({px:(t.clientX-r.left)*(DW/r.width),py:(t.clientY-r.top)*(DH/r.height)}); drawDC(); }
+},{passive:false});
+DC.addEventListener('touchend',function(){dcDraw.active=false;});
+
+function setPlane(p){
+  plane=p;
+  var isPreset = p==='pr';
+  document.getElementById('dc').style.display         = isPreset?'none':'block';
+  document.getElementById('presetPanel').style.display= isPreset?'block':'none';
+  document.getElementById('btnClearPlane').style.display = isPreset?'none':'inline-block';
+  document.getElementById('btnSmooth').style.display     = isPreset?'none':'inline-block';
+  document.getElementById('ppApply').style.display       = isPreset?'none':'inline-flex';
+  document.getElementById('ppNote').style.display        = isPreset?'none':'block';
+  ['tabXT','tabYT','tabPR'].forEach(function(id){
+    document.getElementById(id).classList.toggle('active', id==='tab'+p.toUpperCase());
+  });
+  if(!isPreset){
+    document.getElementById('axH').textContent=hints[p].h;
+    document.getElementById('axV').textContent=hints[p].v;
+    drawDC();
+  } else {
+    renderPresets();
+  }
+}
+function clearPlane(){strokes[plane]=strokes[plane]?[]:[];if(plane!=='pr')drawDC();}
+function clearAll2D(){strokes={xt:[],yt:[]};if(plane!=='pr')drawDC();}
+
+// ═══════════════════════════════════════════════════════════════
+// PRESET LIBRARY
+// N=200 points each. All velocities |v| < 1 for timelike paths.
+// Spatial coords in units where c=1, so |dx/dct| < 1 = timelike.
+// ═══════════════════════════════════════════════════════════════
+var PRESETS = [
+  { group: 'Special Relativity — Fundamentals' },
+
+  { name: 'At Rest',
+    tag: 'tl',
+    desc: 'Stationary observer. Vertical worldline — pure proper time, no spatial motion.',
+    fn: function(){ var p=[],N=120; for(var i=0;i<N;i++) p.push({x:0,y:0,ct:i*(10/(N-1))}); return p; }},
+
+  { name: 'Constant Velocity  v = 0.5c',
+    tag: 'tl',
+    desc: 'Uniform motion at half the speed of light. Straight worldline tilted at arctan(0.5) from vertical.',
+    fn: function(){ var p=[],N=120; for(var i=0;i<N;i++){var ct=i*(8/(N-1)); p.push({x:ct*0.5,y:0,ct:ct});} return p; }},
+
+  { name: 'Near-Lightspeed  v = 0.95c',
+    tag: 'tl',
+    desc: 'Very high velocity. Worldline nearly at 45° — proper time runs significantly slower than coordinate time.',
+    fn: function(){ var p=[],N=120; for(var i=0;i<N;i++){var ct=i*(8/(N-1)); p.push({x:ct*0.95,y:0,ct:ct});} return p; }},
+
+  { name: 'Uniform Acceleration  (Rindler)',
+    tag: 'tl',
+    desc: 'Constant proper acceleration. Worldline is a hyperbola — the shape a rocket feels as constant thrust.',
+    fn: function(){
+      var p=[],N=120,a=0.8;
+      for(var i=0;i<N;i++){
+        var ct=i*(7/(N-1));
+        // Hyperbolic motion: x(ct) = (1/a)(sqrt(1+(a*ct)^2) - 1)
+        p.push({x:(1/a)*(Math.sqrt(1+Math.pow(a*ct,2))-1), y:0, ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Twin Paradox — Traveller',
+    tag: 'tl',
+    desc: 'Leaves at 0.8c, smoothly decelerates, turns around, returns. Accumulates less proper time than the stay-at-home twin.',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var t=i/(N-1);           // 0→1
+        var ct=t*12;
+        // Smooth turnaround using tanh — velocity transitions from +0.8 to -0.8
+        var v=0.8*Math.tanh(3*(0.5-t))*(-1);
+        // Integrate x numerically
+        var x=0;
+        if(i>0){
+          var prev=p[p.length-1];
+          x=prev.x+v*(ct-prev.ct);
+        }
+        p.push({x:x,y:0,ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Lightlike  (Photon)',
+    tag: 'll',
+    desc: 'Travels exactly at c. Lies precisely on the 45° light cone surface. No proper time elapses.',
+    fn: function(){ var p=[],N=80; for(var i=0;i<N;i++){var ct=i*(8/(N-1)); p.push({x:ct,y:0,ct:ct});} return p; }},
+
+  { name: 'FTL Attempt  v = 2c  ⚠',
+    tag: 'sl',
+    desc: 'Hypothetical faster-than-light path. Spacelike interval — outside the light cone. Causality violation.',
+    fn: function(){ var p=[],N=80; for(var i=0;i<N;i++){var ct=i*(4/(N-1)); p.push({x:ct*2.0,y:0,ct:ct});} return p; }},
+
+  { group: 'Acceleration & Forces' },
+
+  { name: 'Oscillating  (Simple Harmonic)',
+    tag: 'tl',
+    desc: 'Back-and-forth motion, amplitude chosen so v < c always. Like a mass on a spring.',
+    fn: function(){
+      var p=[],N=160,A=0.7,omega=0.9;
+      for(var i=0;i<N;i++){
+        var ct=i*(11/(N-1));
+        // v = A*omega*cos(omega*ct) — max speed A*omega = 0.63 < c
+        p.push({x:A*Math.sin(omega*ct),y:0,ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Deceleration to Stop',
+    tag: 'tl',
+    desc: 'Moving at 0.7c, then smoothly braking to rest over the middle third of the path.',
+    fn: function(){
+      var p=[],N=160;
+      for(var i=0;i<N;i++){
+        var t=i/(N-1), ct=t*10;
+        // Velocity profile: 0.7 → 0 using smooth step between t=0.3 and t=0.7
+        var s=Math.max(0,Math.min(1,(t-0.3)/0.4));
+        var v=0.7*(1-3*s*s+2*s*s*s);
+        var x=0;
+        if(i>0){var prev=p[i-1]; x=prev.x+v*(ct-prev.ct);}
+        p.push({x:x,y:0,ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Bouncing  (Elastic reflection)',
+    tag: 'tl',
+    desc: 'Object moves at 0.6c, instantly reverses direction at each wall. Sharp worldline kinks.',
+    fn: function(){
+      var p=[],N=200,v=0.6,x=0,dir=1;
+      for(var i=0;i<N;i++){
+        var ct=i*(12/(N-1));
+        if(i>0){
+          var dt=ct-p[i-1].ct;
+          x=p[i-1].x+dir*v*dt;
+          if(x>3){x=3-(x-3);dir=-1;}
+          if(x<-3){x=-3-(-3-x);dir=1;}
+        }
+        p.push({x:x,y:0,ct:ct});
+      }
+      return p;
+    }},
+
+  { group: '3D Spatial Paths' },
+
+  { name: 'Helix  (Circular orbit)',
+    tag: 'tl',
+    desc: 'Circular motion in x–y plane, advancing in ct. Speed 0.6c. Classic helical worldline.',
+    fn: function(){
+      var p=[],N=200,r=1.0,omega=0.6;
+      // r*omega = speed in spatial units; keep < 1
+      for(var i=0;i<N;i++){
+        var ct=i*(12/(N-1));
+        p.push({x:r*Math.sin(omega*ct), y:r*Math.cos(omega*ct), ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Spiral Inward',
+    tag: 'tl',
+    desc: 'Orbit losing radius over time — like inspiral due to energy loss (gravitational wave emission).',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var ct=i*(12/(N-1));
+        var r=2.5*Math.exp(-ct*0.12);
+        var omega=0.55;
+        p.push({x:r*Math.sin(omega*ct), y:r*Math.cos(omega*ct), ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Lissajous',
+    tag: 'tl',
+    desc: 'Different frequencies in x and y — traces a Lissajous figure through spacetime.',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var ct=i*(12/(N-1));
+        // Keep max speed < c: d/dct of each term bounded
+        p.push({x:0.6*Math.sin(1.2*ct), y:0.6*Math.sin(0.8*ct+0.5), ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Figure-Eight',
+    tag: 'tl',
+    desc: 'Lemniscate path in x–y, parameterised so velocity stays below c.',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var ct=i*(12/(N-1));
+        var s=Math.sin(0.7*ct);
+        p.push({x:1.2*s, y:1.2*s*Math.cos(0.7*ct), ct:ct});
+      }
+      return p;
+    }},
+
+  { group: 'Mixed & Exotic' },
+
+  { name: 'Zigzag  (v = 0.8c)',
+    tag: 'mx',
+    desc: 'Alternates between +0.8c and −0.8c. Worldline kinks are timelike but the path crosses the cone boundary repeatedly.',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var ct=i*(10/(N-1));
+        // Sawtooth velocity using triangle wave
+        var phase=(ct%2)/2;
+        var v=phase<0.5?0.8:-0.8;
+        var x=0;
+        if(i>0){var prev=p[i-1];x=prev.x+v*(ct-prev.ct);}
+        p.push({x:x,y:0,ct:ct});
+      }
+      return p;
+    }},
+
+  { name: 'Partial FTL Segment',
+    tag: 'mx',
+    desc: 'Mostly timelike path with one brief spacelike segment — shows the cone violation clearly.',
+    fn: function(){
+      var p=[],N=200;
+      for(var i=0;i<N;i++){
+        var ct=i*(10/(N-1));
+        var v;
+        if(ct<3) v=0.4;
+        else if(ct<4) v=2.5;   // spacelike segment
+        else v=0.4;
+        var x=0;
+        if(i>0){var prev=p[i-1];x=prev.x+v*(ct-prev.ct);}
+        p.push({x:x,y:0,ct:ct});
+      }
+      return p;
+    }},
+];
+
+function renderPresets(){
+  var pp=document.getElementById('presetPanel');
+  pp.innerHTML='';
+  PRESETS.forEach(function(p){
+    if(p.group){
+      var g=document.createElement('div');
+      g.className='preset-group';
+      g.textContent=p.group;
+      pp.appendChild(g);
+      return;
+    }
+    var btn=document.createElement('button');
+    btn.className='preset-btn';
+    var tagLabel=p.tag==='tl'?'TIMELIKE':p.tag==='sl'?'SPACELIKE':p.tag==='ll'?'LIGHTLIKE':'MIXED';
+    btn.innerHTML='<span style="flex:1;text-align:left">'+p.name+'</span>'
+      +'<span class="preset-tag '+p.tag+'" style="flex-shrink:0">'+tagLabel+'</span>';
+    btn.title=p.desc;
+    (function(preset,el){
+      el.addEventListener('click',function(){
+        applyPreset(preset,el);
+      });
+    })(p,btn);
+    pp.appendChild(btn);
+  });
+}
+
+function applyPreset(preset, btnEl){
+  var raw=preset.fn();
+  if(!raw||raw.length<2) return;
+  worldline=raw;
+  properTimeLookup=[0];
+  for(var i=1;i<worldline.length;i++){
+    var a=worldline[i-1],b=worldline[i];
+    var dct=b.ct-a.ct,ddx=b.x-a.x,ddy=b.y-a.y;
+    var ds2=dct*dct-ddx*ddx-ddy*ddy;
+    properTimeLookup.push(properTimeLookup[i-1]+(ds2>0?Math.sqrt(ds2):0));
+  }
+  _scCache=null; // invalidate start cone cache
+  // Warm the cache now so frame 1 doesn't pay the build cost
+  updateCamCache();
+  buildStartConeCache();
+  _scCamKey=_startConeKey(); _scWLKey=_startWLKey();
+  camTarget={x:0,y:0,z:0};
+  drawOffset={x:0,y:0,z:0};
+  currentDir={dx:0,dct:1,dy:0};
+  document.getElementById('startBtn').disabled=false;
+  document.getElementById('startBtn').textContent='START';
+  updatePathList();
+  // Highlight the selected button
+  document.querySelectorAll('.preset-btn').forEach(function(b){
+    b.style.borderColor=''; b.style.color=''; b.style.background='';
+  });
+  if(btnEl){
+    btnEl.style.borderColor='#00ffcc';
+    btnEl.style.color='#00ffcc';
+    btnEl.style.background='rgba(0,255,204,0.07)';
+  }
+  // Show note without closing panel so user can read it
+  setNote('\u2713 "'+preset.name+'" loaded — press START',false);
+}
+function doSmooth(){
+  var s=strokes[plane];if(s.length<4)return;
+  for(var pass=0;pass<4;pass++){
+    var out=[s[0]];
+    for(var i=1;i<s.length-1;i++)out.push({px:(s[i-1].px+s[i].px*2+s[i+1].px)/4,py:(s[i-1].py+s[i].py*2+s[i+1].py)/4});
+    out.push(s[s.length-1]);s=out;
+  }
+  strokes[plane]=s;drawDC();
+}
+// Resample a stroke to N points uniformly by arc-length (pixel space)
+function resample(s,N){
+  if(s.length<2)return null;
+  var lens=[0];
+  for(var i=1;i<s.length;i++){
+    var ddx=s[i].px-s[i-1].px, ddy=s[i].py-s[i-1].py;
+    lens.push(lens[i-1]+Math.sqrt(ddx*ddx+ddy*ddy));
+  }
+  var tot=lens[lens.length-1]; if(!tot)return null;
+  var out=[];
+  for(var j=0;j<N;j++){
+    var t=(j/(N-1))*tot, lo=0, hi=lens.length-1;
+    // Binary search for segment
+    while(hi-lo>1){var mid=(lo+hi)>>1; if(lens[mid]<=t)lo=mid;else hi=mid;}
+    var seg=lens[hi]-lens[lo], f=seg>0?(t-lens[lo])/seg:0;
+    out.push({px:s[lo].px+f*(s[hi].px-s[lo].px), py:s[lo].py+f*(s[hi].py-s[lo].py)});
+  }
+  return out;
+}
+
+// Convert a resampled pixel stroke to spacetime coords, sorted by ct
+function strokeToST(pl, s){
+  var pts=s.map(function(p){
+    var sp=px2sp(pl,p.px,p.py); return{h:sp.h, v:sp.v};
+  });
+  // Sort by vertical (ct/y) axis ascending
+  pts.sort(function(a,b){return a.v-b.v;});
+  return pts;
+}
+
+function applyPath(){
+  var RAW=600, OUT=400;
+  var sxt=strokes.xt.length>1?resample(strokes.xt,RAW):null;
+  var syt=strokes.yt.length>1?resample(strokes.yt,RAW):null;
+  if(!sxt&&!syt){setNote('Draw x–ct or y–ct to define time!',true);return;}
+
+  var xtST=sxt?strokeToST('xt',sxt):null;
+  var ytST=syt?strokeToST('yt',syt):null;
+
+  var ctMin, ctMax;
+  if(xtST){ctMin=xtST[0].v; ctMax=xtST[xtST.length-1].v;}
+  if(ytST){
+    ctMin=xtST?Math.max(ctMin,ytST[0].v):ytST[0].v;
+    ctMax=xtST?Math.min(ctMax,ytST[ytST.length-1].v):ytST[ytST.length-1].v;
+  }
+  if(ctMax<=ctMin){setNote('Path must span upward in time!',true);return;}
+
+  function interpST(arr,vTarget){
+    if(!arr)return 0;
+    if(vTarget<=arr[0].v)return arr[0].h;
+    if(vTarget>=arr[arr.length-1].v)return arr[arr.length-1].h;
+    var lo=0,hi=arr.length-1;
+    while(hi-lo>1){var mid=(lo+hi)>>1;if(arr[mid].v<=vTarget)lo=mid;else hi=mid;}
+    var f=(arr[hi].v-arr[lo].v)>0?(vTarget-arr[lo].v)/(arr[hi].v-arr[lo].v):0;
+    return arr[lo].h+f*(arr[hi].h-arr[lo].h);
+  }
+
+  var pts=[];
+  for(var i=0;i<OUT;i++){
+    var ct=ctMin+(i/(OUT-1))*(ctMax-ctMin);
+    pts.push({x:xtST?interpST(xtST,ct):0, y:ytST?interpST(ytST,ct):0, ct:ct});
+  }
+  var clean=[pts[0]];
+  for(var i=1;i<pts.length;i++)if(pts[i].ct>clean[clean.length-1].ct)clean.push(pts[i]);
+  if(clean.length<2){setNote('Path must go upward in time!',true);return;}
+  worldline=clean;
+  _scCache=null;
+  updateCamCache();
+  buildStartConeCache();
+  _scCamKey=_startConeKey(); _scWLKey=_startWLKey();
+
+  properTimeLookup=[0];
+  for(var i=1;i<worldline.length;i++){
+    var a=worldline[i-1],b=worldline[i];
+    var dct=b.ct-a.ct,ddx=b.x-a.x,ddy=b.y-a.y;
+    var ds2=dct*dct-ddx*ddx-ddy*ddy;
+    properTimeLookup.push(properTimeLookup[i-1]+(ds2>0?Math.sqrt(ds2):0));
+  }
+  camTarget={x:0,y:0,z:0}; drawOffset={x:0,y:0,z:0}; currentDir={dx:0,dct:1,dy:0};
+  document.getElementById('startBtn').disabled=false;
+  document.getElementById('startBtn').textContent='START';
+  updatePathList();
+  togglePanel();
+}
+function setNote(msg,err){
+  var n=document.getElementById('ppNote');
+  n.style.display='block';
+  n.style.color=err?'#ff3c64':'#00ffcc';
+  n.textContent=msg;
+  if(err) setTimeout(function(){
+    n.style.color='';
+    n.textContent='Draw upward on x–ct to define time evolution. y–ct adds y-motion.';
+  },2500);
+}
+function togglePanel(){
+  panelOpen=!panelOpen;
+  document.getElementById('pathPanel').classList.toggle('open',panelOpen);
+  document.getElementById('ppToggle').textContent=panelOpen?'▼ CLOSE':'▲ OPEN';
+  if(panelOpen)drawDC();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ORBIT (drag on main canvas rotates around camTarget)
+// ═══════════════════════════════════════════════════════════════
+var drag={active:false,lx:0,ly:0};
+canvas.addEventListener('mousedown',function(e){drag.active=true;drag.lx=e.clientX;drag.ly=e.clientY;canvas.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){
+  if(!drag.active)return;
+  var dx=e.clientX-drag.lx, dy=e.clientY-drag.ly;
+  cam.rotY-=dx*0.006; cam.rotX+=dy*0.006;
+  cam.rotX=Math.max(-Math.PI/2+0.05,Math.min(Math.PI/2-0.05,cam.rotX));
+  drag.lx=e.clientX; drag.ly=e.clientY;
+  document.getElementById('rxSlider').value=Math.round(cam.rotX*180/Math.PI);
+  document.getElementById('rySlider').value=Math.round(cam.rotY*180/Math.PI);
+  document.getElementById('rxVal').textContent=Math.round(cam.rotX*180/Math.PI)+'°';
+  document.getElementById('ryVal').textContent=Math.round(cam.rotY*180/Math.PI)+'°';
+});
+window.addEventListener('mouseup',function(){drag.active=false;canvas.style.cursor='grab';});
+canvas.addEventListener('wheel',function(e){cam.dist=Math.max(5,Math.min(50,cam.dist+e.deltaY*0.03));},{passive:true});
+canvas.addEventListener('contextmenu',function(e){e.preventDefault();});
+
+// ── Sliders ───────────────────────────────────────────────────────
+document.getElementById('rxSlider').addEventListener('input',function(){cam.rotX=parseInt(this.value)*Math.PI/180;document.getElementById('rxVal').textContent=this.value+'°';});
+document.getElementById('rySlider').addEventListener('input',function(){cam.rotY=parseInt(this.value)*Math.PI/180;document.getElementById('ryVal').textContent=this.value+'°';});
+document.getElementById('speedSlider').addEventListener('input',function(){animSpeed=this.value/4;document.getElementById('speedVal').textContent=animSpeed.toFixed(2)+'x';});
+document.getElementById('csSlider').addEventListener('input',function(){coneSize=this.value/8;document.getElementById('csVal').textContent=coneSize.toFixed(1);});
+document.getElementById('ccSlider').addEventListener('input',function(){coneCount=parseInt(this.value);document.getElementById('ccVal').textContent=coneCount;});
+
+function resetView(){
+  cam.rotX=25*Math.PI/180;cam.rotY=30*Math.PI/180;cam.dist=22;cam.panX=0;cam.panY=0;
+  document.getElementById('rxSlider').value=25;document.getElementById('rySlider').value=30;
+  document.getElementById('rxVal').textContent='25°';document.getElementById('ryVal').textContent='30°';
+}
+
+// ── UI ─────────────────────────────────────────────────────────────
+function updatePathList(){
+  var el=document.getElementById('pathList');
+  if(!worldline.length){el.textContent='Use ✎ DRAW PATH to begin.';return;}
+  var f=worldline[0],l=worldline[worldline.length-1];
+  el.innerHTML='<div style="color:#00ffcc">Start: ct='+f.ct.toFixed(1)+' x='+f.x.toFixed(1)+' y='+f.y.toFixed(1)+'</div>'+
+    '<div>End: ct='+l.ct.toFixed(1)+' x='+l.x.toFixed(1)+' y='+l.y.toFixed(1)+'</div>'+
+    '<div style="color:#7ab8d4;margin-top:3px">'+worldline.length+' pts</div>';
+}
+
+function clearAll(){
+  if(animRAF)cancelAnimationFrame(animRAF);
+  animating=false;paused=false;worldline=[];animT=0;tau=0;lastTS=null;
+  _scCache=null;
+  camTarget={x:0,y:0,z:0}; drawOffset={x:0,y:0,z:0}; currentDir={dx:0,dct:1,dy:0};
+  clearAll2D();
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('startBtn').style.display='block';
+  document.getElementById('startBtn').textContent='START';
+  document.getElementById('pauseBtn').style.display='none';
+  ['s_tau','s_ct'].forEach(function(id){document.getElementById(id).textContent='0.000';});
+  ['s_int','s_type'].forEach(function(id){document.getElementById(id).textContent='—';});
+  ['cd_ct','cd_x','cd_y','cd_ds'].forEach(function(id){document.getElementById(id).textContent='—';});
+  updatePathList();
+}
+
+// ── Resize ─────────────────────────────────────────────────────────
+function resize(){
+  var area=document.getElementById('canvasArea');
+  canvas.width=area.clientWidth; canvas.height=area.clientHeight;
+  cam.fov=Math.min(canvas.width,canvas.height)*0.85;
+  _bgGrad=null; // invalidate cached gradient on resize
+  updateCamCache();
+}
+window.addEventListener('resize',resize);
+resize();
+
+// ── Boot ───────────────────────────────────────────────────────────
+drawDC();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>

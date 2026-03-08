@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physviz, Interactive Physics Visualisations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+/* navScrollTo — defined in <head> so onclick attributes can call it immediately */
+function navScrollTo(id, e) {
+  if (e) e.preventDefault();
+  var el = document.getElementById(id);
+  if (!el) return;
+  var nav = document.querySelector('.nav');
+  var navH = nav ? nav.offsetHeight : 0;
+  var top = el.getBoundingClientRect().top + window.scrollY - navH - 12;
+  window.scrollTo({ top: top, behavior: 'smooth' });
+  document.querySelectorAll('.nav-links a').forEach(function(a) {
+    a.classList.remove('current');
+  });
+  var active = document.querySelector('.nav-links a[href="#' + id + '"]');
+  if (active) active.classList.add('current');
+}
+</script>
+
+<style>
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS
+   Soft warm grey + red, academic, readable, clean
+   ══════════════════════════════════════════════════ */
+:root {
+  --bg:           #F7F5F3;
+  --bg-surface:   #FFFFFF;
+  --bg-raised:    #F0EDE9;
+  --bg-sunken:    #EAE6E1;
+
+  --border:       #DDD8D2;
+  --border-soft:  #E8E4DF;
+  --border-mid:   #C8C2BB;
+
+  --ink:          #1A1714;
+  --ink-2:        #3D3730;
+  --ink-3:        #6B6158;
+  --ink-4:        #9E958D;
+  --ink-5:        #C2BAB3;
+
+  --red:          #BE3A2A;
+  --red-2:        #D04535;
+  --red-bg:       #FDF1EF;
+  --red-border:   #F2D0CB;
+
+  --serif:        "Source Serif 4", Georgia, serif;
+  --sans:         "DM Sans", system-ui, sans-serif;
+  --mono:         "DM Mono", "Courier New", monospace;
+
+  --radius:       6px;
+  --radius-lg:    10px;
+  --gutter:       clamp(1.25rem, 4vw, 3rem);
+  --max:          1180px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ─────────────────────────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: rgba(247,245,243,0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.nav-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+
+
+.nav-brand-name {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.nav-brand-name b { color: var(--red); font-weight: 700; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.825rem;
+  font-weight: 400;
+  color: var(--ink-3);
+  text-decoration: none;
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--radius);
+  transition: color 0.14s, background 0.14s;
+  display: block;
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--ink); background: var(--bg-raised); }
+.nav-links .current { color: var(--red); font-weight: 500; }
+
+.nav-badge {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  padding: 0.18rem 0.55rem;
+  border-radius: 100px;
+}
+
+/* ── PAGE WRAPPER ─────────────────────────────────── */
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ── HERO ─────────────────────────────────────────── */
+.hero {
+  padding: clamp(3.5rem, 8vw, 6rem) var(--gutter) 3.5rem;
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+}
+
+.hero-kicker {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.hero-kicker::before {
+  content: '';
+  display: block;
+  width: 18px; height: 1px;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+.hero-h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 700;
+  line-height: 1.07;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+.hero-h1 i { font-style: italic; color: var(--red); }
+
+.hero-p {
+  font-size: 0.95rem;
+  color: var(--ink-3);
+  line-height: 1.78;
+  max-width: 44ch;
+  margin-bottom: 2.2rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 2.2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--border);
+}
+
+.stat-n {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  display: block;
+}
+.stat-l {
+  font-family: var(--mono);
+  font-size: 0.57rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  margin-top: 0.28rem;
+  display: block;
+}
+
+/* Hero diagram */
+.hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-diagram {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 4/3;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* ── DIVIDER ──────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: var(--border-soft);
+  max-width: var(--max);
+  margin: 0 auto;
+}
+
+/* ── SECTION HEADER ───────────────────────────────── */
+.sec-head {
+  padding: 3rem var(--gutter) 1.5rem;
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sec-super {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  margin-bottom: 0.3rem;
+}
+
+.sec-h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+}
+
+.sec-aside {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--ink-5);
+  flex-shrink: 0;
+  padding-bottom: 0.2rem;
+}
+
+/* ── LIVE SIM CARD ────────────────────────────────── */
+.live-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 3rem;
+}
+
+.live-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+  opacity: 0;
+  animation: rise 0.55s ease 0.2s forwards;
+}
+
+.live-card-top {
+  padding: 1.5rem 1.75rem 1.3rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.live-meta { flex: 1; min-width: 0; }
+
+.live-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.55rem;
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.55rem;
+  border-radius: 100px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.tag-live   { color: #2D7A3A; background: #EFF8F1; border-color: #C6E8CB; }
+.tag-topic  { color: var(--red); background: var(--red-bg); border-color: var(--red-border); }
+.tag-diff   { color: var(--ink-4); background: var(--bg-raised); border-color: var(--border); }
+
+.live-title {
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  margin-bottom: 0.55rem;
+}
+
+.live-desc {
+  font-size: 0.855rem;
+  color: var(--ink-3);
+  line-height: 1.68;
+  max-width: 58ch;
+}
+
+.live-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  flex-shrink: 0;
+}
+
+.btn-ghost {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
+  background: transparent;
+  border: 1px solid var(--red-border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.14s, border-color 0.14s;
+  white-space: nowrap;
+}
+.btn-ghost:hover { background: var(--red-bg); border-color: var(--red); }
+
+/* Iframe */
+.sim-preview {
+  display: block;
+  position: relative;
+  height: clamp(300px, 52vh, 520px);
+  background: #030508;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.preview-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.preview-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(3, 5, 8, 0.35);
+  transition: background 0.22s;
+}
+
+.sim-preview:hover .preview-overlay {
+  background: rgba(3, 5, 8, 0.55);
+}
+
+.preview-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: center;
+  transform: translateY(4px);
+  transition: transform 0.22s;
+}
+
+.sim-preview:hover .preview-cta {
+  transform: translateY(0);
+}
+
+.preview-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.sim-preview:hover .preview-icon {
+  background: rgba(190,58,42,0.75);
+  border-color: rgba(190,58,42,0.9);
+}
+
+.preview-label {
+  font-family: var(--sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.preview-sub {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+}
+
+/* Footer strip */
+.live-card-foot {
+  padding: 0.85rem 1.75rem;
+  background: var(--bg-raised);
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 0.53rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  padding: 0.18rem 0.48rem;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* ── COMING SOON GRID ─────────────────────────────── */
+.grid-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 4.5rem;
+}
+
+/* Topic group label */
+.topic-group { margin-bottom: 0.15rem; }
+
+.topic-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1.2rem 0 0.75rem;
+  border-top: 1px solid var(--border-soft);
+  margin-top: 1.5rem;
+}
+
+.topic-label:first-child { margin-top: 0; border-top: none; }
+
+.topic-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.topic-name {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+}
+
+.topic-n {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-5);
+  margin-left: auto;
+}
+
+/* Card row */
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.c-card {
+  background: var(--bg-surface);
+  padding: 1.35rem 1.5rem 1.45rem;
+  position: relative;
+  transition: background 0.14s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.c-card:hover { background: var(--bg); }
+
+/* Top accent bar on hover */
+.c-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.18s;
+  border-radius: 0;
+}
+.c-card:hover::after { opacity: 1; }
+
+.c-card.t-rel  { color: var(--red); }
+.c-card.t-mech { color: #A06B28; }
+.c-card.t-wave { color: #2A7055; }
+.c-card.t-qm   { color: #3D5FA8; }
+.c-card.t-em   { color: #803AAA; }
+
+.c-num {
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--ink-5);
+  text-transform: uppercase;
+}
+
+.c-soon {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  padding: 0.14rem 0.42rem;
+  border-radius: 100px;
+}
+
+.c-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.c-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  line-height: 1.28;
+}
+
+.c-desc {
+  font-size: 0.775rem;
+  font-weight: 300;
+  color: var(--ink-4);
+  line-height: 1.62;
+  flex: 1;
+}
+
+.c-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  margin-top: 0.3rem;
+}
+
+.c-chip {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ink-5);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-soft);
+  padding: 0.14rem 0.42rem;
+  border-radius: 100px;
+}
+
+/* ── EQUATION STRIP ───────────────────────────────── */
+.eq-strip {
+  background: var(--red);
+  padding: clamp(2.5rem, 6vw, 4rem) var(--gutter);
+  position: relative;
+  overflow: hidden;
+}
+
+/* subtle diagonal texture */
+.eq-strip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 1px,
+    transparent 1px, transparent 14px
+  );
+  pointer-events: none;
+}
+
+.eq-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem 4rem;
+  align-items: center;
+  position: relative;
+}
+
+@media (max-width: 680px) {
+  .eq-inner { grid-template-columns: 1fr; }
+}
+
+.eq-kicker {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.7rem;
+}
+
+.eq-title {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
+  margin-bottom: 0.9rem;
+}
+
+.eq-body {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.74;
+  max-width: 48ch;
+}
+
+.eq-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+  flex-shrink: 0;
+}
+
+.eq-row {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.88);
+  background: rgba(0,0,0,0.18);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.eq-comment {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.38);
+  font-style: italic;
+  font-family: var(--sans);
+  font-weight: 300;
+}
+
+/* ── FOOTER ───────────────────────────────────────── */
+footer {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-soft);
+  padding: 2.2rem var(--gutter);
+}
+
+.foot-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.foot-links a {
+  font-size: 0.78rem;
+  color: var(--ink-4);
+  text-decoration: none;
+  transition: color 0.14s;
+}
+.foot-links a:hover { color: var(--ink); }
+
+.foot-copy {
+  font-family: var(--mono);
+  font-size: 0.57rem;
+  color: var(--ink-5);
+  letter-spacing: 0.06em;
+  text-align: right;
+}
+
+/* ── ANIMATION ────────────────────────────────────── */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-text { opacity: 0; animation: rise 0.6s ease 0.05s forwards; }
+.hero-visual { opacity: 0; animation: rise 0.6s ease 0.2s forwards; }
+
+.c-card {
+  opacity: 0;
+  animation: rise 0.4s ease forwards;
+}
+.c-card:nth-child(1)  { animation-delay: 0.04s; }
+.c-card:nth-child(2)  { animation-delay: 0.08s; }
+.c-card:nth-child(3)  { animation-delay: 0.12s; }
+.c-card:nth-child(4)  { animation-delay: 0.04s; }
+.c-card:nth-child(5)  { animation-delay: 0.08s; }
+.c-card:nth-child(6)  { animation-delay: 0.12s; }
+.c-card:nth-child(7)  { animation-delay: 0.04s; }
+.c-card:nth-child(8)  { animation-delay: 0.08s; }
+.c-card:nth-child(9)  { animation-delay: 0.12s; }
+.c-card:nth-child(10) { animation-delay: 0.04s; }
+.c-card:nth-child(11) { animation-delay: 0.08s; }
+.c-card:nth-child(12) { animation-delay: 0.12s; }
+.c-card:nth-child(13) { animation-delay: 0.04s; }
+.c-card:nth-child(14) { animation-delay: 0.08s; }
+
+/* ── PLATFORM LINKS (hero right col) ─────────────────── */
+.platform-links {
+  padding: 2rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.platform-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-5);
+  margin-bottom: 1rem;
+}
+
+.platform-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.platform-slot {
+  background: var(--bg-raised);
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-5);
+  text-align: center;
+}
+
+/* ── ABOUT SECTION ────────────────────────────────────── */
+.about-section {}
+
+.about-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 3.5rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px;
+  background: var(--border-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.about-block {
+  background: var(--bg-surface);
+  padding: 1.6rem 1.75rem;
+  transition: background 0.14s;
+}
+.about-block:hover { background: var(--bg); }
+
+.about-block-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.015em;
+  margin-bottom: 0.65rem;
+}
+
+.about-block-body {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--ink-4);
+  line-height: 1.65;
+}
+
+/* ── TIDY: hero-visual alignment for platform links ─── */
+.hero-visual { align-self: start; margin-top: 0.5rem; }
+
+/* ── TIDY: hero-h1 no longer needs italic child styling */
+.hero-h1 { font-style: normal; }
+
+/* ── TIDY: nav-brand-name standalone (no anchor parent) */
+.nav-brand-name {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- NAV ─────────────────────────────────────────────── -->
+<header class="nav">
+  <div class="nav-inner">
+
+    <span class="nav-brand-name">Project Physviz</span>
+
+    <ul class="nav-links">
+      <li><a href="#visualisations" class="current" onclick="navScrollTo('visualisations',event)">Visualisations</a></li>
+      <li><a href="#coming-soon" onclick="navScrollTo('coming-soon',event)">Coming Soon</a></li>
+      <li><a href="#about" onclick="navScrollTo('about',event)">About</a></li>
+    </ul>
+
+    <span class="nav-badge">Open Source</span>
+
+  </div>
+</header>
+
+<!-- HERO ────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="hero-text">
+    <p class="hero-kicker">Interactive Physics Visualisations</p>
+    <h1 class="hero-h1" id="hero-h1">Project Physviz</h1>
+    <p class="hero-p">In the works.</p>
+    <div class="hero-stats">
+      <div><span class="stat-n">15</span><span class="stat-l">Visualisations</span></div>
+      <div><span class="stat-n">5</span><span class="stat-l">Topic Areas</span></div>
+      <div><span class="stat-n">0</span><span class="stat-l">Dependencies</span></div>
+      <div><span class="stat-n">60</span><span class="stat-l">FPS Target</span></div>
+    </div>
+  </div>
+
+  <!-- Platform links placeholder -->
+  <div class="hero-visual" aria-hidden="false">
+    <div class="platform-links">
+      <p class="platform-label">Available on</p>
+      <div class="platform-slots">
+        <div class="platform-slot">Platform link coming soon</div>
+        <div class="platform-slot">Platform link coming soon</div>
+        <div class="platform-slot">Platform link coming soon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DESIGN PRINCIPLE ───────────────────────────────── -->
+<section class="eq-strip">
+  <div class="eq-inner">
+    <div>
+      <p class="eq-kicker">Design Principle</p>
+      <h2 class="eq-title">Colour carries<br>physical meaning.</h2>
+      <p class="eq-body">Every accent colour maps to a spacetime concept. Timelike intervals are blue, spacelike are red, lightlike are cyan, the same visual language across every tool, so the interface teaches physics as you explore it.</p>
+    </div>
+    <div class="eq-block">
+      <div class="eq-row">ds² = (c·Δt)² − Δx² − Δy² <span class="eq-comment">Minkowski interval</span></div>
+      <div class="eq-row">ds² &gt; 0 &nbsp;→&nbsp; <span style="color:#00b4ff;font-weight:500;">TIMELIKE</span> <span class="eq-comment">future cone interior</span></div>
+      <div class="eq-row">ds² &lt; 0 &nbsp;→&nbsp; <span style="color:#ff3c64;font-weight:500;">SPACELIKE</span> <span class="eq-comment">outside light cone</span></div>
+      <div class="eq-row">ds² = 0 &nbsp;→&nbsp; <span style="color:#00ffcc;font-weight:500;">LIGHTLIKE</span> <span class="eq-comment">on the cone surface</span></div>
+      <div class="eq-row">τ = ∫√(ds²) / c <span class="eq-comment">proper time</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── LIVE SIM ──────────────────────────────────────── -->
+<div id="visualisations">
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">Live · Visualisation 01 of 15</p>
+      <h2 class="sec-h2">Minkowski Spacetime Explorer</h2>
+    </div>
+    <span class="sec-aside">Special Relativity</span>
+  </div>
+
+  <div class="live-wrap">
+    <div class="live-card">
+
+      <div class="live-card-top">
+        <div class="live-meta">
+          <div class="live-eyebrow">
+            <span class="tag tag-live">● Preview</span>
+            <span class="tag tag-topic">Special Relativity</span>
+            <span class="tag tag-diff">Intermediate</span>
+          </div>
+          <h3 class="live-title">Minkowski Spacetime Explorer</h3>
+          <p class="live-desc">Draw worldlines in the 2D cross-section editor and explore them in interactive 3D spacetime. The reference light cone at the start event defines causal structure, segments are coloured by whether they are timelike, spacelike, or lightlike. Sixteen presets from inertial motion to Rindler acceleration, with a full observer-frame animation mode.</p>
+        </div>
+        <div class="live-actions">
+          <a href="minkowski_3d.html" target="_blank" class="btn-ghost">Open Simulation ↗</a>
+        </div>
+      </div>
+
+      <!-- ── PREVIEW CARD ── -->
+      <a href="minkowski_3d.html" target="_blank" class="sim-preview" aria-label="Open Minkowski Spacetime Explorer">
+        <canvas class="preview-canvas" id="previewCv"></canvas>
+        <div class="preview-overlay">
+          <div class="preview-cta">
+            <span class="preview-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="10" stroke="white" stroke-width="1.2" opacity="0.6"/>
+                <polygon points="9,7 16,11 9,15" fill="white"/>
+              </svg>
+            </span>
+            <span class="preview-label">Open Interactive Simulation</span>
+            <span class="preview-sub">Opens in a new tab</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="live-card-foot">
+        <span class="chip">3D worldline</span>
+        <span class="chip">Light cone reference</span>
+        <span class="chip">Proper time τ</span>
+        <span class="chip">Interval type badge</span>
+        <span class="chip">Observer-frame animation</span>
+        <span class="chip">Draw path</span>
+        <span class="chip">16 presets</span>
+        <span class="chip">Depth sorting</span>
+        <span class="chip">60 fps</span>
+        <span class="chip">Zero dependencies</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── COMING SOON ───────────────────────────────────── -->
+<div id="coming-soon">
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">Planned · 14 visualisations in development</p>
+      <h2 class="sec-h2">What's Next</h2>
+    </div>
+    <span class="sec-aside">2025 – 2026</span>
+  </div>
+
+  <div class="grid-wrap">
+
+    <!-- Special Relativity -->
+    <div class="topic-group">
+      <div class="topic-label">
+        <span class="topic-dot" style="background:#BE3A2A;"></span>
+        <span class="topic-name">Special Relativity</span>
+        <span class="topic-n">3 visualisations</span>
+      </div>
+      <div class="card-row">
+
+        <div class="c-card t-rel">
+          <div class="c-top"><span class="c-num">02</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Twin Paradox Simulator</div>
+          <p class="c-desc">Two observers start at the same event. Control Observer B's trajectory while A stays inertial. Watch proper time accumulate independently on each worldline until reunion.</p>
+          <div class="c-chips">
+            <span class="c-chip">Dual worldlines</span>
+            <span class="c-chip">τ comparison</span>
+            <span class="c-chip">Simultaneity planes</span>
+          </div>
+        </div>
+
+        <div class="c-card t-rel">
+          <div class="c-top"><span class="c-num">03</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Lorentz Boost Visualiser</div>
+          <p class="c-desc">Drag the β slider and watch Minkowski axes tilt in real time. Simultaneity shifts, length contracts, and time dilates, all emerging from the geometry of the diagram.</p>
+          <div class="c-chips">
+            <span class="c-chip">β = v/c slider</span>
+            <span class="c-chip">Dual-frame axes</span>
+            <span class="c-chip">Invariant hyperbola</span>
+          </div>
+        </div>
+
+        <div class="c-card t-rel">
+          <div class="c-top"><span class="c-num">04</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Light Clock &amp; Time Dilation</div>
+          <p class="c-desc">Two mirrors, one photon, two clocks, one stationary, one moving. Adjust velocity and watch the moving clock tick slower. γ derived geometrically alongside the animation.</p>
+          <div class="c-chips">
+            <span class="c-chip">Side-by-side clocks</span>
+            <span class="c-chip">γ readout</span>
+            <span class="c-chip">Geometric derivation</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Classical Mechanics -->
+    <div class="topic-group">
+      <div class="topic-label">
+        <span class="topic-dot" style="background:#A06B28;"></span>
+        <span class="topic-name">Classical Mechanics</span>
+        <span class="topic-n">3 visualisations</span>
+      </div>
+      <div class="card-row">
+
+        <div class="c-card t-mech">
+          <div class="c-top"><span class="c-num">05</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Phase Space Explorer</div>
+          <p class="c-desc">A pendulum with its trajectory drawn live in both physical and phase space. Place multiple initial conditions and watch fixed points, limit cycles, and separatrices emerge.</p>
+          <div class="c-chips">
+            <span class="c-chip">Multi-trajectory</span>
+            <span class="c-chip">Energy contours</span>
+            <span class="c-chip">Poincaré section</span>
+          </div>
+        </div>
+
+        <div class="c-card t-mech">
+          <div class="c-top"><span class="c-num">06</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">N-Body Gravitational Simulator</div>
+          <p class="c-desc">Click to place masses, drag to set velocities. Stable orbits, slingshot trajectories, and chaotic three-body motion all emerge directly from Newton's law.</p>
+          <div class="c-chips">
+            <span class="c-chip">Click-to-place</span>
+            <span class="c-chip">Velocity drag</span>
+            <span class="c-chip">Collision merging</span>
+          </div>
+        </div>
+
+        <div class="c-card t-mech">
+          <div class="c-top"><span class="c-num">07</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Lagrangian Mechanics Visualiser</div>
+          <p class="c-desc">A double pendulum with the Lagrangian displayed symbolically. Adjust masses and lengths, the equations update alongside the motion in configuration space.</p>
+          <div class="c-chips">
+            <span class="c-chip">Live Lagrangian</span>
+            <span class="c-chip">Config space</span>
+            <span class="c-chip">Chaos indicator</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Waves & Optics -->
+    <div class="topic-group">
+      <div class="topic-label">
+        <span class="topic-dot" style="background:#2A7055;"></span>
+        <span class="topic-name">Waves &amp; Optics</span>
+        <span class="topic-n">3 visualisations</span>
+      </div>
+      <div class="card-row">
+
+        <div class="c-card t-wave">
+          <div class="c-top"><span class="c-num">08</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Wave Superposition Lab</div>
+          <p class="c-desc">Add sinusoidal waves with adjustable amplitude, frequency, and phase. Interference, beats, standing waves, and Fourier decomposition all emerge in real time.</p>
+          <div class="c-chips">
+            <span class="c-chip">Up to 8 waves</span>
+            <span class="c-chip">Fourier mode</span>
+            <span class="c-chip">Ripple tank 2D</span>
+          </div>
+        </div>
+
+        <div class="c-card t-wave">
+          <div class="c-top"><span class="c-num">09</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Doppler Effect &amp; Shock Waves</div>
+          <p class="c-desc">A moving source emits spherical wavefronts. Watch the Mach cone snap into existence as velocity exceeds c_sound. Place an observer to see the shifted frequency.</p>
+          <div class="c-chips">
+            <span class="c-chip">Velocity slider</span>
+            <span class="c-chip">Mach cone</span>
+            <span class="c-chip">Observer placement</span>
+          </div>
+        </div>
+
+        <div class="c-card t-wave">
+          <div class="c-top"><span class="c-num">10</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Snell's Law &amp; Total Internal Reflection</div>
+          <p class="c-desc">Drag a ray onto a refractive boundary and slide n₁ and n₂. Refraction updates live. Beyond the critical angle, the ray is totally reflected, the evanescent field fades at the boundary.</p>
+          <div class="c-chips">
+            <span class="c-chip">n₁/n₂ sliders</span>
+            <span class="c-chip">Critical angle</span>
+            <span class="c-chip">Evanescent field</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Quantum Mechanics -->
+    <div class="topic-group">
+      <div class="topic-label">
+        <span class="topic-dot" style="background:#3D5FA8;"></span>
+        <span class="topic-name">Quantum Mechanics</span>
+        <span class="topic-n">3 visualisations</span>
+      </div>
+      <div class="card-row">
+
+        <div class="c-card t-qm">
+          <div class="c-top"><span class="c-num">11</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Quantum Tunnelling</div>
+          <p class="c-desc">A Gaussian wavepacket meets a potential barrier. Adjust barrier height and particle energy. Transmission and reflection coefficients computed live via split-operator Fourier.</p>
+          <div class="c-chips">
+            <span class="c-chip">Wavepacket anim.</span>
+            <span class="c-chip">T/R coefficients</span>
+            <span class="c-chip">Classical compare</span>
+          </div>
+        </div>
+
+        <div class="c-card t-qm">
+          <div class="c-top"><span class="c-num">12</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Hydrogen Atom Orbital Viewer</div>
+          <p class="c-desc">Interactive 3D display of |ψ|² for any (n, l, m). Select quantum numbers from a grid. Orbitals rendered as volumetric densities with iso-surfaces and radial distribution plots.</p>
+          <div class="c-chips">
+            <span class="c-chip">n/l/m selector</span>
+            <span class="c-chip">3D density</span>
+            <span class="c-chip">Radial distribution</span>
+          </div>
+        </div>
+
+        <div class="c-card t-qm">
+          <div class="c-top"><span class="c-num">13</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Double Slit Experiment</div>
+          <p class="c-desc">Photons fired one at a time accumulate into an interference pattern. Toggle the which-path detector and watch the fringes dissolve, wave-particle duality made stark.</p>
+          <div class="c-chips">
+            <span class="c-chip">Single-particle</span>
+            <span class="c-chip">Which-path toggle</span>
+            <span class="c-chip">Slit geometry</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Electromagnetism -->
+    <div class="topic-group">
+      <div class="topic-label">
+        <span class="topic-dot" style="background:#803AAA;"></span>
+        <span class="topic-name">Electromagnetism</span>
+        <span class="topic-n">2 visualisations</span>
+      </div>
+      <div class="card-row">
+
+        <div class="c-card t-em">
+          <div class="c-top"><span class="c-num">14</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Electric Field Line Plotter</div>
+          <p class="c-desc">Click to place charges, drag to reposition them. Field lines and equipotential contours rendered instantly via streamline integration. Gauss's law made immediately visual.</p>
+          <div class="c-chips">
+            <span class="c-chip">Click-to-place</span>
+            <span class="c-chip">Equipotentials</span>
+            <span class="c-chip">Flux surface</span>
+          </div>
+        </div>
+
+        <div class="c-card t-em">
+          <div class="c-top"><span class="c-num">15</span><span class="c-soon">Soon</span></div>
+          <div class="c-title">Electromagnetic Wave Propagation</div>
+          <p class="c-desc">3D visualisation of E and B fields oscillating perpendicular to each other and to the direction of propagation. Sweep from radio to gamma, switch between polarisation modes.</p>
+          <div class="c-chips">
+            <span class="c-chip">E/B vectors</span>
+            <span class="c-chip">Frequency sweep</span>
+            <span class="c-chip">Polarisation modes</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /grid-wrap -->
+</div><!-- /coming-soon -->
+
+<div class="divider"></div>
+
+<!-- ── ABOUT ─────────────────────────────────────────── -->
+<section class="about-section" id="about">
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">About</p>
+      <h2 class="sec-h2">About Physviz</h2>
+    </div>
+  </div>
+  <div class="about-wrap">
+    <div class="about-grid">
+      <div class="about-block">
+        <h3 class="about-block-title">What is this?</h3>
+        <p class="about-block-body">[Placeholder, to be written]</p>
+      </div>
+      <div class="about-block">
+        <h3 class="about-block-title">Who made it?</h3>
+        <p class="about-block-body">[Placeholder, to be written]</p>
+      </div>
+      <div class="about-block">
+        <h3 class="about-block-title">Open source</h3>
+        <p class="about-block-body">[Placeholder, to be written]</p>
+      </div>
+      <div class="about-block">
+        <h3 class="about-block-title">Get in touch</h3>
+        <p class="about-block-body">[Placeholder, to be written]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+ ─────────────────────────────────────────── -->
+<footer>
+  <div class="foot-inner">
+    <ul class="foot-links">
+      <li><a href="#visualisations" onclick="navScrollTo('visualisations',event)">Visualisations</a></li>
+      <li><a href="#coming-soon" onclick="navScrollTo('coming-soon',event)">Coming Soon</a></li>
+      <li><a href="#about" onclick="navScrollTo('about',event)">About</a></li>
+      <li><a href="#">GitHub</a></li>
+    </ul>
+    <p class="foot-copy">© 2026 Physviz</p>
+  </div>
+</footer>
+
+
+
+<script>
+/* ── Preview canvas, animated Minkowski teaser ─── */
+(function () {
+  const cv = document.getElementById('previewCv');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H, t = 0;
+
+  function resize() {
+    W = cv.width  = cv.offsetWidth;
+    H = cv.height = cv.offsetHeight;
+  }
+
+  function draw() {
+    t += 0.018;
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, W, H);
+
+    const cx = W * 0.5, cy = H * 0.5;
+    const SC = Math.min(W, H) / 11;
+
+    /* grid */
+    ctx.strokeStyle = '#0a1a2e';
+    ctx.lineWidth = 1;
+    for (let i = -12; i <= 12; i++) {
+      ctx.beginPath(); ctx.moveTo(cx + i * SC, 0); ctx.lineTo(cx + i * SC, H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, cy + i * SC); ctx.lineTo(W, cy + i * SC); ctx.stroke();
+    }
+
+    /* axes */
+    ctx.strokeStyle = '#0d2840';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
+
+    /* future light cone */
+    ctx.strokeStyle = 'rgba(0,180,255,0.18)';
+    ctx.lineWidth = 0.9;
+    [[-1,-1],[-.5,-1],[0,-1],[.5,-1],[1,-1]].forEach(([dx,dy]) => {
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + dx * W * 0.7, cy + dy * H);
+      ctx.stroke();
+    });
+    /* past cone */
+    ctx.strokeStyle = 'rgba(255,60,100,0.1)';
+    [[-1,1],[0,1],[1,1]].forEach(([dx,dy]) => {
+      ctx.beginPath(); ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + dx * W * 0.7, cy + dy * H);
+      ctx.stroke();
+    });
+
+    /* rim ellipses */
+    ctx.strokeStyle = 'rgba(0,180,255,0.09)';
+    ctx.lineWidth = 0.7;
+    [0.22, 0.44, 0.66].forEach(r => {
+      ctx.beginPath();
+      ctx.ellipse(cx, cy - r * H * 0.9, r * W * 0.6, r * H * 0.18, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+
+    /* animated worldline */
+    const wpts = 36;
+    ctx.strokeStyle = '#ff9500';
+    ctx.lineWidth = 1.8;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    for (let i = 0; i <= wpts; i++) {
+      const u = i / wpts;
+      const wx = cx + Math.sin(u * Math.PI * 2.2 + t * 0.8) * W * 0.16;
+      const wy = cy + (u - 0.5) * H * 0.9;
+      i === 0 ? ctx.moveTo(wx, wy) : ctx.lineTo(wx, wy);
+    }
+    ctx.stroke();
+
+    /* light cone at origin */
+    ctx.strokeStyle = 'rgba(0,255,204,0.7)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx - H * 0.55, cy - H * 0.55); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + H * 0.55, cy - H * 0.55); ctx.stroke();
+
+    /* observer dot */
+    const p = (Math.sin(t * 0.5) * 0.5 + 0.5);
+    const ox = cx + Math.sin(p * Math.PI * 2.2 + t * 0.8) * W * 0.16;
+    const oy = cy + (p - 0.5) * H * 0.9;
+    /* glow */
+    const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, 18);
+    g.addColorStop(0, 'rgba(0,255,204,0.35)');
+    g.addColorStop(1, 'rgba(0,255,204,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(ox, oy, 18, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#00ffcc';
+    ctx.beginPath(); ctx.arc(ox, oy, 4, 0, Math.PI * 2); ctx.fill();
+
+    /* interval type text top-right */
+    const ds2 = Math.pow((oy - cy) / SC, 2) - Math.pow((ox - cx) / SC, 2);
+    const typeStr = ds2 > 0.5 ? 'TIMELIKE' : ds2 < -0.5 ? 'SPACELIKE' : 'LIGHTLIKE';
+    const typeCol = ds2 > 0.5 ? '#00b4ff' : ds2 < -0.5 ? '#ff3c64' : '#00ffcc';
+    ctx.fillStyle = typeCol;
+    ctx.font = '500 9px "DM Mono", monospace';
+    ctx.letterSpacing = '0.1em';
+    ctx.fillText(typeStr, 12, 18);
+
+    /* τ readout bottom-left */
+    ctx.fillStyle = 'rgba(122,184,212,0.5)';
+    ctx.font = '400 9px "DM Mono", monospace';
+    ctx.fillText('τ = ' + (p * 4.2).toFixed(2) + ' s', 12, H - 12);
+
+    requestAnimationFrame(draw);
+  }
+
+  const ro = new ResizeObserver(() => { resize(); });
+  ro.observe(cv.parentElement);
+  resize();
+  draw();
+}());
+</script>
+
+
+
+</body>
+</html>

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script>
-/* navScrollTo — defined in <head> so onclick attributes can call it immediately */
+/* navScrollTo - defined in <head> so onclick attributes can call it immediately */
 function navScrollTo(id, e) {
   if (e) e.preventDefault();
   var el = document.getElementById(id);
@@ -1138,15 +1138,15 @@ footer {
             </div>
             <div class="instr-step">
               <span class="instr-n">2</span>
-              <p class="instr-text"><b>Load a preset</b> — click the <b>✎ Draw Path</b> button at the bottom, then select the <b>Presets</b> tab for ready-made worldlines.</p>
+              <p class="instr-text"><b>Load a preset</b>: click the <b>✎ Draw Path</b> button at the bottom, then select the <b>Presets</b> tab for ready-made worldlines.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">3</span>
-              <p class="instr-text"><b>Or draw your own</b> — on the <b>x–ct</b> tab, draw upward with your mouse to define spatial motion over time. Use <b>y–ct</b> to add depth.</p>
+              <p class="instr-text"><b>Or draw your own</b>: on the <b>x-ct</b> tab, draw upward with your mouse to define spatial motion over time. Use <b>y-ct</b> to add depth.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">4</span>
-              <p class="instr-text"><b>Apply and start</b> — click <b>✓ Apply to 3D</b>, then press <b>▶ Start</b> in the sidebar to animate the observer along the worldline.</p>
+              <p class="instr-text"><b>Apply and start</b>: click <b>✓ Apply to 3D</b>, then press <b>▶ Start</b> in the sidebar to animate the observer along the worldline.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">5</span>
@@ -1203,14 +1203,121 @@ footer {
 
 <div class="divider"></div>
 
+<!-- ── LIVE SIM 02 - SNELL'S LAW ─────────────────────── -->
+<div>
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">Live · Visualisation 10 of 15</p>
+      <h2 class="sec-h2">Snell's Law &amp; Total Internal Reflection</h2>
+    </div>
+    <span class="sec-aside">Waves &amp; Optics</span>
+  </div>
+
+  <div class="live-wrap">
+    <div class="live-card">
+
+      <div class="live-card-top">
+        <div class="live-meta">
+          <div class="live-eyebrow">
+            <span class="tag tag-live">● Live</span>
+            <span class="tag tag-topic" style="color:#2A7055;background:#edf7f3;border-color:#b8dece;">Waves &amp; Optics</span>
+            <span class="tag tag-diff">Beginner</span>
+          </div>
+          <h3 class="live-title">Snell's Law &amp; Total Internal Reflection</h3>
+          <p class="live-desc">Drag the incident ray to set the angle of attack. Adjust n₁ and n₂ to switch between any pair of optical media (air, glass, water, diamond). Watch the refracted ray bend according to Snell's law, see Fresnel reflection and transmission coefficients update live, and cross the critical angle to trigger total internal reflection with its decaying evanescent field.</p>
+        </div>
+        <div class="live-actions">
+          <a href="snells_law.html" target="_blank" class="btn-ghost">Open Simulation ↗</a>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="instr-panel">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ Hide':'▼ How to use';">
+          <span class="instr-label">How to use</span>
+          <button class="instr-toggle">▼ How to use</button>
+        </div>
+        <div class="instr-body">
+          <div class="instr-steps">
+            <div class="instr-step">
+              <span class="instr-n">1</span>
+              <p class="instr-text"><b>Drag the ray tip</b>: the glowing yellow dot at the end of the incident ray. Moving it left or right changes θ₁, the angle of incidence.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">2</span>
+              <p class="instr-text"><b>Adjust n₁ and n₂</b> using the sidebar sliders to change the refractive indices of the upper and lower media.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">3</span>
+              <p class="instr-text"><b>Find the critical angle</b>: set n₁ &gt; n₂ (e.g. glass → air) and slowly increase θ₁. The refracted ray bends further until it disappears entirely.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">4</span>
+              <p class="instr-text"><b>Total Internal Reflection</b>: once θ₁ exceeds θ꜀, all light reflects. Watch the evanescent field glow just below the boundary.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">5</span>
+              <p class="instr-text"><b>Drag the boundary</b> up or down to reposition the interface. Use presets in the sidebar for classic scenarios like optical fibre or diamond.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">6</span>
+              <p class="instr-text"><b>Read the Fresnel coefficients</b> R and T in the sidebar: they show how much light is reflected vs transmitted at each angle.</p>
+            </div>
+          </div>
+          <div class="instr-keys">
+            <span class="key">Drag ray tip</span><span class="key-sep">set θ₁</span>
+            <span class="key">Drag boundary</span><span class="key-sep">move interface</span>
+            <span class="key">n₁ / n₂ sliders</span><span class="key-sep">change media</span>
+            <span class="key">θ₁ slider</span><span class="key-sep">precise angle control</span>
+            <span class="key">Presets</span><span class="key-sep">load named scenarios</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <a href="snells_law.html" target="_blank" class="sim-preview" aria-label="Open Snell's Law Simulator" style="background:#020408;">
+        <canvas class="preview-canvas" id="snellPrev"></canvas>
+        <div class="preview-overlay">
+          <div class="preview-cta">
+            <span class="preview-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="10" stroke="white" stroke-width="1.2" opacity="0.6"/>
+                <polygon points="9,7 16,11 9,15" fill="white"/>
+              </svg>
+            </span>
+            <span class="preview-label">Open Interactive Simulation</span>
+            <span class="preview-sub">Opens in a new tab</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="live-card-foot">
+        <span class="chip">Draggable ray</span>
+        <span class="chip">n₁/n₂ sliders</span>
+        <span class="chip">Critical angle θ꜀</span>
+        <span class="chip">Total internal reflection</span>
+        <span class="chip">Evanescent field</span>
+        <span class="chip">Wavefronts</span>
+        <span class="chip">Fresnel R/T</span>
+        <span class="chip">8 presets</span>
+        <span class="chip">60 fps</span>
+        <span class="chip">Zero dependencies</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
 <!-- ── COMING SOON ───────────────────────────────────── -->
 <div id="coming-soon">
   <div class="sec-head">
     <div>
-      <p class="sec-super">Planned · 14 visualisations in development</p>
+      <p class="sec-super">Planned · 13 visualisations in development</p>
       <h2 class="sec-h2">What's Next</h2>
     </div>
-    <span class="sec-aside">2025 – 2026</span>
+    <span class="sec-aside">2025 - 2026</span>
   </div>
 
   <div class="grid-wrap">
@@ -1310,7 +1417,7 @@ footer {
       <div class="topic-label">
         <span class="topic-dot" style="background:#2A7055;"></span>
         <span class="topic-name">Waves &amp; Optics</span>
-        <span class="topic-n">3 visualisations</span>
+        <span class="topic-n">1 live · 2 soon</span>
       </div>
       <div class="card-row">
 
@@ -1336,16 +1443,20 @@ footer {
           </div>
         </div>
 
-        <div class="c-card t-wave">
-          <div class="c-top"><span class="c-num">10</span><span class="c-soon">Soon</span></div>
+        <a href="snells_law.html" target="_blank" class="c-card t-wave" style="text-decoration:none;cursor:pointer;">
+          <div class="c-top"><span class="c-num">10</span><span class="tag tag-live" style="font-size:0.5rem;padding:0.14rem 0.42rem;">● Live</span></div>
           <div class="c-title">Snell's Law &amp; Total Internal Reflection</div>
-          <p class="c-desc">Drag a ray onto a refractive boundary and slide n₁ and n₂. Refraction updates live. Beyond the critical angle, the ray is totally reflected, the evanescent field fades at the boundary.</p>
+          <p class="c-desc">Drag the ray tip to set incidence angle. Slide n₁ and n₂ to change media. Watch refraction, TIR, and the evanescent field respond in real time.</p>
           <div class="c-chips">
+            <span class="c-chip">Drag ray</span>
             <span class="c-chip">n₁/n₂ sliders</span>
             <span class="c-chip">Critical angle</span>
             <span class="c-chip">Evanescent field</span>
+            <span class="c-chip">Wavefronts</span>
+            <span class="c-chip">Fresnel R/T</span>
+            <span class="c-chip">8 presets</span>
           </div>
-        </div>
+        </a>
 
       </div>
     </div>
@@ -1597,7 +1708,107 @@ footer {
 }());
 </script>
 
+<script>
+/* ── Snell's Law preview canvas ── */
+(function() {
+  var cv = document.getElementById('snellPrev');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var t = 0;
 
+  function resize() {
+    cv.width  = cv.offsetWidth;
+    cv.height = cv.offsetHeight;
+  }
+
+  function draw() {
+    t += 0.016;
+    var W = cv.width, H = cv.height;
+    if (!W || !H) { requestAnimationFrame(draw); return; }
+
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, W, H);
+
+    var bY = H * 0.52;
+    var cx = W * 0.42;
+
+    // Grid
+    ctx.strokeStyle = '#060f1c'; ctx.lineWidth = 0.5;
+    for (var x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (var y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Medium tints
+    var g1 = ctx.createLinearGradient(0,0,0,bY);
+    g1.addColorStop(0,'rgba(0,20,50,0)'); g1.addColorStop(1,'rgba(0,40,100,0.15)');
+    ctx.fillStyle = g1; ctx.fillRect(0,0,W,bY);
+    var g2 = ctx.createLinearGradient(0,bY,0,H);
+    g2.addColorStop(0,'rgba(10,25,50,0.28)'); g2.addColorStop(1,'rgba(0,15,35,0)');
+    ctx.fillStyle = g2; ctx.fillRect(0,bY,W,H-bY);
+
+    // Boundary
+    ctx.shadowColor = 'rgba(0,160,255,0.4)'; ctx.shadowBlur = 10;
+    ctx.strokeStyle = '#0d3a6a'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(0,bY); ctx.lineTo(W,bY); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Animate angle slowly
+    var theta1 = 0.45 + Math.sin(t * 0.25) * 0.35; // oscillates ~10°–50°
+    var n1 = 1.0, n2 = 1.5;
+    var sinT2 = (n1/n2) * Math.sin(theta1);
+    var isTIR = Math.abs(sinT2) >= 1;
+    var theta2 = isTIR ? null : Math.asin(sinT2);
+    var rayLen = Math.max(W,H) * 0.55;
+
+    // Normal
+    ctx.setLineDash([5,4]); ctx.strokeStyle='rgba(70,90,120,0.4)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(cx,bY-H*0.35); ctx.lineTo(cx,bY+H*0.35); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Incident
+    var ix = cx - Math.sin(theta1)*rayLen, iy = bY - Math.cos(theta1)*rayLen;
+    ctx.shadowColor='#ffdd44'; ctx.shadowBlur=16; ctx.strokeStyle='#ffdd44'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(ix,iy); ctx.lineTo(cx,bY); ctx.stroke();
+    ctx.shadowBlur=0;
+
+    // Reflected
+    ctx.shadowColor='#ff6688'; ctx.shadowBlur=10; ctx.strokeStyle='rgba(255,100,136,0.7)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(cx,bY); ctx.lineTo(cx+Math.sin(theta1)*rayLen*0.7, bY-Math.cos(theta1)*rayLen*0.7); ctx.stroke();
+    ctx.shadowBlur=0;
+
+    // Refracted or TIR label
+    if (!isTIR && theta2 !== null) {
+      ctx.shadowColor='#00b4ff'; ctx.shadowBlur=16; ctx.strokeStyle='#00b4ff'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(cx,bY); ctx.lineTo(cx+Math.sin(theta2)*rayLen, bY+Math.cos(theta2)*rayLen); ctx.stroke();
+      ctx.shadowBlur=0;
+    } else {
+      // Evanescent glow
+      var evGrad = ctx.createLinearGradient(cx,bY,cx,bY+60);
+      evGrad.addColorStop(0,'rgba(0,255,180,0.3)'); evGrad.addColorStop(1,'rgba(0,200,150,0)');
+      ctx.fillStyle=evGrad; ctx.fillRect(cx-80,bY,160,60);
+      var pulse = 0.6+0.4*Math.sin(t*4);
+      ctx.globalAlpha=pulse; ctx.fillStyle='#ff3c64';
+      ctx.font='bold 9px Orbitron,monospace'; ctx.fillText('TIR',cx+12,bY+22);
+      ctx.globalAlpha=1;
+    }
+
+    // Incidence point
+    ctx.shadowColor='#ffdd44'; ctx.shadowBlur=10;
+    ctx.fillStyle='#ffdd44'; ctx.beginPath(); ctx.arc(cx,bY,4,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0;
+
+    // n labels
+    ctx.fillStyle='rgba(122,184,212,0.4)'; ctx.font='8px Orbitron,monospace';
+    ctx.fillText('n\u2081=1.00',12,bY-10); ctx.fillText('n\u2082=1.50',12,bY+18);
+
+    requestAnimationFrame(draw);
+  }
+
+  var ro = new ResizeObserver(function() { resize(); });
+  ro.observe(cv.parentElement);
+  resize();
+  draw();
+}());
+</script>
 
 </body>
 </html>

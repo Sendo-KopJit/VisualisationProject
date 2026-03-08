@@ -389,6 +389,126 @@ body {
 }
 .btn-ghost:hover { background: var(--red-bg); border-color: var(--red); }
 
+/* ── INSTRUCTIONS PANEL ───────────────────────────── */
+.instr-panel {
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
+  background: var(--bg-raised);
+  padding: 1.1rem 1.75rem;
+}
+
+.instr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  gap: 1rem;
+}
+
+.instr-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-4);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.instr-label::before {
+  content: '';
+  display: block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--ink-5);
+}
+
+.instr-toggle {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--ink-5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.14s;
+}
+.instr-toggle:hover { color: var(--ink-3); }
+
+.instr-body {
+  display: none;
+  padding-top: 1rem;
+}
+.instr-body.open { display: block; }
+
+.instr-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.instr-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.instr-n {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--bg-surface);
+  background: var(--ink-4);
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.instr-text {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  line-height: 1.55;
+}
+
+.instr-text b {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.instr-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-soft);
+}
+
+.key {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--ink-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-mid);
+  border-bottom-width: 2px;
+  padding: 0.18rem 0.55rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.key-sep {
+  font-size: 0.7rem;
+  color: var(--ink-5);
+  align-self: center;
+}
+
 /* Iframe */
 .sim-preview {
   display: block;
@@ -984,6 +1104,49 @@ footer {
         </div>
       </div>
 
+      <!-- ── INSTRUCTIONS ── -->
+      <div class="instr-panel">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.instr-toggle').textContent = this.nextElementSibling.classList.contains('open') ? '▲ Hide' : '▼ How to use';">
+          <span class="instr-label">How to use</span>
+          <button class="instr-toggle">▼ How to use</button>
+        </div>
+        <div class="instr-body">
+          <div class="instr-steps">
+            <div class="instr-step">
+              <span class="instr-n">1</span>
+              <p class="instr-text"><b>Open the simulation</b> using the button above or by clicking the preview. It opens in a new tab.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">2</span>
+              <p class="instr-text"><b>Load a preset</b> — click the <b>✎ Draw Path</b> button at the bottom, then select the <b>Presets</b> tab for ready-made worldlines.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">3</span>
+              <p class="instr-text"><b>Or draw your own</b> — on the <b>x–ct</b> tab, draw upward with your mouse to define spatial motion over time. Use <b>y–ct</b> to add depth.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">4</span>
+              <p class="instr-text"><b>Apply and start</b> — click <b>✓ Apply to 3D</b>, then press <b>▶ Start</b> in the sidebar to animate the observer along the worldline.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">5</span>
+              <p class="instr-text"><b>Watch proper time τ</b> accumulate on screen. Segments coloured <span style="color:#3D5FA8;font-weight:500;">blue</span> are timelike, <span style="color:#BE3A2A;font-weight:500;">red</span> spacelike, <span style="color:#2A7055;font-weight:500;">cyan</span> lightlike.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">6</span>
+              <p class="instr-text"><b>Orbit the view</b> by dragging the 3D canvas. Scroll to zoom. Adjust pitch and yaw in the sidebar sliders.</p>
+            </div>
+          </div>
+          <div class="instr-keys">
+            <span class="key">Drag</span><span class="key-sep">orbit view</span>
+            <span class="key">Scroll</span><span class="key-sep">zoom</span>
+            <span class="key">Right-drag</span><span class="key-sep">pan draw canvas</span>
+            <span class="key">Scroll on draw canvas</span><span class="key-sep">zoom in/out</span>
+            <span class="key">Smooth</span><span class="key-sep">clean up a noisy stroke</span>
+          </div>
+        </div>
+      </div>
+
       <!-- ── PREVIEW CARD ── -->
       <a href="minkowski_3d.html" target="_blank" class="sim-preview" aria-label="Open Minkowski Spacetime Explorer">
         <canvas class="preview-canvas" id="previewCv"></canvas>
@@ -1281,7 +1444,7 @@ footer {
   </div>
 </section>
 
- ─────────────────────────────────────────── -->
+<!-- ── FOOTER ─────────────────────────────────────────── -->
 <footer>
   <div class="foot-inner">
     <ul class="foot-links">

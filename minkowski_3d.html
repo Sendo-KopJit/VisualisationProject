@@ -14,6 +14,10 @@ h1{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:#00
 .stat{display:flex;flex-direction:column;align-items:flex-end}
 .slbl{font-size:7px;letter-spacing:1px;opacity:.38}
 .sval{font-size:10px;color:#00ffcc;font-family:'Orbitron',sans-serif}
+/* Proper time hero stat */
+#stat-tau{background:rgba(0,255,204,0.07);border:1px solid rgba(0,255,204,0.22);border-radius:4px;padding:4px 12px;align-items:flex-end}
+#stat-tau .slbl{color:#00ffcc;opacity:0.65;letter-spacing:2px;font-size:7px}
+#stat-tau .sval{font-size:20px;color:#00ffcc;letter-spacing:1px;line-height:1.1;text-shadow:0 0 16px rgba(0,255,204,0.75)}
 #main{flex:1;display:flex;min-height:0}
 #sidebar{width:200px;background:rgba(0,3,12,0.95);border-right:1px solid #0d2840;display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .pnl{border-bottom:1px solid #0d2840;padding:10px}
@@ -79,7 +83,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
     <div class="sub">3D · OBSERVER FRAME · AXES SCROLL · ORIENTED CONES</div>
   </div>
   <div class="stats">
-    <div class="stat"><span class="slbl">PROPER TIME τ</span><span class="sval" id="s_tau">0.000</span></div>
+    <div class="stat" id="stat-tau"><span class="slbl">PROPER TIME τ</span><span class="sval" id="s_tau">0.000</span></div>
     <div class="stat"><span class="slbl">COORD ct</span><span class="sval" id="s_ct">0.000</span></div>
     <div class="stat"><span class="slbl">INTERVAL s²</span><span class="sval" id="s_int">—</span></div>
     <div class="stat"><span class="slbl">TYPE</span><span class="sval" id="s_type">—</span></div>
@@ -749,7 +753,41 @@ function drawNowMarker(ts) {
   ctx.strokeStyle=col; ctx.lineWidth=2; ctx.stroke();
 
   if(animating){
-    // Type badge
+    // ── Large τ readout — top-left corner of canvas ──────────────────
+    var W=canvas.width;
+    var tauStr=tau.toFixed(3);
+    ctx.globalAlpha=1;
+    // Background pill
+    ctx.font='bold 28px Orbitron,monospace';
+    var tauW=ctx.measureText(tauStr).width;
+    var pillX=16, pillY=16, pillW=tauW+80, pillH=52;
+    ctx.fillStyle='rgba(0,8,20,0.82)';
+    ctx.beginPath();
+    ctx.roundRect(pillX,pillY,pillW,pillH,6);
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,255,204,0.35)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.roundRect(pillX,pillY,pillW,pillH,6);
+    ctx.stroke();
+    // Label
+    ctx.font='500 8px Orbitron,monospace';
+    ctx.fillStyle='rgba(0,255,204,0.55)';
+    ctx.letterSpacing='2px';
+    ctx.fillText('PROPER TIME', pillX+12, pillY+16);
+    ctx.letterSpacing='0px';
+    // τ symbol
+    ctx.font='bold 22px Orbitron,monospace';
+    ctx.fillStyle='rgba(0,255,204,0.6)';
+    ctx.fillText('τ =', pillX+12, pillY+42);
+    // Value with glow
+    ctx.shadowColor='rgba(0,255,204,0.9)';
+    ctx.shadowBlur=18;
+    ctx.font='bold 28px Orbitron,monospace';
+    ctx.fillStyle='#00ffcc';
+    ctx.fillText(tauStr, pillX+56, pillY+42);
+    ctx.shadowBlur=0;
+
+    // Type badge — next to observer dot
     var bx=cx+22, by=cy-24;
     var bgcol=type==='TIMELIKE'?'rgba(0,50,110,0.85)':type==='SPACELIKE'?'rgba(90,8,18,0.85)':'rgba(0,70,55,0.85)';
     ctx.font='bold 8px Orbitron,monospace';

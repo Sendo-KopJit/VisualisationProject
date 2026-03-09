@@ -79,14 +79,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
 
 <div id="topbar">
   <div>
-    <h1>MINKOWSKI SPACETIME</h1>
+    <h1>Minkowski Spacetime</h1>
     <div class="sub">3D · OBSERVER FRAME · AXES SCROLL · ORIENTED CONES</div>
   </div>
   <div class="stats">
-    <div class="stat" id="stat-tau"><span class="slbl">PROPER TIME τ</span><span class="sval" id="s_tau">0.000</span></div>
-    <div class="stat"><span class="slbl">COORD ct</span><span class="sval" id="s_ct">0.000</span></div>
-    <div class="stat"><span class="slbl">INTERVAL s²</span><span class="sval" id="s_int">—</span></div>
-    <div class="stat"><span class="slbl">TYPE</span><span class="sval" id="s_type">—</span></div>
+    <div class="stat" id="stat-tau"><span class="slbl">proper time τ</span><span class="sval" id="s_tau">0.000</span></div>
+    <div class="stat"><span class="slbl">coord ct</span><span class="sval" id="s_ct">0.000</span></div>
+    <div class="stat"><span class="slbl">interval s²</span><span class="sval" id="s_int">—</span></div>
+    <div class="stat"><span class="slbl">type</span><span class="sval" id="s_type">—</span></div>
   </div>
 </div>
 
@@ -94,8 +94,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
   <div id="sidebar">
     <div class="pnl">
       <div class="pt">Simulation</div>
-      <button class="btn abtn" id="startBtn" onclick="startSim()" disabled>&#9654; START</button>
-      <button class="btn abtn" id="pauseBtn" onclick="pauseSim()" style="display:none">&#9646;&#9646; PAUSE</button>
+      <button class="btn abtn" id="startBtn" onclick="startSim()" disabled>&#9654; start</button>
+      <button class="btn abtn" id="pauseBtn" onclick="pauseSim()" style="display:none">&#9646;&#9646; pause</button>
       <button class="btn abtn" id="clearBtn" onclick="clearAll()">&#x2715; CLEAR</button>
       <div class="sr" style="margin-top:9px">
         <div class="rl"><span>Speed</span><span id="speedVal">1.5x</span></div>
@@ -131,7 +131,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
     </div>
     <div class="pnl">
       <div class="pt">Worldline</div>
-      <div class="ppts" id="pathList">Use ✎ DRAW PATH to begin.</div>
+      <div class="ppts" id="pathList">Use ✎ draw path to begin.</div>
     </div>
     <div class="pnl">
       <div class="pt">Legend</div>
@@ -140,7 +140,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
         <div class="li"><div class="lc" style="background:#ff3c64"></div>Past cone</div>
         <div class="li"><div class="lc" style="background:#ff9500;height:3px"></div>Worldline</div>
         <div class="li"><div class="lc" style="background:#00ffcc"></div>Light-like rim</div>
-        <div class="li"><div class="lc" style="background:#ffffff"></div>Observer (NOW)</div>
+        <div class="li"><div class="lc" style="background:#ffffff"></div>Observer (now)</div>
       </div>
     </div>
   </div>
@@ -150,7 +150,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:10px;heigh
     <div id="pathPanel">
       <div id="ppHead" onclick="togglePanel()">
         <span id="ppTitle">2D PATH EDITOR</span>
-        <button id="ppToggle">&#9650; OPEN</button>
+        <button id="ppToggle">&#9650; open</button>
       </div>
       <div id="ppInner">
         <div id="ppTabs">
@@ -675,7 +675,7 @@ function drawStartCone(){
   // Label
   ctx.fillStyle='rgba(0,255,204,0.7)'; ctx.globalAlpha=1;
   ctx.font='bold 8px Orbitron,monospace';
-  ctx.fillText('OBSERVER FROM START', c.labelX, c.labelY);
+  ctx.fillText('observer from start', c.labelX, c.labelY);
   ctx.globalAlpha=1;
 }
 
@@ -773,7 +773,7 @@ function drawNowMarker(ts) {
     ctx.font='500 8px Orbitron,monospace';
     ctx.fillStyle='rgba(0,255,204,0.55)';
     ctx.letterSpacing='2px';
-    ctx.fillText('PROPER TIME', pillX+12, pillY+16);
+    ctx.fillText('proper time', pillX+12, pillY+16);
     ctx.letterSpacing='0px';
     // τ symbol
     ctx.font='bold 22px Orbitron,monospace';
@@ -791,13 +791,14 @@ function drawNowMarker(ts) {
     var bx=cx+22, by=cy-24;
     var bgcol=type==='TIMELIKE'?'rgba(0,50,110,0.85)':type==='SPACELIKE'?'rgba(90,8,18,0.85)':'rgba(0,70,55,0.85)';
     ctx.font='bold 8px Orbitron,monospace';
-    var tw=ctx.measureText(type).width;
+    var typeLabel=type.toLowerCase();
+    var tw=ctx.measureText(typeLabel).width;
     ctx.fillStyle=bgcol; ctx.globalAlpha=1;
     ctx.fillRect(bx-3,by-10,tw+8,14);
     ctx.strokeStyle=col; ctx.lineWidth=1; ctx.globalAlpha=0.95;
     ctx.strokeRect(bx-3,by-10,tw+8,14);
     ctx.fillStyle=col; ctx.globalAlpha=1;
-    ctx.fillText(type,bx+1,by+1);
+    ctx.fillText(typeLabel,bx+1,by+1);
 
     // ds² bar
     var barW=64, barH=5, bx2=cx-barW/2, by2=cy+22;
@@ -810,13 +811,13 @@ function drawNowMarker(ts) {
     if(norm>=0){ctx.fillStyle='#00b4ff'; ctx.fillRect(cx,by2,norm*(barW/2),barH);}
     else{ctx.fillStyle='#ff3c64'; ctx.fillRect(cx+norm*(barW/2),by2,Math.abs(norm)*(barW/2),barH);}
     ctx.font='6px monospace'; ctx.globalAlpha=1;
-    ctx.fillStyle='rgba(0,180,255,0.35)'; ctx.fillText('TIME',cx+4,by2+barH+8);
-    ctx.fillStyle='rgba(255,60,100,0.35)'; ctx.fillText('SPACE',bx2,by2+barH+8);
+    ctx.fillStyle='rgba(0,180,255,0.35)'; ctx.fillText('time',cx+4,by2+barH+8);
+    ctx.fillStyle='rgba(255,60,100,0.35)'; ctx.fillText('space',bx2,by2+barH+8);
     ctx.fillStyle=col; ctx.font='7px monospace';
     ctx.fillText('ds²='+ds2.toFixed(3),cx-14,by2+barH+17);
   } else {
     ctx.fillStyle='rgba(0,255,200,0.45)'; ctx.font='7px Share Tech Mono,monospace';
-    ctx.fillText('NOW',cx+7,cy-7);
+    ctx.fillText('now',cx+7,cy-7);
   }
   ctx.globalAlpha=1;
 }
@@ -880,7 +881,7 @@ function startSim() {
 
 function pauseSim() {
   paused=!paused;
-  document.getElementById('pauseBtn').textContent=paused?'RESUME':'PAUSE';
+  document.getElementById('pauseBtn').textContent=paused?'resume':'pause';
   if(!paused){ lastTS=-1; requestAnimationFrame(animStep); } // skip stale delta on resume too
 }
 
@@ -897,7 +898,7 @@ function animStep(ts) {
     animT=1; animating=false;
     drawOffset.x=0; drawOffset.y=0; drawOffset.z=0;
     document.getElementById('startBtn').style.display='block';
-    document.getElementById('startBtn').textContent='REPLAY';
+    document.getElementById('startBtn').textContent='replay';
     document.getElementById('pauseBtn').style.display='none';
   }
 
@@ -939,7 +940,7 @@ function animStep(ts) {
   var p0=worldline[0];
   var Dct=cur.ct-p0.ct, Dx=cur.x-p0.x, Dy=cur.y-p0.y;
   var ds2=Dct*Dct-Dx*Dx-Dy*Dy;
-  var rtype=ds2>0.01?'TIMELIKE':ds2<-0.01?'SPACELIKE':'LIGHTLIKE';
+  var rtype=ds2>0.01?'timelike':ds2<-0.01?'spacelike':'lightlike';
   var tcol =ds2>0.01?'#00b4ff' :ds2<-0.01?'#ff3c64'  :'#00ffcc';
   currentInterval={type:rtype, col:tcol, ds2:ds2};
 
@@ -1345,7 +1346,7 @@ function renderPresets(){
     }
     var btn=document.createElement('button');
     btn.className='preset-btn';
-    var tagLabel=p.tag==='tl'?'TIMELIKE':p.tag==='sl'?'SPACELIKE':p.tag==='ll'?'LIGHTLIKE':'MIXED';
+    var tagLabel=p.tag==='tl'?'timelike':p.tag==='sl'?'spacelike':p.tag==='ll'?'lightlike':'mixed';
     btn.innerHTML='<span style="flex:1;text-align:left">'+p.name+'</span>'
       +'<span class="preset-tag '+p.tag+'" style="flex-shrink:0">'+tagLabel+'</span>';
     btn.title=p.desc;
@@ -1378,7 +1379,7 @@ function applyPreset(preset, btnEl){
   drawOffset={x:0,y:0,z:0};
   currentDir={dx:0,dct:1,dy:0};
   document.getElementById('startBtn').disabled=false;
-  document.getElementById('startBtn').textContent='START';
+  document.getElementById('startBtn').textContent='start';
   updatePathList();
   // Highlight the selected button
   document.querySelectorAll('.preset-btn').forEach(function(b){
@@ -1481,7 +1482,7 @@ function applyPath(){
   }
   camTarget={x:0,y:0,z:0}; drawOffset={x:0,y:0,z:0}; currentDir={dx:0,dct:1,dy:0};
   document.getElementById('startBtn').disabled=false;
-  document.getElementById('startBtn').textContent='START';
+  document.getElementById('startBtn').textContent='start';
   updatePathList();
   togglePanel();
 }
@@ -1498,7 +1499,7 @@ function setNote(msg,err){
 function togglePanel(){
   panelOpen=!panelOpen;
   document.getElementById('pathPanel').classList.toggle('open',panelOpen);
-  document.getElementById('ppToggle').textContent=panelOpen?'▼ CLOSE':'▲ OPEN';
+  document.getElementById('ppToggle').textContent=panelOpen?'▼ close':'▲ open';
   if(panelOpen)drawDC();
 }
 
@@ -1538,7 +1539,7 @@ function resetView(){
 // ── UI ─────────────────────────────────────────────────────────────
 function updatePathList(){
   var el=document.getElementById('pathList');
-  if(!worldline.length){el.textContent='Use ✎ DRAW PATH to begin.';return;}
+  if(!worldline.length){el.textContent='Use ✎ draw path to begin.';return;}
   var f=worldline[0],l=worldline[worldline.length-1];
   el.innerHTML='<div style="color:#00ffcc">Start: ct='+f.ct.toFixed(1)+' x='+f.x.toFixed(1)+' y='+f.y.toFixed(1)+'</div>'+
     '<div>End: ct='+l.ct.toFixed(1)+' x='+l.x.toFixed(1)+' y='+l.y.toFixed(1)+'</div>'+
@@ -1553,7 +1554,7 @@ function clearAll(){
   clearAll2D();
   document.getElementById('startBtn').disabled=true;
   document.getElementById('startBtn').style.display='block';
-  document.getElementById('startBtn').textContent='START';
+  document.getElementById('startBtn').textContent='start';
   document.getElementById('pauseBtn').style.display='none';
   ['s_tau','s_ct'].forEach(function(id){document.getElementById(id).textContent='0.000';});
   ['s_int','s_type'].forEach(function(id){document.getElementById(id).textContent='—';});

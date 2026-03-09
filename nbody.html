@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N-Body Gravitational Simulator · Physviz</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020408;--panel:rgba(2,4,12,0.97);--border:#0d2840;--blue:#00B4FF;--green:#00FFCC;--orange:#FF9500;--red:#FF3C64;--dim:#7ab8d4}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--dim);font-family:'Share Tech Mono',monospace;user-select:none}
+body{display:flex;flex-direction:column}
+
+/* TOPBAR */
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:50px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;gap:12px;min-width:0}
+.tb-left{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.tb-crumb{font-size:7px;letter-spacing:1.5px;color:var(--dim);opacity:.4}
+.tb-crumb a{color:inherit;text-decoration:none}.tb-crumb a:hover{color:var(--blue);opacity:1}
+.tb-crumb sep{margin:0 4px;opacity:.4}
+#topbar h1{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:var(--blue)}
+/* Fixed-width stats so values never push each other */
+.tb-stats{display:flex;gap:0;flex-shrink:0}
+.stat{display:flex;flex-direction:column;align-items:flex-end;width:80px;padding:0 6px;border-left:1px solid var(--border)}
+.slbl{font-size:7px;letter-spacing:1px;opacity:.38;white-space:nowrap}
+.sval{font-size:10px;font-family:'Orbitron',sans-serif;white-space:nowrap;min-width:56px;text-align:right}
+
+/* MAIN */
+#main{flex:1;display:flex;min-height:0}
+
+/* SIDEBAR */
+#sidebar{width:214px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+.pnl{border-bottom:1px solid var(--border);padding:10px 12px}
+.pt{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:var(--blue);margin-bottom:8px;opacity:.8}
+.sr{margin-bottom:8px}
+.rl{display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px}
+.rl span:last-child{color:var(--blue)}
+input[type=range]{width:100%;height:2px;-webkit-appearance:none;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--blue);cursor:pointer;transition:transform .1s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}
+.crow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #081825;font-size:9px}
+.crow span:last-child{color:var(--green)}
+.btn{width:100%;padding:6px 8px;margin-bottom:3px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:5px}
+.btn:hover{border-color:var(--blue);color:#cce8ff;background:rgba(0,100,200,0.06)}
+.abtn{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;justify-content:center}
+.preset-btn{width:100%;padding:5px 8px;margin-bottom:3px;background:rgba(0,15,35,0.6);border:1px solid var(--border);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+.preset-btn:hover{border-color:var(--blue);background:rgba(0,40,90,0.5);color:#cce8ff}
+.preset-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,204,0.05)}
+.ptag{font-size:7px;padding:1px 5px;border-radius:2px;font-family:'Orbitron',sans-serif;letter-spacing:1px;border:1px solid}
+.tog-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:8px;margin-bottom:4px}
+.tog{position:relative;width:28px;height:14px;cursor:pointer}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--border);border-radius:7px;transition:.2s;border:1px solid #1a4a7a}
+.tog input:checked+.tog-track{background:rgba(0,180,255,0.25);border-color:var(--blue)}
+.tog-thumb{position:absolute;top:2px;left:2px;width:9px;height:9px;border-radius:50%;background:#4a7a9a;transition:.2s}
+.tog input:checked~.tog-thumb{left:15px;background:var(--blue)}
+
+/* ZOOM BUTTONS */
+.zoom-row{display:flex;gap:4px;margin-top:6px}
+.zbtn{flex:1;padding:5px 0;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;text-align:center}
+.zbtn:hover{border-color:var(--blue);color:#cce8ff;background:rgba(0,100,200,0.06)}
+
+/* CANVAS */
+#canvasWrap{flex:1;position:relative;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+#cv{cursor:crosshair}
+#velCanvas{position:absolute;inset:0;pointer-events:none}
+
+/* MODE INDICATOR */
+#modeInd{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--orange);background:rgba(0,3,12,0.88);border:1px solid rgba(255,149,0,0.4);padding:4px 14px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
+#modeInd.show{opacity:1}
+
+/* ZOOM INDICATOR */
+#zoomInd{position:absolute;bottom:12px;right:12px;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1px;color:var(--blue);background:rgba(0,3,12,0.75);border:1px solid var(--border);padding:3px 8px;border-radius:2px;pointer-events:none;opacity:.6}
+
+/* THEORY DRAWER */
+#theoryDrawer{position:absolute;bottom:0;left:0;right:0;background:rgba(2,6,20,0.97);border-top:1px solid var(--border);transition:transform .3s cubic-bezier(.4,0,.2,1);transform:translateY(100%);max-height:60vh;display:flex;flex-direction:column;pointer-events:none}
+#theoryDrawer.open{transform:translateY(0);pointer-events:all}
+#theoryTab{position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:rgba(2,6,20,0.97);border:1px solid var(--border);border-bottom:none;padding:4px 18px;cursor:pointer;pointer-events:all;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:var(--dim);border-radius:4px 4px 0 0;transition:color .15s;display:flex;align-items:center;gap:6px}
+#theoryTab:hover{color:#cce8ff}
+.tarrow{transition:transform .3s;display:inline-block}
+#theoryDrawer.open .tarrow{transform:rotate(180deg)}
+#theory-body{overflow-y:auto;padding:20px 28px 24px;flex:1;font-family:'Inter',sans-serif;font-size:13px;line-height:1.8;color:#8aacbe}
+#theory-body::-webkit-scrollbar{width:3px}
+#theory-body::-webkit-scrollbar-thumb{background:var(--border)}
+#theory-body h3{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--blue);margin:18px 0 8px;text-transform:uppercase}
+#theory-body h3:first-child{margin-top:0}
+#theory-body p{margin-bottom:12px}
+#theory-body ul{padding-left:1.4em;margin-bottom:12px}
+#theory-body li{margin-bottom:6px}
+#theory-body a{color:var(--blue);text-decoration:none;opacity:.8}
+#theory-body a:hover{opacity:1}
+/* Equation blocks — plain HTML, styled consistently */
+.eq{background:rgba(0,20,50,0.6);border:1px solid var(--border);border-radius:3px;padding:10px 16px;margin:10px 0 16px;font-family:'Share Tech Mono',monospace;font-size:12px;color:#c8dff0;line-height:2;overflow-x:auto;white-space:nowrap}
+.eq sub,.eq sup{font-size:9px}
+.eq-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:10px 0 16px;font-size:12px}
+.eq-lhs{font-family:'Share Tech Mono',monospace;color:#c8dff0;white-space:nowrap}
+.eq-rhs{font-family:'Inter',sans-serif;color:#6a8ea0;font-size:11.5px;line-height:1.5;padding-top:1px}
+.tag-stable{color:var(--green);font-size:10px;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-left:6px}
+.tag-unstable{color:var(--red);font-size:10px;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-left:6px}
+
+/* BOTTOMBAR */
+#bottombar{display:flex;align-items:center;gap:16px;padding:4px 14px;background:rgba(0,3,10,0.95);border-top:1px solid var(--border);font-size:7px;flex-shrink:0}
+#bottombar span{opacity:.4}
+#bottombar span b{opacity:1;color:var(--dim)}
+#coords{margin-left:auto;color:var(--blue);opacity:1!important}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="tb-left">
+    <div class="tb-crumb">
+      <a href="index.html">home</a><sep>›</sep>
+      <a href="#">classical mechanics</a><sep>›</sep>
+      n-body gravitational simulator
+    </div>
+    <h1>N-BODY GRAVITY</h1>
+  </div>
+  <div class="tb-stats">
+    <div class="stat"><span class="slbl">bodies</span><span class="sval" style="color:var(--green)" id="sv-n">0</span></div>
+    <div class="stat"><span class="slbl">total mass</span><span class="sval" style="color:var(--green)" id="sv-mass">0</span></div>
+    <div class="stat"><span class="slbl">kinetic E</span><span class="sval" style="color:var(--blue)" id="sv-ke">0</span></div>
+    <div class="stat"><span class="slbl">potential E</span><span class="sval" style="color:var(--blue)" id="sv-pe">0</span></div>
+    <div class="stat"><span class="slbl">total E</span><span class="sval" style="color:var(--blue)" id="sv-te">0</span></div>
+    <div class="stat"><span class="slbl">momentum</span><span class="sval" style="color:var(--dim)" id="sv-mom">0</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="sidebar">
+
+    <div class="pnl">
+      <div class="pt">Simulation</div>
+      <button class="btn abtn" id="pauseBtn" onclick="togglePause()">&#9646;&#9646; pause</button>
+      <button class="btn abtn" onclick="resetSim()" style="border-color:rgba(255,149,0,.3);color:#c87020">&#x21ba; reset</button>
+      <button class="btn abtn" onclick="clearAll()" style="border-color:rgba(255,60,100,.3);color:#ff6688">&#x2715; clear all</button>
+      <div class="sr" style="margin-top:9px">
+        <div class="rl"><span>time scale</span><span id="lbl-speed">1.0x</span></div>
+        <input type="range" id="sl-speed" min="1" max="40" value="10" oninput="onSpeedChange(this.value)">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>trail length</span><span id="lbl-trail">200</span></div>
+        <input type="range" id="sl-trail" min="0" max="800" value="200" oninput="onTrailChange(this.value)">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>new mass</span><span id="lbl-mass">10</span></div>
+        <input type="range" id="sl-mass" min="1" max="100" value="10" oninput="onMassChange(this.value)">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>softening</span><span id="lbl-soft">5</span></div>
+        <input type="range" id="sl-soft" min="1" max="30" value="5" oninput="onSoftChange(this.value)">
+      </div>
+    </div>
+
+    <div class="pnl">
+      <div class="pt">View</div>
+      <div class="zoom-row">
+        <button class="zbtn" onclick="zoomBy(1.25)">+</button>
+        <button class="zbtn" onclick="zoomBy(0.8)">-</button>
+        <button class="zbtn" onclick="resetView()" style="font-size:8px;letter-spacing:1px">fit</button>
+      </div>
+      <div style="font-size:7px;opacity:.3;margin-top:6px;text-align:center">scroll to zoom · right-drag to pan</div>
+    </div>
+
+    <div class="pnl">
+      <div class="pt">Display</div>
+      <div class="tog-row"><span>trails</span>
+        <label class="tog"><input type="checkbox" id="tog-trail" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>force vectors</span>
+        <label class="tog"><input type="checkbox" id="tog-force"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>velocity vectors</span>
+        <label class="tog"><input type="checkbox" id="tog-vel"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>centre of mass</span>
+        <label class="tog"><input type="checkbox" id="tog-com" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>Lagrange pts</span>
+        <label class="tog"><input type="checkbox" id="tog-lagrange"><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>merging</span>
+        <label class="tog"><input type="checkbox" id="tog-merge" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+    </div>
+
+    <div class="pnl">
+      <div class="pt">Readout</div>
+      <div class="crow"><span>bodies</span><span id="rd-n">0</span></div>
+      <div class="crow"><span>total mass</span><span id="rd-mass">0</span></div>
+      <div class="crow"><span>kinetic E</span><span id="rd-ke">0</span></div>
+      <div class="crow"><span>potential E</span><span id="rd-pe">0</span></div>
+      <div class="crow"><span>total E</span><span id="rd-te">0</span></div>
+      <div class="crow"><span>dE / E0</span><span id="rd-derr">0</span></div>
+      <div class="crow"><span>momentum</span><span id="rd-mom">0</span></div>
+    </div>
+
+    <div class="pnl">
+      <div class="pt">Presets</div>
+      <button class="preset-btn" id="pr-0" onclick="loadPreset(0)"><span>figure-8 orbit</span><span class="ptag" style="color:#00ffcc;border-color:#00ffcc">3</span></button>
+      <button class="preset-btn" id="pr-1" onclick="loadPreset(1)"><span>solar system</span><span class="ptag" style="color:#ff9500;border-color:#ff9500">5</span></button>
+      <button class="preset-btn" id="pr-2" onclick="loadPreset(2)"><span>binary star</span><span class="ptag" style="color:#00b4ff;border-color:#00b4ff">2</span></button>
+      <button class="preset-btn" id="pr-3" onclick="loadPreset(3)"><span>chaotic 3-body</span><span class="ptag" style="color:#ff3c64;border-color:#ff3c64">3</span></button>
+      <button class="preset-btn" id="pr-4" onclick="loadPreset(4)"><span>slingshot</span><span class="ptag" style="color:#ff9500;border-color:#ff9500">3</span></button>
+      <button class="preset-btn" id="pr-5" onclick="loadPreset(5)"><span>Lagrange points</span><span class="ptag" style="color:#7ab8d4;border-color:#7ab8d4">4</span></button>
+    </div>
+
+  </div><!-- /sidebar -->
+
+  <div id="canvasWrap">
+    <canvas id="cv"></canvas>
+    <canvas id="velCanvas"></canvas>
+    <div id="modeInd">click to place · drag to set velocity</div>
+    <div id="zoomInd">1.00x</div>
+
+    <!-- THEORY DRAWER -->
+    <div id="theoryDrawer">
+      <div id="theoryTab" onclick="toggleTheory()">
+        <span class="tarrow">&#9650;</span>&nbsp;theory
+      </div>
+      <div id="theory-body">
+
+        <h3>Newton's Law of Gravitation</h3>
+        <p>Every pair of masses exerts an attractive force along the line joining them. The magnitude is proportional to the product of the masses and inversely proportional to the square of the distance between them.</p>
+        <div class="eq">
+          F<sub>ij</sub> = G * m<sub>i</sub> * m<sub>j</sub> / r<sub>ij</sub><sup>2</sup>
+        </div>
+        <div class="eq-grid">
+          <span class="eq-lhs">G</span><span class="eq-rhs">gravitational constant (scaled for this simulation)</span>
+          <span class="eq-lhs">m<sub>i</sub>, m<sub>j</sub></span><span class="eq-rhs">masses of bodies i and j</span>
+          <span class="eq-lhs">r<sub>ij</sub></span><span class="eq-rhs">distance between body i and body j</span>
+        </div>
+        <p>For N bodies the net force on body i is the vector sum of F<sub>ij</sub> over all j not equal to i. A softening term (epsilon squared) is added to r<sub>ij</sub><sup>2</sup> to prevent singularities at close range. The equations of motion are integrated with a 4th-order Runge-Kutta scheme, sub-stepped at high time scales for stability.</p>
+
+        <h3>Conservation Laws</h3>
+        <p>The total mechanical energy E = K + U is conserved. So is the total linear momentum. Watch the dE/E0 readout: a well-tuned integrator keeps drift below 1%. If it climbs, reduce the time scale.</p>
+        <div class="eq">
+          K = (1/2) * sum( m<sub>i</sub> * v<sub>i</sub><sup>2</sup> )
+        </div>
+        <div class="eq">
+          U = -sum( G * m<sub>i</sub> * m<sub>j</sub> / r<sub>ij</sub> ) &nbsp; for all i &lt; j
+        </div>
+
+        <h3>Lagrange Points</h3>
+        <p>In a two-body system, five equilibrium positions exist where a third small body remains stationary in the co-rotating frame. L1, L2, and L3 lie on the line connecting the two primaries and are unstable. L4 and L5 sit at the apex of equilateral triangles formed with the two primaries and are stable: a perturbed body will oscillate around them rather than escape.</p>
+        <div class="eq-grid">
+          <span class="eq-lhs">L1, L2, L3</span><span class="eq-rhs">collinear points <span class="tag-unstable">unstable</span></span>
+          <span class="eq-lhs">L4, L5</span><span class="eq-rhs">triangular points at +/- 60 deg from secondary <span class="tag-stable">stable</span></span>
+        </div>
+        <p>Jupiter's Trojan asteroids occupy the Sun-Jupiter L4 and L5 points. Over 10,000 have been catalogued.</p>
+
+        <h3>What to look for</h3>
+        <ul>
+          <li><b>Figure-8:</b> All three equal-mass bodies trace a single figure-of-eight. This is a choreographic solution found by Chenciner and Montgomery in 2000 and is remarkably stable.</li>
+          <li><b>Solar system:</b> Inner planets orbit faster. This follows Kepler's third law: orbital period scales with the 3/2 power of the semi-major axis. Crank the time scale to watch outer planets crawl.</li>
+          <li><b>Chaotic 3-body:</b> The system is exquisitely sensitive to initial conditions. Tiny numerical differences compound into entirely different trajectories. This is deterministic chaos, not randomness.</li>
+          <li><b>Lagrange points:</b> Enable the overlay toggle. The L4 and L5 test particles librate stably inside the dashed circles. Try adding a small body nearby to see it get captured or ejected.</li>
+          <li><b>Slingshot:</b> The small probe arrives on a hyperbolic trajectory and exits faster than it arrived, having stolen a fraction of the planet's orbital energy.</li>
+        </ul>
+
+        <h3>Further Reading</h3>
+        <ul>
+          <li><a href="https://www.feynmanlectures.caltech.edu/I_13.html" target="_blank">Feynman Lectures, Chapter 13: Work and Potential Energy</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Three-body_problem" target="_blank">Wikipedia: Three-body problem</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Lagrange_point" target="_blank">Wikipedia: Lagrange points</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Gravitational_slingshot" target="_blank">Wikipedia: Gravitational slingshot</a></li>
+        </ul>
+
+      </div>
+    </div>
+
+  </div><!-- /canvasWrap -->
+</div><!-- /main -->
+
+<div id="bottombar">
+  <span><b>Click</b> canvas to place body</span>
+  <span><b>Drag</b> to set initial velocity</span>
+  <span><b>Right-click</b> body to remove</span>
+  <span><b>Scroll</b> to zoom</span>
+  <span><b>Right-drag</b> to pan</span>
+  <span id="coords"></span>
+</div>
+
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════
+// CANVAS & VIEWPORT
+// ════════════════════════════════════════════════════════
+var cv   = document.getElementById('cv');
+var ctx  = cv.getContext('2d');
+var vc   = document.getElementById('velCanvas');
+var vCtx = vc.getContext('2d');
+var W = 0, H = 0;
+
+// Viewport transform: world coords -> screen = world * zoom + pan
+var zoom = 1, panX = 0, panY = 0;
+
+new ResizeObserver(function() {
+  W = cv.width  = vc.width  = cv.offsetWidth;
+  H = cv.height = vc.height = cv.offsetHeight;
+}).observe(document.getElementById('canvasWrap'));
+
+// World <-> screen transforms
+function w2sx(wx) { return wx * zoom + panX; }
+function w2sy(wy) { return wy * zoom + panY; }
+function s2wx(sx) { return (sx - panX) / zoom; }
+function s2wy(sy) { return (sy - panY) / zoom; }
+
+function zoomBy(factor, sx, sy) {
+  if (sx === undefined) { sx = W / 2; sy = H / 2; }
+  zoom = Math.max(0.05, Math.min(20, zoom * factor));
+  // Zoom around screen point (sx,sy)
+  panX = sx - (sx - panX) * factor;
+  panY = sy - (sy - panY) * factor;
+  document.getElementById('zoomInd').textContent = zoom.toFixed(2) + 'x';
+}
+
+function resetView() {
+  if (bodies.length === 0) { zoom = 1; panX = W/2; panY = H/2; }
+  else {
+    var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+    bodies.forEach(function(b){minX=Math.min(minX,b.x);maxX=Math.max(maxX,b.x);minY=Math.min(minY,b.y);maxY=Math.max(maxY,b.y);});
+    var cx=(minX+maxX)/2, cy=(minY+maxY)/2;
+    var span = Math.max(maxX-minX, maxY-minY, 200);
+    zoom = Math.min(W, H) * 0.6 / span;
+    panX = W/2 - cx*zoom;
+    panY = H/2 - cy*zoom;
+  }
+  document.getElementById('zoomInd').textContent = zoom.toFixed(2) + 'x';
+}
+
+// ════════════════════════════════════════════════════════
+// CONSTANTS & PALETTE
+// ════════════════════════════════════════════════════════
+var G = 1000;
+var C_BLUE   = '#00B4FF';
+var C_GREEN  = '#00FFCC';
+var C_ORANGE = '#FF9500';
+var C_RED    = '#FF3C64';
+var PALETTE  = ['#FF9500','#00B4FF','#00FFCC','#FF3C64','#ffdd44','#c084fc','#4ade80','#fb7185','#38bdf8','#fbbf24'];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+var bodies     = [];
+var paused     = false;
+var timeScale  = 1.0;
+var trailLen   = 200;
+var newMass    = 10;
+var softening  = 5;
+var colIdx     = 0;
+var lastPreset = 1;
+var E0         = null;
+
+// ════════════════════════════════════════════════════════
+// DOM REFS
+// ════════════════════════════════════════════════════════
+function gel(id) { return document.getElementById(id); }
+var D = {};
+['sv-n','sv-mass','sv-ke','sv-pe','sv-te','sv-mom',
+ 'rd-n','rd-mass','rd-ke','rd-pe','rd-te','rd-derr','rd-mom',
+ 'pauseBtn','lbl-speed','lbl-trail','lbl-mass','lbl-soft',
+ 'tog-trail','tog-force','tog-vel','tog-com','tog-lagrange','tog-merge',
+ 'coords','modeInd'
+].forEach(function(id) { D[id] = gel(id); });
+
+// ════════════════════════════════════════════════════════
+// BODY FACTORY
+// ════════════════════════════════════════════════════════
+function mkBody(x, y, vx, vy, m, col) {
+  return {
+    x:x, y:y, vx:vx, vy:vy,
+    mass: m,
+    radius: Math.max(3, Math.cbrt(m) * 2.2),
+    colour: col || PALETTE[colIdx++ % PALETTE.length],
+    trail: []
+  };
+}
+
+// ════════════════════════════════════════════════════════
+// PHYSICS — RK4 (pre-allocated derivative arrays)
+// ════════════════════════════════════════════════════════
+// Flat arrays for speed: positions and velocities stored as [x0,y0,x1,y1,...]
+var _ax = [], _ay = []; // reused acceleration buffer
+
+function computeAccel(xs, ys, masses, n, ax, ay) {
+  for (var i = 0; i < n; i++) ax[i] = ay[i] = 0;
+  var e2 = softening * softening;
+  for (var i = 0; i < n - 1; i++) {
+    for (var j = i + 1; j < n; j++) {
+      var dx = xs[j] - xs[i];
+      var dy = ys[j] - ys[i];
+      var d2 = dx*dx + dy*dy + e2;
+      var inv = 1.0 / (d2 * Math.sqrt(d2)) * G;
+      var fi = inv * masses[j];
+      var fj = inv * masses[i];
+      ax[i] += fi * dx;  ay[i] += fi * dy;
+      ax[j] -= fj * dx;  ay[j] -= fj * dy;
+    }
+  }
+}
+
+function rk4Step(dt) {
+  var n = bodies.length;
+  if (!n) return;
+
+  // Extract state
+  var x0=[],y0=[],vx0=[],vy0=[],mass=[];
+  for (var i = 0; i < n; i++) {
+    x0[i]  = bodies[i].x;  y0[i]  = bodies[i].y;
+    vx0[i] = bodies[i].vx; vy0[i] = bodies[i].vy;
+    mass[i] = bodies[i].mass;
+  }
+
+  // Ensure buffers are big enough
+  while (_ax.length < n) { _ax.push(0); _ay.push(0); }
+
+  var k1ax=[],k1ay=[],k2ax=[],k2ay=[],k3ax=[],k3ay=[],k4ax=[],k4ay=[];
+  var tx=[],ty=[];
+
+  // k1
+  computeAccel(x0, y0, mass, n, _ax, _ay);
+  for (var i=0;i<n;i++){k1ax[i]=_ax[i];k1ay[i]=_ay[i];}
+
+  // k2
+  var h2=dt*0.5;
+  for(var i=0;i<n;i++){tx[i]=x0[i]+vx0[i]*h2;ty[i]=y0[i]+vy0[i]*h2;}
+  computeAccel(tx,ty,mass,n,_ax,_ay);
+  var kvx2=[],kvy2=[];
+  for(var i=0;i<n;i++){k2ax[i]=_ax[i];k2ay[i]=_ay[i];kvx2[i]=vx0[i]+k1ax[i]*h2;kvy2[i]=vy0[i]+k1ay[i]*h2;}
+
+  // k3
+  for(var i=0;i<n;i++){tx[i]=x0[i]+kvx2[i]*h2;ty[i]=y0[i]+kvy2[i]*h2;}
+  computeAccel(tx,ty,mass,n,_ax,_ay);
+  var kvx3=[],kvy3=[];
+  for(var i=0;i<n;i++){k3ax[i]=_ax[i];k3ay[i]=_ay[i];kvx3[i]=vx0[i]+k2ax[i]*h2;kvy3[i]=vy0[i]+k2ay[i]*h2;}
+
+  // k4
+  for(var i=0;i<n;i++){tx[i]=x0[i]+kvx3[i]*dt;ty[i]=y0[i]+kvy3[i]*dt;}
+  computeAccel(tx,ty,mass,n,_ax,_ay);
+  for(var i=0;i<n;i++){k4ax[i]=_ax[i];k4ay[i]=_ay[i];}
+
+  // Combine
+  var dt6=dt/6;
+  for (var i = 0; i < n; i++) {
+    bodies[i].x  += dt6*(vx0[i]+2*kvx2[i]+2*kvx3[i]+(vx0[i]+k3ax[i]*dt));
+    bodies[i].y  += dt6*(vy0[i]+2*kvy2[i]+2*kvy3[i]+(vy0[i]+k3ay[i]*dt));
+    bodies[i].vx += dt6*(k1ax[i]+2*k2ax[i]+2*k3ax[i]+k4ax[i]);
+    bodies[i].vy += dt6*(k1ay[i]+2*k2ay[i]+2*k3ay[i]+k4ay[i]);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// COLLISION MERGING
+// ════════════════════════════════════════════════════════
+function mergeBodies() {
+  if (!D['tog-merge'].checked) return;
+  var again = true;
+  while (again) {
+    again = false;
+    outer: for (var i = 0; i < bodies.length; i++) {
+      for (var j = i + 1; j < bodies.length; j++) {
+        var dx = bodies[j].x - bodies[i].x;
+        var dy = bodies[j].y - bodies[i].y;
+        if (dx*dx + dy*dy < Math.pow(bodies[i].radius + bodies[j].radius, 2)) {
+          var m1=bodies[i].mass, m2=bodies[j].mass, mt=m1+m2;
+          var nb = mkBody(
+            (bodies[i].x*m1+bodies[j].x*m2)/mt,
+            (bodies[i].y*m1+bodies[j].y*m2)/mt,
+            (bodies[i].vx*m1+bodies[j].vx*m2)/mt,
+            (bodies[i].vy*m1+bodies[j].vy*m2)/mt,
+            mt, m1>=m2 ? bodies[i].colour : bodies[j].colour
+          );
+          nb.trail = bodies[i].trail.concat(bodies[j].trail).slice(-trailLen);
+          bodies.splice(j,1); bodies.splice(i,1); bodies.push(nb);
+          again = true; break outer;
+        }
+      }
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// ENERGY & MOMENTUM
+// ════════════════════════════════════════════════════════
+function calcEnergy() {
+  var ke=0, pe=0, e2=softening*softening;
+  for (var i=0;i<bodies.length;i++) {
+    ke += 0.5*bodies[i].mass*(bodies[i].vx*bodies[i].vx+bodies[i].vy*bodies[i].vy);
+    for (var j=i+1;j<bodies.length;j++) {
+      var dx=bodies[j].x-bodies[i].x, dy=bodies[j].y-bodies[i].y;
+      pe -= G*bodies[i].mass*bodies[j].mass/Math.sqrt(dx*dx+dy*dy+e2);
+    }
+  }
+  return {ke:ke, pe:pe, te:ke+pe};
+}
+
+function calcMomentum() {
+  var px=0,py=0;
+  for(var i=0;i<bodies.length;i++){px+=bodies[i].mass*bodies[i].vx;py+=bodies[i].mass*bodies[i].vy;}
+  return Math.sqrt(px*px+py*py);
+}
+
+function calcCOM() {
+  var mx=0,my=0,mt=0;
+  for(var i=0;i<bodies.length;i++){mx+=bodies[i].x*bodies[i].mass;my+=bodies[i].y*bodies[i].mass;mt+=bodies[i].mass;}
+  return mt>0?{x:mx/mt,y:my/mt}:null;
+}
+
+// ════════════════════════════════════════════════════════
+// LAGRANGE POINTS (world space)
+// ════════════════════════════════════════════════════════
+function getLagrange() {
+  if (bodies.length < 2) return null;
+  var s = bodies.slice().sort(function(a,b){return b.mass-a.mass;});
+  var m1=s[0], m2=s[1];
+  var dx=m2.x-m1.x, dy=m2.y-m1.y, r=Math.sqrt(dx*dx+dy*dy);
+  if (r < 1) return null;
+  var mu = m2.mass/(m1.mass+m2.mass);
+  var cbmu = Math.pow(mu/3, 1/3);
+  var nx=dx/r, ny=dy/r, px=-ny, py=nx;
+  return [
+    {x:m1.x+nx*r*(1-cbmu),      y:m1.y+ny*r*(1-cbmu),      lbl:'L1', stable:false},
+    {x:m1.x+nx*r*(1+cbmu),      y:m1.y+ny*r*(1+cbmu),      lbl:'L2', stable:false},
+    {x:m1.x-nx*r*(1+5*mu/12),   y:m1.y-ny*r*(1+5*mu/12),   lbl:'L3', stable:false},
+    {x:m1.x+dx*0.5+px*r*0.866,  y:m1.y+dy*0.5+py*r*0.866,  lbl:'L4', stable:true},
+    {x:m1.x+dx*0.5-px*r*0.866,  y:m1.y+dy*0.5-py*r*0.866,  lbl:'L5', stable:true},
+  ];
+}
+
+// ════════════════════════════════════════════════════════
+// DRAW
+// ════════════════════════════════════════════════════════
+function drawArrow(c, x1, y1, x2, y2, col) {
+  var ang = Math.atan2(y2-y1, x2-x1);
+  c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1.5;
+  c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+  c.beginPath();
+  c.moveTo(x2, y2);
+  c.lineTo(x2-7*Math.cos(ang-0.4), y2-7*Math.sin(ang-0.4));
+  c.lineTo(x2-7*Math.cos(ang+0.4), y2-7*Math.sin(ang+0.4));
+  c.closePath(); c.fill();
+}
+
+function draw() {
+  ctx.fillStyle = '#020408';
+  ctx.fillRect(0, 0, W, H);
+
+  // Background grid in world space, clipped to screen
+  ctx.save();
+  var gridWorld = 80; // world-space grid spacing
+  var gridScreen = gridWorld * zoom;
+  if (gridScreen > 12) { // only draw if grid isn't too dense
+    ctx.strokeStyle = '#060f1c'; ctx.lineWidth = 0.5;
+    var ox = ((panX % gridScreen) + gridScreen) % gridScreen;
+    var oy = ((panY % gridScreen) + gridScreen) % gridScreen;
+    for (var sx = ox; sx < W; sx += gridScreen) {
+      ctx.beginPath(); ctx.moveTo(sx,0); ctx.lineTo(sx,H); ctx.stroke();
+    }
+    for (var sy = oy; sy < H; sy += gridScreen) {
+      ctx.beginPath(); ctx.moveTo(0,sy); ctx.lineTo(W,sy); ctx.stroke();
+    }
+  }
+  ctx.restore();
+
+  // Trails
+  if (D['tog-trail'].checked) {
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i], tl = b.trail.length;
+      if (tl < 2) continue;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = b.colour;
+      for (var k = 1; k < tl; k++) {
+        ctx.globalAlpha = (k / tl) * 0.45;
+        ctx.beginPath();
+        ctx.moveTo(w2sx(b.trail[k-1].x), w2sy(b.trail[k-1].y));
+        ctx.lineTo(w2sx(b.trail[k].x),   w2sy(b.trail[k].y));
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // Force vectors
+  if (D['tog-force'].checked) {
+    ctx.globalAlpha = 0.6;
+    var e2 = softening * softening;
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i], ax=0, ay=0;
+      for (var j = 0; j < bodies.length; j++) {
+        if (i===j) continue;
+        var dx=bodies[j].x-b.x, dy=bodies[j].y-b.y;
+        var d2=dx*dx+dy*dy+e2, d=Math.sqrt(d2), f=G*bodies[j].mass/(d2*d);
+        ax+=f*dx; ay+=f*dy;
+      }
+      var mag = Math.sqrt(ax*ax+ay*ay);
+      if (mag < 0.001) continue;
+      var sc = Math.min(45, mag * 8);
+      var sx=w2sx(b.x), sy=w2sy(b.y);
+      drawArrow(ctx, sx, sy, sx+ax/mag*sc, sy+ay/mag*sc, C_RED);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Velocity vectors
+  if (D['tog-vel'].checked) {
+    ctx.globalAlpha = 0.6;
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i];
+      var sp = Math.sqrt(b.vx*b.vx+b.vy*b.vy);
+      if (sp < 0.01) continue;
+      var sc = Math.min(55, sp * 0.5);
+      var sx=w2sx(b.x), sy=w2sy(b.y);
+      drawArrow(ctx, sx, sy, sx+b.vx/sp*sc, sy+b.vy/sp*sc, C_GREEN);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Lagrange points
+  if (D['tog-lagrange'].checked) {
+    var lpts = getLagrange();
+    if (lpts) {
+      ctx.font = '8px Share Tech Mono, monospace';
+      for (var li = 0; li < lpts.length; li++) {
+        var lp = lpts[li];
+        var lsx = w2sx(lp.x), lsy = w2sy(lp.y);
+        ctx.globalAlpha = lp.stable ? 0.72 : 0.32;
+        ctx.strokeStyle = lp.stable ? C_GREEN : C_BLUE;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(lsx-7,lsy); ctx.lineTo(lsx+7,lsy); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(lsx,lsy-7); ctx.lineTo(lsx,lsy+7); ctx.stroke();
+        if (lp.stable) {
+          ctx.setLineDash([2,3]);
+          ctx.beginPath(); ctx.arc(lsx,lsy,10,0,Math.PI*2); ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        ctx.fillStyle = lp.stable ? C_GREEN : C_BLUE;
+        ctx.globalAlpha = lp.stable ? 0.9 : 0.45;
+        ctx.fillText(lp.lbl, lsx+9, lsy-3);
+        ctx.globalAlpha = 1;
+      }
+    }
+  }
+
+  // Bodies
+  for (var i = 0; i < bodies.length; i++) {
+    var b = bodies[i];
+    var sx = w2sx(b.x), sy = w2sy(b.y);
+    var sr = b.radius * zoom; // screen-space radius
+
+    ctx.shadowColor = b.colour; ctx.shadowBlur = sr * 3;
+    ctx.globalAlpha = 0.22; ctx.fillStyle = b.colour;
+    ctx.beginPath(); ctx.arc(sx, sy, Math.max(1, sr*2.8), 0, Math.PI*2); ctx.fill();
+
+    ctx.globalAlpha = 1; ctx.shadowBlur = sr * 2; ctx.fillStyle = b.colour;
+    ctx.beginPath(); ctx.arc(sx, sy, Math.max(1, sr), 0, Math.PI*2); ctx.fill();
+
+    ctx.shadowBlur = 0; ctx.globalAlpha = 0.6; ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(sx, sy, Math.max(0.5, sr*0.32), 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  }
+
+  // Centre of mass
+  if (D['tog-com'].checked) {
+    var com = calcCOM();
+    if (com) {
+      var sx=w2sx(com.x), sy=w2sy(com.y);
+      ctx.globalAlpha = 0.4; ctx.strokeStyle = 'rgba(255,255,255,0.28)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(sx-9,sy); ctx.lineTo(sx+9,sy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(sx,sy-9); ctx.lineTo(sx,sy+9); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// MAIN LOOP
+// ════════════════════════════════════════════════════════
+var lastT = null, statTick = 0;
+
+function loop(ts) {
+  if (!lastT) lastT = ts;
+  var raw = Math.min((ts - lastT) / 1000, 0.05);
+  lastT = ts;
+
+  if (!paused && bodies.length > 0) {
+    var dt = raw * timeScale;
+    var steps = Math.max(1, Math.ceil(timeScale / 3));
+    var sub = dt / steps;
+    for (var s = 0; s < steps; s++) rk4Step(sub);
+    mergeBodies();
+    if (D['tog-trail'].checked) {
+      for (var i = 0; i < bodies.length; i++) {
+        bodies[i].trail.push({x: bodies[i].x, y: bodies[i].y});
+        if (bodies[i].trail.length > trailLen)
+          bodies[i].trail.splice(0, bodies[i].trail.length - trailLen);
+      }
+    }
+  }
+
+  draw();
+  if (++statTick % 3 === 0) updateStats();
+  requestAnimationFrame(loop);
+}
+
+// ════════════════════════════════════════════════════════
+// STATS
+// ════════════════════════════════════════════════════════
+function fmt(v) {
+  var a = Math.abs(v);
+  if (a >= 1e6) return (v/1e6).toFixed(1)+'M';
+  if (a >= 1e3) return (v/1e3).toFixed(1)+'k';
+  if (a >= 100) return v.toFixed(0);
+  if (a >= 10)  return v.toFixed(1);
+  return v.toFixed(2);
+}
+
+function updateStats() {
+  var n = bodies.length, mt = 0;
+  for (var i=0;i<n;i++) mt += bodies[i].mass;
+  D['sv-n'].textContent   = n;
+  D['rd-n'].textContent   = n;
+  D['sv-mass'].textContent = mt.toFixed(0);
+  D['rd-mass'].textContent = mt.toFixed(0);
+  if (n > 0) {
+    var en = calcEnergy(), mom = calcMomentum();
+    D['sv-ke'].textContent = fmt(en.ke);
+    D['sv-pe'].textContent = fmt(en.pe);
+    D['sv-te'].textContent = fmt(en.te);
+    D['rd-ke'].textContent = fmt(en.ke);
+    D['rd-pe'].textContent = fmt(en.pe);
+    D['rd-te'].textContent = fmt(en.te);
+    D['sv-mom'].textContent = fmt(mom);
+    D['rd-mom'].textContent = fmt(mom);
+    if (E0 !== null && Math.abs(E0) > 0.1) {
+      var drift = Math.abs((en.te - E0) / E0) * 100;
+      var ds = drift.toFixed(2) + '%';
+      D['rd-derr'].textContent = ds;
+      D['rd-derr'].style.color = drift > 5 ? C_RED : drift > 1 ? C_ORANGE : C_GREEN;
+    } else {
+      D['rd-derr'].textContent = '0%';
+      D['rd-derr'].style.color = C_GREEN;
+    }
+  } else {
+    var keys = ['sv-ke','sv-pe','sv-te','sv-mom','rd-ke','rd-pe','rd-te','rd-derr','rd-mom'];
+    for (var k=0;k<keys.length;k++) { D[keys[k]].textContent = '0'; }
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// MOUSE INTERACTION
+// ════════════════════════════════════════════════════════
+var pointerMode = 'place'; // 'place' | 'pan'
+var dragging = false, dragStart = null;
+var panning = false, panStart = null, panStartPanX = 0, panStartPanY = 0;
+var modeTimer = null;
+
+function showMode(msg) {
+  D['modeInd'].textContent = msg;
+  D['modeInd'].classList.add('show');
+  if (modeTimer) clearTimeout(modeTimer);
+  modeTimer = setTimeout(function() { D['modeInd'].classList.remove('show'); }, 2000);
+}
+
+function getScreenPos(e) {
+  var r = cv.getBoundingClientRect();
+  var src = e.touches ? e.touches[0] : e;
+  return {
+    x: (src.clientX - r.left) * (W / r.width),
+    y: (src.clientY - r.top)  * (H / r.height)
+  };
+}
+
+function getWorldPos(e) {
+  var s = getScreenPos(e);
+  return { x: s2wx(s.x), y: s2wy(s.y), sx: s.x, sy: s.y };
+}
+
+function bodyAtWorld(wx, wy) {
+  for (var i = bodies.length - 1; i >= 0; i--) {
+    var b = bodies[i];
+    var dx = wx - b.x, dy = wy - b.y;
+    if (dx*dx + dy*dy < Math.pow(Math.max(12/zoom, b.radius * 1.8), 2)) return i;
+  }
+  return -1;
+}
+
+cv.addEventListener('mousedown', function(e) {
+  e.preventDefault();
+  var p = getWorldPos(e);
+
+  if (e.button === 2) {
+    // Right-click: remove body OR start pan
+    var idx = bodyAtWorld(p.x, p.y);
+    if (idx >= 0) {
+      bodies.splice(idx, 1); E0 = null; clearHL();
+    } else {
+      panning = true;
+      panStart = getScreenPos(e);
+      panStartPanX = panX; panStartPanY = panY;
+      cv.style.cursor = 'grab';
+    }
+    return;
+  }
+
+  // Left-click: place body (if not on existing)
+  if (bodyAtWorld(p.x, p.y) >= 0) return;
+  dragging = true;
+  dragStart = p;
+});
+
+cv.addEventListener('mousemove', function(e) {
+  var sp = getScreenPos(e);
+  var p  = getWorldPos(e);
+  D['coords'].textContent = 'x=' + Math.round(p.x) + ' y=' + Math.round(p.y);
+
+  // Panning
+  if (panning && panStart) {
+    panX = panStartPanX + (sp.x - panStart.x);
+    panY = panStartPanY + (sp.y - panStart.y);
+    return;
+  }
+
+  // Velocity preview
+  if (!dragging || !dragStart) return;
+  var dx = sp.x - w2sx(dragStart.x);
+  var dy = sp.y - w2sy(dragStart.y);
+  var dist = Math.sqrt(dx*dx + dy*dy);
+  vCtx.clearRect(0, 0, W, H);
+  if (dist > 4) {
+    var ang = Math.atan2(dy, dx);
+    vCtx.globalAlpha = 0.9; vCtx.strokeStyle = C_GREEN; vCtx.lineWidth = 1.5;
+    vCtx.setLineDash([4, 3]);
+    vCtx.beginPath(); vCtx.moveTo(w2sx(dragStart.x), w2sy(dragStart.y)); vCtx.lineTo(sp.x, sp.y); vCtx.stroke();
+    vCtx.setLineDash([]);
+    vCtx.beginPath();
+    vCtx.moveTo(sp.x, sp.y);
+    vCtx.lineTo(sp.x-8*Math.cos(ang-0.4), sp.y-8*Math.sin(ang-0.4));
+    vCtx.lineTo(sp.x-8*Math.cos(ang+0.4), sp.y-8*Math.sin(ang+0.4));
+    vCtx.closePath(); vCtx.fillStyle = C_GREEN; vCtx.fill();
+    vCtx.font = '8px Share Tech Mono,monospace'; vCtx.fillStyle = C_GREEN; vCtx.globalAlpha = 0.8;
+    vCtx.fillText('v=' + (dist * 0.5 / zoom).toFixed(1), sp.x+8, sp.y-6);
+    // Ghost circle
+    var sr = Math.max(3, Math.cbrt(newMass) * 2.2) * zoom;
+    vCtx.strokeStyle = PALETTE[colIdx % PALETTE.length]; vCtx.lineWidth = 1; vCtx.globalAlpha = 0.4;
+    vCtx.beginPath(); vCtx.arc(w2sx(dragStart.x), w2sy(dragStart.y), sr, 0, Math.PI*2); vCtx.stroke();
+    vCtx.globalAlpha = 1;
+  }
+});
+
+cv.addEventListener('mouseup', function(e) {
+  cv.style.cursor = 'crosshair';
+  if (panning) { panning = false; panStart = null; return; }
+  if (!dragging || !dragStart) return;
+
+  var sp = getScreenPos(e);
+  var dx = sp.x - w2sx(dragStart.x);
+  var dy = sp.y - w2sy(dragStart.y);
+  var dist = Math.sqrt(dx*dx + dy*dy);
+  // Convert screen-space drag to world-space velocity
+  var vx = dist > 4 ? (dx / zoom) * 0.5 : 0;
+  var vy = dist > 4 ? (dy / zoom) * 0.5 : 0;
+  bodies.push(mkBody(dragStart.x, dragStart.y, vx, vy, newMass));
+  E0 = null;
+  dragging = false; dragStart = null;
+  vCtx.clearRect(0, 0, W, H);
+  clearHL();
+});
+
+cv.addEventListener('mouseleave', function() {
+  dragging = false; dragStart = null;
+  panning = false; panStart = null;
+  cv.style.cursor = 'crosshair';
+  vCtx.clearRect(0, 0, W, H);
+});
+
+cv.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+// Scroll to zoom
+cv.addEventListener('wheel', function(e) {
+  e.preventDefault();
+  var sp = getScreenPos(e);
+  var factor = e.deltaY < 0 ? 1.12 : 1/1.12;
+  zoomBy(factor, sp.x, sp.y);
+}, {passive: false});
+
+// ════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════
+function onSpeedChange(v) { timeScale = v/10; D['lbl-speed'].textContent = timeScale.toFixed(1)+'x'; }
+function onTrailChange(v) { trailLen = parseInt(v); D['lbl-trail'].textContent = trailLen; }
+function onMassChange(v)  { newMass = parseInt(v);  D['lbl-mass'].textContent  = newMass; }
+function onSoftChange(v)  { softening = parseInt(v); D['lbl-soft'].textContent = softening; }
+
+function togglePause() {
+  paused = !paused;
+  D['pauseBtn'].textContent = paused ? '&#9654; resume' : '&#9646;&#9646; pause';
+  D['pauseBtn'].innerHTML   = paused ? '&#9654; resume' : '&#9646;&#9646; pause';
+  D['pauseBtn'].style.borderColor = paused ? C_GREEN : '';
+  D['pauseBtn'].style.color       = paused ? C_GREEN : '';
+}
+
+function clearAll()  { bodies = []; colIdx = 0; E0 = null; clearHL(); }
+function resetSim()  { loadPreset(lastPreset); }
+function clearHL()   { for (var i=0;i<6;i++) { var b=gel('pr-'+i); if(b) b.classList.remove('active'); } }
+
+var theoryOpen = false;
+function toggleTheory() {
+  theoryOpen = !theoryOpen;
+  gel('theoryDrawer').classList.toggle('open', theoryOpen);
+}
+
+// ════════════════════════════════════════════════════════
+// PRESETS
+// ════════════════════════════════════════════════════════
+// All presets work in a canonical world space centred at origin (0,0).
+// The viewport is then fitted to the bodies after loading.
+
+var PRESET_HINTS = [
+  'figure-8: three bodies, one shared orbit',
+  'solar system: inner planets orbit fastest',
+  'binary star: equal masses, mutual orbit',
+  'chaotic: deterministic yet unpredictable',
+  'slingshot: probe steals orbital energy',
+  'Lagrange: L4/L5 are stable equilibria'
+];
+
+function loadPreset(idx) {
+  clearAll();
+  lastPreset = idx;
+
+  if (idx === 0) {
+    // ── Figure-8 — exact Chenciner-Montgomery ICs ────────────────
+    // Reference: Chenciner & Montgomery 2000, scaled to G=1000, m=1
+    // Position scale s, velocity scale v chosen so orbit ~fills view nicely
+    // With G=1000, m=1: characteristic vel = sqrt(G*m/s) ~ sqrt(1000/s)
+    // Published ICs (G=1, m=1): x = ±0.97000436, y = ∓0.24308753; vx=vy same
+    // Velocity: v3 = (-0.93240737, -0.86473146) * 2 split across 3 bodies
+    var s  = 120; // world-space position scale
+    var vs = Math.sqrt(G / s); // velocity scale: sqrt(G*m/s) with m=1 mapped to m=20 below
+    // Exact figure-8 ICs scaled by vs (published values for G=1 scaled by sqrt(G)):
+    var px1 =  0.97000436 * s, py1 = -0.24308753 * s;
+    var px2 = -px1,            py2 = -py1;
+    var px3 =  0,              py3 =  0;
+    var vx3 = -0.93240737 * vs, vy3 = -0.86473146 * vs;
+    var vx1 =  -vx3*0.5,  vy1 = -vy3*0.5;
+    var vx2 =  vx1,       vy2 = vy1;
+    var m = 1;
+    bodies.push(mkBody(px1, py1, vx1, vy1, m, PALETTE[0]));
+    bodies.push(mkBody(px2, py2, vx2, vy2, m, PALETTE[1]));
+    bodies.push(mkBody(px3, py3, vx3, vy3, m, PALETTE[2]));
+
+  } else if (idx === 1) {
+    // ── Solar system — sun at origin, planets in circular orbits ──
+    var sun = mkBody(0, 0, 0, 0, 100, '#ffdd44');
+    bodies.push(sun);
+    [{r:80,  m:2, col:'#aab4c8'},
+     {r:130, m:4, col:'#00b4ff'},
+     {r:190, m:3, col:'#00ffcc'},
+     {r:270, m:5, col:'#ff9500'}
+    ].forEach(function(o) {
+      var v = Math.sqrt(G * sun.mass / o.r);
+      bodies.push(mkBody(o.r, 0, 0, v, o.m, o.col));
+    });
+
+  } else if (idx === 2) {
+    // ── Binary star — equal mass, circular mutual orbit ─────────
+    var sep = 160, m = 40;
+    var v = Math.sqrt(G * m / (4 * sep));
+    bodies.push(mkBody(-sep, 0,  0, -v, m, PALETTE[0]));
+    bodies.push(mkBody( sep, 0,  0,  v, m, PALETTE[1]));
+
+  } else if (idx === 3) {
+    // ── Chaotic 3-body — slightly asymmetric ───────────────────
+    // Using well-known chaotic ICs that produce figure-8-like but diverging
+    var m = 20, s2 = 120;
+    bodies.push(mkBody(-s2,      0,        0,  1.5*Math.sqrt(G*m/s2)*0.8, m, PALETTE[0]));
+    bodies.push(mkBody( s2,      0,        0, -1.5*Math.sqrt(G*m/s2)*0.8, m, PALETTE[1]));
+    bodies.push(mkBody( 0,   s2*0.02,      Math.sqrt(G*m/s2)*0.3, 0,      m, PALETTE[2]));
+
+  } else if (idx === 4) {
+    // ── Slingshot — planet in circular orbit, probe on flyby ───
+    var star   = mkBody(0, 0, 0, 0, 100, '#ffdd44');
+    bodies.push(star);
+    var rp = 160, mp = 20;
+    var vp = Math.sqrt(G * star.mass / rp);
+    bodies.push(mkBody(-rp, 0, 0, -vp, mp, '#c87020')); // planet left of sun
+    // Probe: incoming from lower-left on hyperbolic trajectory
+    // Aim to pass just outside planet's orbit
+    bodies.push(mkBody(-380, 220, 55, -35, 1.5, PALETTE[2]));
+
+  } else if (idx === 5) {
+    // ── Lagrange — Sun + Jupiter-analog + test particles at L4/L5
+    // In the rotating frame L4/L5 are 60 deg ahead/behind the planet.
+    // For a circular orbit the test particle needs:
+    //   same orbital radius r, velocity sqrt(G*M_total/r) where M_total = m_sun + m_planet
+    var mSun = 100, mJup = 22, r = 220;
+    var sun5 = mkBody(0, 0, 0, 0, mSun, '#ffdd44');
+    bodies.push(sun5);
+    // Jupiter at angle 0 (positive x)
+    var vJup = Math.sqrt(G * mSun / r);
+    bodies.push(mkBody(r, 0, 0, vJup, mJup, '#c87020'));
+    // L4 at +60 deg from Jupiter
+    var vL = Math.sqrt(G * (mSun + mJup) / r);
+    var L4a =  Math.PI / 3;
+    var L5a = -Math.PI / 3;
+    bodies.push(mkBody(r*Math.cos(L4a), r*Math.sin(L4a), -vL*Math.sin(L4a), vL*Math.cos(L4a), 0.5, PALETTE[3]));
+    bodies.push(mkBody(r*Math.cos(L5a), r*Math.sin(L5a), -vL*Math.sin(L5a), vL*Math.cos(L5a), 0.5, PALETTE[4]));
+    D['tog-lagrange'].checked = true;
+  }
+
+  colIdx = bodies.length;
+
+  // Fit viewport to the loaded bodies
+  setTimeout(function() {
+    resetView();
+    E0 = calcEnergy().te;
+  }, 50);
+
+  gel('pr-' + idx).classList.add('active');
+  showMode(PRESET_HINTS[idx]);
+}
+
+// ════════════════════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════════════════════
+// Wait for canvas to have dimensions before loading preset
+setTimeout(function() { loadPreset(1); }, 80);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

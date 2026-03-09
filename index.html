@@ -1310,11 +1310,121 @@ footer {
 
 <div class="divider"></div>
 
+<!-- ── LIVE SIM 03 - N-BODY ──────────────────────────── -->
+<div>
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">Live · Visualisation 06 of 15</p>
+      <h2 class="sec-h2">N-Body Gravitational Simulator</h2>
+    </div>
+    <span class="sec-aside">Classical Mechanics</span>
+  </div>
+
+  <div class="live-wrap">
+    <div class="live-card">
+
+      <div class="live-card-top">
+        <div class="live-meta">
+          <div class="live-eyebrow">
+            <span class="tag tag-live">● Live</span>
+            <span class="tag tag-topic" style="color:#A06B28;background:#fdf6ee;border-color:#e8cfa0;">Classical Mechanics</span>
+            <span class="tag tag-diff">Intermediate</span>
+          </div>
+          <h3 class="live-title">N-Body Gravitational Simulator</h3>
+          <p class="live-desc">Click to place masses anywhere on the canvas, then drag to set initial velocity. The simulation integrates Newton's law of gravitation in real time using a 4th-order Runge-Kutta scheme. Reproduce stable figure-8 choreographies, slingshot trajectories, chaotic three-body divergence, and Lagrange-point libration. Scroll to zoom, right-drag to pan, and watch energy conservation tracked live.</p>
+        </div>
+        <div class="live-actions">
+          <a href="nbody.html" target="_blank" class="btn-ghost">Open Simulation ↗</a>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="instr-panel">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ Hide':'▼ How to use';">
+          <span class="instr-label">How to use</span>
+          <button class="instr-toggle">▼ How to use</button>
+        </div>
+        <div class="instr-body">
+          <div class="instr-steps">
+            <div class="instr-step">
+              <span class="instr-n">1</span>
+              <p class="instr-text"><b>Click the canvas</b> to place a body at that position. The mass is set by the new mass slider in the sidebar.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">2</span>
+              <p class="instr-text"><b>Click and drag</b> to set an initial velocity. The dashed arrow shows direction and magnitude; release to launch the body.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">3</span>
+              <p class="instr-text"><b>Right-click a body</b> to remove it. Right-click and drag on empty space to pan the view.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">4</span>
+              <p class="instr-text"><b>Scroll to zoom</b> in and out, centred on the cursor. Use the fit button in the sidebar to frame all bodies.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">5</span>
+              <p class="instr-text"><b>Load a preset</b> from the sidebar to instantly set up classic scenarios: figure-8 orbit, solar system, binary star, chaotic 3-body, slingshot, or Lagrange points.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">6</span>
+              <p class="instr-text"><b>Open the theory panel</b> at the bottom of the canvas for the physics behind the simulation, including conservation laws, Lagrange point stability, and what to look for in each preset.</p>
+            </div>
+          </div>
+          <div class="instr-keys">
+            <span class="key">Click</span><span class="key-sep">place body</span>
+            <span class="key">Drag</span><span class="key-sep">set velocity</span>
+            <span class="key">Right-click body</span><span class="key-sep">remove</span>
+            <span class="key">Right-drag</span><span class="key-sep">pan view</span>
+            <span class="key">Scroll</span><span class="key-sep">zoom</span>
+            <span class="key">Fit button</span><span class="key-sep">frame all bodies</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <a href="nbody.html" target="_blank" class="sim-preview" aria-label="Open N-Body Gravitational Simulator" style="background:#020408;">
+        <canvas class="preview-canvas" id="nbodyPrev"></canvas>
+        <div class="preview-overlay">
+          <div class="preview-cta">
+            <span class="preview-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="10" stroke="white" stroke-width="1.2" opacity="0.6"/>
+                <polygon points="9,7 16,11 9,15" fill="white"/>
+              </svg>
+            </span>
+            <span class="preview-label">Open Interactive Simulation</span>
+            <span class="preview-sub">Opens in a new tab</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="live-card-foot">
+        <span class="chip">Click-to-place masses</span>
+        <span class="chip">Velocity drag</span>
+        <span class="chip">RK4 integrator</span>
+        <span class="chip">Collision merging</span>
+        <span class="chip">Energy readout</span>
+        <span class="chip">Zoom &amp; pan</span>
+        <span class="chip">Force vectors</span>
+        <span class="chip">Lagrange points</span>
+        <span class="chip">6 presets</span>
+        <span class="chip">Theory panel</span>
+        <span class="chip">60 fps</span>
+        <span class="chip">Zero dependencies</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
 <!-- ── COMING SOON ───────────────────────────────────── -->
 <div id="coming-soon">
   <div class="sec-head">
     <div>
-      <p class="sec-super">Planned · 13 visualisations in development</p>
+      <p class="sec-super">Planned · 11 visualisations in development</p>
       <h2 class="sec-h2">What's Next</h2>
     </div>
     <span class="sec-aside">2025 - 2026</span>
@@ -1372,7 +1482,7 @@ footer {
       <div class="topic-label">
         <span class="topic-dot" style="background:#A06B28;"></span>
         <span class="topic-name">Classical Mechanics</span>
-        <span class="topic-n">3 visualisations</span>
+        <span class="topic-n">1 live · 2 soon</span>
       </div>
       <div class="card-row">
 
@@ -1384,17 +1494,6 @@ footer {
             <span class="c-chip">Multi-trajectory</span>
             <span class="c-chip">Energy contours</span>
             <span class="c-chip">Poincaré section</span>
-          </div>
-        </div>
-
-        <div class="c-card t-mech">
-          <div class="c-top"><span class="c-num">06</span><span class="c-soon">Soon</span></div>
-          <div class="c-title">N-Body Gravitational Simulator</div>
-          <p class="c-desc">Click to place masses, drag to set velocities. Stable orbits, slingshot trajectories, and chaotic three-body motion all emerge directly from Newton's law.</p>
-          <div class="c-chips">
-            <span class="c-chip">Click-to-place</span>
-            <span class="c-chip">Velocity drag</span>
-            <span class="c-chip">Collision merging</span>
           </div>
         </div>
 
@@ -1417,7 +1516,7 @@ footer {
       <div class="topic-label">
         <span class="topic-dot" style="background:#2A7055;"></span>
         <span class="topic-name">Waves &amp; Optics</span>
-        <span class="topic-n">1 live · 2 soon</span>
+        <span class="topic-n">2 soon</span>
       </div>
       <div class="card-row">
 
@@ -1442,21 +1541,6 @@ footer {
             <span class="c-chip">Observer placement</span>
           </div>
         </div>
-
-        <a href="snells_law.html" target="_blank" class="c-card t-wave" style="text-decoration:none;cursor:pointer;">
-          <div class="c-top"><span class="c-num">10</span><span class="tag tag-live" style="font-size:0.5rem;padding:0.14rem 0.42rem;">● Live</span></div>
-          <div class="c-title">Snell's Law &amp; Total Internal Reflection</div>
-          <p class="c-desc">Drag the ray tip to set incidence angle. Slide n₁ and n₂ to change media. Watch refraction, TIR, and the evanescent field respond in real time.</p>
-          <div class="c-chips">
-            <span class="c-chip">Drag ray</span>
-            <span class="c-chip">n₁/n₂ sliders</span>
-            <span class="c-chip">Critical angle</span>
-            <span class="c-chip">Evanescent field</span>
-            <span class="c-chip">Wavefronts</span>
-            <span class="c-chip">Fresnel R/T</span>
-            <span class="c-chip">8 presets</span>
-          </div>
-        </a>
 
       </div>
     </div>
@@ -1799,6 +1883,140 @@ footer {
     // n labels
     ctx.fillStyle='rgba(122,184,212,0.4)'; ctx.font='8px Orbitron,monospace';
     ctx.fillText('n\u2081=1.00',12,bY-10); ctx.fillText('n\u2082=1.50',12,bY+18);
+
+    requestAnimationFrame(draw);
+  }
+
+  var ro = new ResizeObserver(function() { resize(); });
+  ro.observe(cv.parentElement);
+  resize();
+  draw();
+}());
+</script>
+
+
+<script>
+/* ── N-Body preview canvas ── */
+(function() {
+  var cv = document.getElementById('nbodyPrev');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var t = 0;
+
+  function resize() {
+    cv.width  = cv.offsetWidth;
+    cv.height = cv.offsetHeight;
+  }
+
+  // Simulate a simple 3-body figure-8-like preview (visual only, not physics)
+  // Three bodies orbit a common barycentre with trails
+  var TRAIL_LEN = 120;
+  var bodies = [
+    { phase: 0,        r: 0.18, speed: 1.0,   col: '#FF9500', trail: [] },
+    { phase: Math.PI * 2/3, r: 0.18, speed: 1.0, col: '#00B4FF', trail: [] },
+    { phase: Math.PI * 4/3, r: 0.18, speed: 1.0, col: '#00FFCC', trail: [] },
+  ];
+  // A slow central mass
+  var centralCol = '#ffdd44';
+
+  function draw() {
+    t += 0.012;
+    var W = cv.width, H = cv.height;
+    if (!W || !H) { requestAnimationFrame(draw); return; }
+
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, W, H);
+
+    var cx = W * 0.5, cy = H * 0.5;
+    var sc = Math.min(W, H) * 0.38;
+
+    // Grid
+    ctx.strokeStyle = '#060f1c'; ctx.lineWidth = 0.5;
+    for (var x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (var y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Update positions for three orbiting bodies + a tighter inner binary feel
+    // Body 0 and 1 orbit close, body 2 orbits wider — gives visual variety
+    var configs = [
+      { a: 0.38, b: 0.13, tMul: 1.0,  phase: 0 },
+      { a: 0.38, b: 0.13, tMul: 1.0,  phase: Math.PI * 2/3 },
+      { a: 0.22, b: 0.22, tMul: -0.7, phase: Math.PI * 0.15 },
+    ];
+
+    // Draw trails first
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i];
+      var cfg = configs[i];
+      // Update position
+      var angle = t * cfg.tMul + cfg.phase;
+      var bx = cx + Math.cos(angle) * cfg.a * sc + Math.sin(angle * 1.7) * cfg.b * sc * 0.3;
+      var by = cy + Math.sin(angle) * cfg.a * sc * 0.55 + Math.cos(angle * 0.9 + 1) * cfg.b * sc * 0.2;
+      b.trail.push({ x: bx, y: by });
+      if (b.trail.length > TRAIL_LEN) b.trail.shift();
+
+      // Draw trail
+      for (var k = 1; k < b.trail.length; k++) {
+        ctx.globalAlpha = (k / b.trail.length) * 0.4;
+        ctx.strokeStyle = b.col;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(b.trail[k-1].x, b.trail[k-1].y);
+        ctx.lineTo(b.trail[k].x,   b.trail[k].y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // Draw central glow
+    ctx.shadowColor = centralCol; ctx.shadowBlur = 20;
+    ctx.globalAlpha = 0.2; ctx.fillStyle = centralCol;
+    ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1; ctx.shadowBlur = 12; ctx.fillStyle = centralCol;
+    ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0; ctx.globalAlpha = 0.7; ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx, cy, 2, 0, Math.PI*2); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Draw bodies
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i];
+      var tl = b.trail;
+      if (!tl.length) continue;
+      var bx = tl[tl.length-1].x, by = tl[tl.length-1].y;
+      ctx.shadowColor = b.col; ctx.shadowBlur = 14;
+      ctx.globalAlpha = 0.25; ctx.fillStyle = b.col;
+      ctx.beginPath(); ctx.arc(bx, by, 10, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.shadowBlur = 8; ctx.fillStyle = b.col;
+      ctx.beginPath(); ctx.arc(bx, by, 4, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0; ctx.globalAlpha = 0.7; ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(bx, by, 1.2, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // Force vectors (subtle, pointing toward centre)
+    ctx.globalAlpha = 0.25;
+    for (var i = 0; i < bodies.length; i++) {
+      var tl = bodies[i].trail;
+      if (!tl.length) continue;
+      var bx = tl[tl.length-1].x, by = tl[tl.length-1].y;
+      var dx = cx - bx, dy = cy - by, d = Math.sqrt(dx*dx+dy*dy);
+      if (d < 1) continue;
+      var len = 16;
+      var ex = bx + dx/d*len, ey = by + dy/d*len;
+      ctx.strokeStyle = '#FF3C64'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(ex, ey); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+
+    // Label top-left
+    ctx.fillStyle = 'rgba(122,184,212,0.45)';
+    ctx.font = '8px Orbitron, monospace';
+    ctx.fillText('3-BODY', 12, 18);
+
+    // Energy readout bottom-left
+    ctx.fillStyle = 'rgba(0,180,255,0.4)';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.fillText('E = ' + (-2.847 + Math.sin(t*0.3)*0.002).toFixed(3) + ' kJ', 12, H - 12);
 
     requestAnimationFrame(draw);
   }

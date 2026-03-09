@@ -85,7 +85,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}
 <div id="topbar">
   <div>
     <h1>SNELL'S LAW</h1>
-    <div class="sub">REFRACTION · TOTAL INTERNAL REFLECTION · EVANESCENT FIELD</div>
+    <div class="sub">refraction · total internal reflection · evanescent field</div>
   </div>
   <div class="stats">
     <div class="stat"><span class="slbl">θ₁ (INCIDENT)</span><span class="sval" id="sv-t1">0.0°</span></div>
@@ -149,7 +149,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3)}
       <div class="crow"><span>θ₁</span><span id="rd-t1">30.0°</span></div>
       <div class="crow"><span>θ₂</span><span id="rd-t2">19.5°</span></div>
       <div class="crow"><span>θ꜀</span><span id="rd-tc">41.8°</span></div>
-      <div class="crow"><span>Status</span><span id="rd-status" style="color:#00ffcc">REFRACTION</span></div>
+      <div class="crow"><span>Status</span><span id="rd-status" style="color:#00ffcc">refraction</span></div>
       <div class="crow"><span>R (reflect.)</span><span id="rd-R">—</span></div>
       <div class="crow"><span>T (transmit.)</span><span id="rd-T">—</span></div>
     </div>
@@ -611,7 +611,7 @@ function drawEvanescent(cx, bY, t1, n1, n2) {
   ctx.globalAlpha = 0.7;
   ctx.font = 'bold 8px Orbitron, monospace';
   ctx.fillStyle = '#00ffcc';
-  ctx.fillText('EVANESCENT FIELD', cx + 24, bY + 18);
+  ctx.fillText('evanescent field', cx + 24, bY + 18);
   ctx.font = '7px Share Tech Mono, monospace';
   ctx.fillStyle = 'rgba(0,255,204,0.5)';
   ctx.fillText('\u03b4 = ' + depth.toFixed(0) + ' px', cx + 24, bY + 30);
@@ -688,11 +688,11 @@ function drawTIRLabel(cx, bY, W, H) {
   ctx.fillStyle = '#ff3c64';
   ctx.shadowColor = '#ff3c64';
   ctx.shadowBlur = 20;
-  ctx.fillText('TOTAL INTERNAL REFLECTION', cx - 140, bY + 40);
+  ctx.fillText('total internal reflection', cx - 140, bY + 40);
   ctx.shadowBlur = 0;
   ctx.font = '8px Share Tech Mono, monospace';
   ctx.fillStyle = 'rgba(255,60,100,0.7)';
-  ctx.fillText('\u03b8\u2081 > \u03b8\u1d9c  \u2014 no refracted ray exists', cx - 100, bY + 56);
+  ctx.fillText('\u03b8\u2081 > \u03b8\u1d9c \u2014 light can\'t escape', cx - 100, bY + 56);
   ctx.globalAlpha = 1;
 }
 
@@ -729,7 +729,7 @@ function drawHUD(W, H, n1, n2, t1, t2, tc, fr, isTIR) {
 
   ctx.fillStyle = 'rgba(122,184,212,0.5)';
   ctx.font = '7px Orbitron, monospace';
-  ctx.fillText('SNELL\'S LAW', ex, ey + 9);
+  ctx.fillText('Snell\'s law', ex, ey + 9);
 
   // Use pre-computed snellLHS/RHS from FC — no redundant sin calls
   ctx.font = '12px Share Tech Mono, monospace';
@@ -773,10 +773,10 @@ function updateStats(n1, n2, t1, t2, tc, fr, isTIR) {
   if (isTIR !== _lastIsTIR) {
     _lastIsTIR = isTIR;
     if (isTIR) {
-      DOM.rdStatus.textContent = 'TOTAL INT. REFL.';
+      DOM.rdStatus.textContent = 'total int. refl.';
       DOM.rdStatus.style.color = '#ff3c64';
     } else {
-      DOM.rdStatus.textContent = 'REFRACTION';
+      DOM.rdStatus.textContent = 'refraction';
       DOM.rdStatus.style.color = '#00ffcc';
     }
   }

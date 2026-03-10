@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Light Clock &amp; Time Dilation · Physviz</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#020408;--panel:rgba(2,4,12,0.97);--border:#0d2840;--blue:#00B4FF;--green:#00FFCC;--orange:#FF9500;--red:#FF3C64;--dim:#7ab8d4}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--dim);font-family:'Share Tech Mono',monospace;user-select:none}
+body{display:flex;flex-direction:column;height:100vh}
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:50px;background:var(--panel);border-bottom:1px solid var(--border);flex-shrink:0;gap:12px}
+.tb-left{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.tb-crumb{font-size:7px;letter-spacing:1.5px;opacity:.4}
+.tb-crumb a{color:var(--dim);text-decoration:none}
+.tb-crumb a:hover{color:var(--blue);opacity:1}
+h1{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:3px;color:var(--blue)}
+.tb-stats{display:flex;gap:0;flex-shrink:0}
+.stat{display:flex;flex-direction:column;align-items:flex-end;width:90px;padding:0 8px;border-left:1px solid var(--border)}
+.slbl{font-size:7px;letter-spacing:1px;opacity:.38;white-space:nowrap}
+.sval{font-size:10px;font-family:'Orbitron',sans-serif;white-space:nowrap;text-align:right}
+#stat-gamma{background:rgba(255,149,0,0.07);border:1px solid rgba(255,149,0,0.22);border-radius:4px;padding:2px 10px;width:auto}
+#stat-gamma .slbl{color:var(--orange);opacity:.65;letter-spacing:2px}
+#stat-gamma .sval{font-size:18px;color:var(--orange);text-shadow:0 0 14px rgba(255,149,0,0.7)}
+#wrap{flex:1;display:flex;overflow:hidden;min-height:0}
+#sidebar{width:210px;flex-shrink:0;background:var(--panel);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+#canvasArea{flex:1;position:relative;min-width:0;overflow:hidden}
+#cv{display:block;position:absolute;top:0;left:0}
+.pnl{border-bottom:1px solid var(--border);padding:10px 12px}
+.pt{font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:var(--blue);margin-bottom:8px;opacity:.8}
+.sr{margin-bottom:8px}
+.rl{display:flex;justify-content:space-between;font-size:8px;margin-bottom:3px}
+.rl span:last-child{color:var(--blue)}
+input[type=range]{width:100%;height:2px;-webkit-appearance:none;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:var(--blue);cursor:pointer}
+.crow{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #081825;font-size:9px}
+.crow span:last-child{color:var(--green)}
+.btn{width:100%;padding:6px 8px;margin-bottom:3px;background:transparent;border:1px solid var(--border);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:5px;justify-content:center}
+.btn:hover{border-color:var(--blue);color:#cce8ff}
+.tog-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:8px;margin-bottom:4px}
+.tog{position:relative;width:28px;height:14px;cursor:pointer;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--border);border-radius:7px;transition:.2s;border:1px solid #1a4a7a}
+.tog input:checked+.tog-track{background:rgba(0,180,255,0.25);border-color:var(--blue)}
+.tog-thumb{position:absolute;top:2px;left:2px;width:9px;height:9px;border-radius:50%;background:#4a7a9a;transition:.2s}
+.tog input:checked~.tog-thumb{left:15px;background:var(--blue)}
+.preset-btn{width:100%;padding:5px 8px;margin-bottom:3px;background:rgba(0,15,35,0.6);border:1px solid var(--border);color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:1px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+.preset-btn:hover{border-color:var(--blue);background:rgba(0,40,90,0.5);color:#cce8ff}
+.preset-btn.active{border-color:var(--green);color:var(--green);background:rgba(0,255,204,0.05)}
+.ptag{font-size:7px;padding:1px 5px;border-radius:2px;font-family:'Orbitron',sans-serif;letter-spacing:1px;border:1px solid}
+#derivDrawer{position:absolute;bottom:0;left:0;right:0;background:rgba(2,6,20,0.97);border-top:1px solid var(--border);transition:transform .3s ease;transform:translateY(100%);max-height:55vh;display:flex;flex-direction:column}
+#derivDrawer.open{transform:translateY(0)}
+#derivTab{position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:rgba(2,6,20,0.97);border:1px solid var(--border);border-bottom:none;padding:4px 18px;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:7px;letter-spacing:2px;color:var(--dim);border-radius:4px 4px 0 0;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tarrow{transition:transform .3s;display:inline-block}
+#derivDrawer.open .tarrow{transform:rotate(180deg)}
+#deriv-body{overflow-y:auto;padding:16px 24px 20px;flex:1;line-height:1.8;color:#8aacbe}
+#deriv-body h3{font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;color:var(--blue);margin:14px 0 6px;text-transform:uppercase}
+#deriv-body h3:first-child{margin-top:0}
+#deriv-body p{margin-bottom:8px;font-size:12px}
+.eq{background:rgba(0,20,50,0.6);border:1px solid var(--border);border-radius:3px;padding:8px 12px;margin:6px 0 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#c8dff0;line-height:2;overflow-x:auto;white-space:nowrap}
+.eq-grid{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:6px 0 12px;font-size:11px}
+.eq-lhs{font-family:'Share Tech Mono',monospace;color:#c8dff0}
+.eq-rhs{color:#6a8ea0;font-size:10px;padding-top:1px}
+#bottombar{flex-shrink:0;display:flex;align-items:center;gap:16px;padding:4px 14px;background:rgba(0,3,10,0.95);border-top:1px solid var(--border);font-size:7px}
+#bottombar span{opacity:.4}
+#bottombar span b{opacity:1;color:var(--dim)}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="tb-left">
+    <div class="tb-crumb"><a href="index.html">home</a> › <a href="#">special relativity</a> › light clock</div>
+    <h1>LIGHT CLOCK</h1>
+  </div>
+  <div class="tb-stats">
+    <div class="stat" id="stat-gamma"><span class="slbl">Lorentz factor γ</span><span class="sval" id="sv-gamma">1.0000</span></div>
+    <div class="stat"><span class="slbl">velocity β = v/c</span><span class="sval" style="color:var(--blue)" id="sv-beta">0.000</span></div>
+    <div class="stat"><span class="slbl">moving ticks</span><span class="sval" style="color:var(--orange)" id="sv-tick-m">0</span></div>
+    <div class="stat"><span class="slbl">rest ticks</span><span class="sval" style="color:var(--green)" id="sv-tick-r">0</span></div>
+    <div class="stat"><span class="slbl">time ratio</span><span class="sval" id="sv-ratio">1.000</span></div>
+  </div>
+</div>
+
+<div id="wrap">
+  <div id="sidebar">
+    <div class="pnl">
+      <div class="pt">Simulation</div>
+      <button class="btn" id="pauseBtn" onclick="togglePause()">&#9646;&#9646; pause</button>
+      <button class="btn" onclick="resetSim()" style="border-color:rgba(255,149,0,.35);color:#c87020;margin-top:2px">&#x21ba; reset</button>
+      <div class="sr" style="margin-top:10px">
+        <div class="rl"><span>velocity β = v/c</span><span id="lbl-beta">0.000</span></div>
+        <input type="range" id="sl-beta" min="0" max="999" value="0" oninput="onBeta(this.value)">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>anim speed</span><span id="lbl-speed">1.0x</span></div>
+        <input type="range" id="sl-speed" min="1" max="40" value="10" oninput="onSpeed(this.value)">
+      </div>
+      <div class="sr">
+        <div class="rl"><span>mirror gap</span><span id="lbl-gap">120</span></div>
+        <input type="range" id="sl-gap" min="40" max="200" value="120" oninput="onGap(this.value)">
+      </div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Display</div>
+      <div class="tog-row"><span>path trace</span><label class="tog"><input type="checkbox" id="tog-trace" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+      <div class="tog-row"><span>geometric derivation</span><label class="tog"><input type="checkbox" id="tog-geo" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+      <div class="tog-row"><span>tick counters</span><label class="tog"><input type="checkbox" id="tog-ticks" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+      <div class="tog-row"><span>velocity arrow</span><label class="tog"><input type="checkbox" id="tog-vel" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Readout</div>
+      <div class="crow"><span>β = v/c</span><span id="rd-beta">0.000</span></div>
+      <div class="crow"><span>γ</span><span id="rd-gamma">1.0000</span></div>
+      <div class="crow"><span>photon path</span><span id="rd-L">1.000L</span></div>
+      <div class="crow"><span>rest ticks</span><span id="rd-tr">0</span></div>
+      <div class="crow"><span>moving ticks</span><span id="rd-tm">0</span></div>
+      <div class="crow"><span>tick ratio t/t′</span><span id="rd-ratio">1.000</span></div>
+    </div>
+    <div class="pnl">
+      <div class="pt">Presets</div>
+      <button class="preset-btn active" id="pr-0" onclick="loadPreset(0)"><span>at rest</span><span class="ptag" style="color:var(--green);border-color:var(--green)">β=0</span></button>
+      <button class="preset-btn" id="pr-1" onclick="loadPreset(1)"><span>slow motion</span><span class="ptag" style="color:var(--blue);border-color:var(--blue)">β=0.3</span></button>
+      <button class="preset-btn" id="pr-2" onclick="loadPreset(2)"><span>half light speed</span><span class="ptag" style="color:var(--blue);border-color:var(--blue)">β=0.5</span></button>
+      <button class="preset-btn" id="pr-3" onclick="loadPreset(3)"><span>relativistic</span><span class="ptag" style="color:var(--orange);border-color:var(--orange)">β=0.8</span></button>
+      <button class="preset-btn" id="pr-4" onclick="loadPreset(4)"><span>ultra-relativistic</span><span class="ptag" style="color:var(--red);border-color:var(--red)">β=0.95</span></button>
+      <button class="preset-btn" id="pr-5" onclick="loadPreset(5)"><span>near light speed</span><span class="ptag" style="color:var(--red);border-color:var(--red)">β=0.995</span></button>
+    </div>
+  </div>
+
+  <div id="canvasArea">
+    <canvas id="cv"></canvas>
+    <div id="derivDrawer">
+      <div id="derivTab" onclick="toggleDeriv()">
+        <span class="tarrow">▲</span> geometric derivation
+      </div>
+      <div id="deriv-body">
+        <h3>The Light Clock</h3>
+        <p>Two parallel mirrors with a photon bouncing between them. Each round trip is one tick. In its own rest frame the clock ticks at a constant rate set only by the mirror separation L.</p>
+        <h3>Why the moving clock ticks slower</h3>
+        <p>In the lab frame the moving clock drifts horizontally at speed v. The photon must travel a diagonal path to reach the far mirror — it covers more distance, so it takes longer, even though it still moves at c.</p>
+        <div class="eq">d = 2L &nbsp;(rest frame, one round trip)</div>
+        <div class="eq">d′ = 2√(L² + (v·Δt′/2)²) &nbsp;(lab frame)</div>
+        <h3>Deriving γ from Pythagoras</h3>
+        <p>Because d = c·Δt and d′ = c·Δt′, squaring and rearranging gives:</p>
+        <div class="eq">c²Δt′² = 4L² + v²Δt′²</div>
+        <div class="eq">Δt′ = Δt / √(1 − v²/c²) = γ·Δt</div>
+        <div class="eq">γ = 1 / √(1 − β²) &nbsp; where β = v/c</div>
+        <div class="eq-grid">
+          <span class="eq-lhs">γ = 1</span><span class="eq-rhs">at rest: clocks agree</span>
+          <span class="eq-lhs">γ = 2</span><span class="eq-rhs">β = 0.866: moving clock at half speed</span>
+          <span class="eq-lhs">γ → ∞</span><span class="eq-rhs">β → 1: moving clock frozen</span>
+        </div>
+        <h3>Reading the triangle</h3>
+        <p>The dashed triangle drawn beneath the moving clock: green vertical leg = L, blue horizontal leg = v·Δt/2, orange hypotenuse = c·Δt′/2. The Pythagorean relation between those three lengths <em>is</em> the time dilation formula.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bottombar">
+  <span><b>β slider</b> sets velocity</span>
+  <span><b>Orange</b> = moving clock</span>
+  <span><b>Green</b> = rest clock</span>
+  <span><b>Triangle</b> shows derivation of γ</span>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ── Canvas ──────────────────────────────────────────────
+var cv  = document.getElementById('cv');
+var ctx = cv.getContext('2d');
+var W = 0, H = 0;
+
+function resize(){
+  var area = document.getElementById('canvasArea');
+  W = cv.width  = area.offsetWidth;
+  H = cv.height = area.offsetHeight;
+}
+window.addEventListener('resize', resize);
+// Defer first resize until layout is fully painted
+requestAnimationFrame(function(){ resize(); });
+
+// ── Colours ─────────────────────────────────────────────
+var BLUE   = '#00B4FF';
+var GREEN  = '#00FFCC';
+var ORANGE = '#FF9500';
+
+// ── State ────────────────────────────────────────────────
+var beta      = 0;
+var gam       = 1;
+var speed     = 1.0;
+var mirrorGap = 120;
+var paused    = false;
+var derivOpen = false;
+
+var rPhase = 0, mPhase = 0;
+var rTicks = 0, mTicks = 0;
+
+var TMAX  = 400;
+var rTr   = [], mTr = [];
+var lastTs = null;
+
+// ── DOM ──────────────────────────────────────────────────
+var D = {
+  svGam:   document.getElementById('sv-gamma'),
+  svBeta:  document.getElementById('sv-beta'),
+  svTickM: document.getElementById('sv-tick-m'),
+  svTickR: document.getElementById('sv-tick-r'),
+  svRatio: document.getElementById('sv-ratio'),
+  rdBeta:  document.getElementById('rd-beta'),
+  rdGam:   document.getElementById('rd-gamma'),
+  rdL:     document.getElementById('rd-L'),
+  rdTr:    document.getElementById('rd-tr'),
+  rdTm:    document.getElementById('rd-tm'),
+  rdRatio: document.getElementById('rd-ratio'),
+  lblBeta: document.getElementById('lbl-beta'),
+  lblSpd:  document.getElementById('lbl-speed'),
+  lblGap:  document.getElementById('lbl-gap'),
+  pBtn:    document.getElementById('pauseBtn'),
+  tTrace:  document.getElementById('tog-trace'),
+  tGeo:    document.getElementById('tog-geo'),
+  tTicks:  document.getElementById('tog-ticks'),
+  tVel:    document.getElementById('tog-vel')
+};
+
+// ── Physics ──────────────────────────────────────────────
+function calcGamma(){ gam = beta >= 0.9999 ? 9999 : 1/Math.sqrt(1-beta*beta); }
+
+// ── Draw helpers ─────────────────────────────────────────
+function mirror(cx, y, hw, col){
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = 12;
+  ctx.strokeStyle = col; ctx.lineWidth = 2.5;
+  ctx.beginPath(); ctx.moveTo(cx-hw, y); ctx.lineTo(cx+hw, y); ctx.stroke();
+  ctx.restore();
+}
+
+function photon(px, py, col){
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = 22;
+  ctx.fillStyle = col;
+  ctx.beginPath(); ctx.arc(px, py, 5, 0, 6.283); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = '#fff';
+  ctx.beginPath(); ctx.arc(px, py, 2, 0, 6.283); ctx.fill();
+  ctx.restore();
+}
+
+function flash(cx, y, hw, col){
+  ctx.save();
+  ctx.shadowColor = col; ctx.shadowBlur = 40;
+  ctx.strokeStyle = col; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx-hw, y); ctx.lineTo(cx+hw, y); ctx.stroke();
+  ctx.restore();
+}
+
+function trace(pts, col){
+  if(pts.length < 2) return;
+  ctx.save();
+  ctx.lineWidth = 1.2; ctx.strokeStyle = col;
+  for(var k=1; k<pts.length; k++){
+    ctx.globalAlpha = (k/pts.length)*0.35;
+    ctx.beginPath();
+    ctx.moveTo(pts[k-1].x, pts[k-1].y);
+    ctx.lineTo(pts[k].x,   pts[k].y);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function triangle(cx, topY, botY, halfW){
+  if(halfW < 3) return;
+  var midY = (topY+botY)*0.5;
+  var lx = cx-halfW, rx = cx+halfW;
+  ctx.save();
+  ctx.setLineDash([4,4]); ctx.lineWidth = 1;
+
+  ctx.strokeStyle = GREEN;  ctx.globalAlpha = 0.55;
+  ctx.beginPath(); ctx.moveTo(lx,botY); ctx.lineTo(lx,topY); ctx.stroke();
+
+  ctx.strokeStyle = BLUE;
+  ctx.beginPath(); ctx.moveTo(lx,botY); ctx.lineTo(rx,botY); ctx.stroke();
+
+  ctx.strokeStyle = ORANGE; ctx.globalAlpha = 0.7;
+  ctx.beginPath(); ctx.moveTo(lx,botY); ctx.lineTo(rx,topY); ctx.stroke();
+
+  ctx.setLineDash([]); ctx.globalAlpha = 1;
+  var bs = 6;
+  ctx.strokeStyle = 'rgba(122,184,212,0.4)';
+  ctx.beginPath();
+  ctx.moveTo(lx+bs, botY); ctx.lineTo(lx+bs, botY-bs); ctx.lineTo(lx, botY-bs);
+  ctx.stroke();
+
+  ctx.globalAlpha = 0.75;
+  ctx.font = '8px Share Tech Mono, monospace';
+  ctx.fillStyle = GREEN;  ctx.fillText('L', lx-12, midY+4);
+  if(halfW > 24){ ctx.fillStyle = BLUE; ctx.fillText('v\u00b7\u0394t\u2215 2', lx+3, botY+13); }
+  ctx.fillStyle = ORANGE; ctx.fillText('c\u00b7\u0394t\u2032\u2215 2', cx+4, midY-4);
+  ctx.restore();
+}
+
+// ── Main draw ────────────────────────────────────────────
+function draw(){
+  ctx.fillStyle = '#020408';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#060f1c'; ctx.lineWidth = 0.5;
+  for(var x=0; x<W; x+=50){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for(var y=0; y<H; y+=50){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Layout — gap scales with canvas height
+  var gap = Math.max(55, Math.min(mirrorGap*(H/600), H*0.32));
+  var topY = H*0.5 - gap;
+  var botY = H*0.5 + gap;
+  var hw   = Math.min(W*0.11, 80);
+  var rCx  = W*0.27;
+  var mCx  = W*0.73;
+
+  // Divider
+  ctx.save(); ctx.strokeStyle='rgba(13,40,64,0.7)'; ctx.lineWidth=1;
+  ctx.setLineDash([4,6]);
+  ctx.beginPath(); ctx.moveTo(W*0.5,0); ctx.lineTo(W*0.5,H); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+
+  // Frame labels
+  ctx.save(); ctx.font='7px Orbitron,monospace'; ctx.globalAlpha=0.4;
+  ctx.fillStyle=GREEN;   ctx.fillText('REST FRAME',   rCx-24, topY-22);
+  ctx.fillStyle=ORANGE;  ctx.fillText('MOVING FRAME', mCx-30, topY-22);
+  ctx.restore();
+
+  // ── Rest clock ──
+  var rF = rPhase%1;
+  var rN = rF<0.5 ? rF*2 : 2-rF*2;
+  var rPy = botY + (topY-botY)*rN;
+
+  if(D.tTrace.checked) trace(rTr, GREEN);
+  mirror(rCx, topY, hw, GREEN);
+  mirror(rCx, botY, hw, GREEN);
+  if(rF<0.03||rF>0.97)  flash(rCx, botY, hw, GREEN);
+  if(rF>0.47&&rF<0.53)  flash(rCx, topY, hw, GREEN);
+  photon(rCx, rPy, GREEN);
+
+  // ── Moving clock ──
+  var hH   = beta*gap;
+  var mF   = mPhase%1;
+  var mN   = mF<0.5 ? mF*2 : 2-mF*2;
+  var mPy  = botY + (topY-botY)*mN;
+  var mPr  = mF<0.5 ? mF*2 : (mF-0.5)*2;
+  var mPx  = mF<0.5 ? mCx-hH+hH*2*mPr : mCx+hH-hH*2*mPr;
+
+  if(D.tTrace.checked) trace(mTr, ORANGE);
+  mirror(mCx, topY, hw, ORANGE);
+  mirror(mCx, botY, hw, ORANGE);
+  if(mF<0.03||mF>0.97)  flash(mCx, botY, hw, ORANGE);
+  if(mF>0.47&&mF<0.53)  flash(mCx, topY, hw, ORANGE);
+  photon(mPx, mPy, ORANGE);
+
+  // ── Geo triangle ──
+  if(D.tGeo.checked && beta>0.005){
+    triangle(mCx, botY+gap*0.72-gap, botY+gap*0.72, hH);
+  }
+
+  // ── Velocity arrow ──
+  if(D.tVel.checked && beta>0.005){
+    var al = Math.min(beta*110, 90);
+    var ay = topY-38;
+    ctx.save(); ctx.strokeStyle=ORANGE; ctx.fillStyle=ORANGE;
+    ctx.globalAlpha=0.7; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(mCx-al*0.5,ay); ctx.lineTo(mCx+al*0.5,ay); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mCx+al*0.5,ay); ctx.lineTo(mCx+al*0.5-8,ay-4); ctx.lineTo(mCx+al*0.5-8,ay+4); ctx.closePath(); ctx.fill();
+    ctx.font='8px Share Tech Mono,monospace';
+    ctx.fillText('v = '+beta.toFixed(3)+'c', mCx-24, ay+14);
+    ctx.restore();
+  }
+
+  // ── Tick counters ──
+  if(D.tTicks.checked){
+    ctx.save(); ctx.globalAlpha=0.85;
+    ctx.font='7px Orbitron,monospace';
+    ctx.fillStyle=GREEN;  ctx.fillText('REST TICKS',   rCx-20, H-34);
+    ctx.fillStyle=ORANGE; ctx.fillText('MOVING TICKS', mCx-24, H-34);
+    ctx.font='13px Orbitron,monospace';
+    ctx.fillStyle=GREEN;  ctx.fillText(rTicks, rCx-6, H-16);
+    ctx.fillStyle=ORANGE; ctx.fillText(mTicks, mCx-6, H-16);
+    ctx.restore();
+  }
+
+  // ── γ on canvas ──
+  ctx.save(); ctx.font='9px Orbitron,monospace';
+  ctx.fillStyle='rgba(255,149,0,0.65)';
+  ctx.fillText('\u03b3 = '+gam.toFixed(4), mCx-28, topY-6);
+  ctx.restore();
+}
+
+// ── Loop ────────────────────────────────────────────────
+function loop(ts){
+  if(!lastTs) lastTs = ts;
+  var dt = Math.min((ts-lastTs)/1000, 0.05);
+  lastTs = ts;
+
+  if(!W||!H) resize();
+
+  if(!paused){
+    var step = dt * speed * 1.8;
+
+    var rOld = Math.floor(rPhase);
+    rPhase += step;
+    if(Math.floor(rPhase)>rOld) rTicks++;
+
+    var mOld = Math.floor(mPhase);
+    mPhase += step/gam;
+    if(Math.floor(mPhase)>mOld) mTicks++;
+
+    // traces
+    if(W>0&&H>0){
+      var g2  = Math.max(55, Math.min(mirrorGap*(H/600), H*0.32));
+      var t2  = H*0.5-g2, b2 = H*0.5+g2;
+      var rF2 = rPhase%1, rN2 = rF2<0.5?rF2*2:2-rF2*2;
+      rTr.push({x:W*0.27, y:b2+(t2-b2)*rN2});
+      if(rTr.length>TMAX) rTr.shift();
+
+      var mF2 = mPhase%1, mN2 = mF2<0.5?mF2*2:2-mF2*2;
+      var hh2 = beta*g2, mp2 = mF2<0.5?mF2*2:(mF2-0.5)*2;
+      var mx2 = mF2<0.5?W*0.73-hh2+hh2*2*mp2:W*0.73+hh2-hh2*2*mp2;
+      mTr.push({x:mx2, y:b2+(t2-b2)*mN2});
+      if(mTr.length>TMAX) mTr.shift();
+    }
+
+    updateStats();
+  }
+
+  if(W>0&&H>0) draw();
+  requestAnimationFrame(loop);
+}
+
+// ── Stats ────────────────────────────────────────────────
+function updateStats(){
+  var ratio = (rTicks>0&&mTicks>0) ? (rTicks/mTicks).toFixed(3) : gam.toFixed(3);
+  D.svGam.textContent   = gam.toFixed(4);
+  D.svBeta.textContent  = beta.toFixed(3);
+  D.svTickR.textContent = rTicks;
+  D.svTickM.textContent = mTicks;
+  D.svRatio.textContent = ratio;
+  D.rdBeta.textContent  = beta.toFixed(3);
+  D.rdGam.textContent   = gam.toFixed(4);
+  D.rdL.textContent     = gam.toFixed(3)+'L';
+  D.rdTr.textContent    = rTicks;
+  D.rdTm.textContent    = mTicks;
+  D.rdRatio.textContent = ratio;
+}
+
+// ── Controls ─────────────────────────────────────────────
+function onBeta(v){
+  beta = Math.min(v/1000, 0.9999);
+  calcGamma(); D.lblBeta.textContent = beta.toFixed(3);
+  clearPresets(); rTr=[]; mTr=[];
+}
+function onSpeed(v){ speed=v/10; D.lblSpd.textContent=speed.toFixed(1)+'x'; }
+function onGap(v)  { mirrorGap=+v; D.lblGap.textContent=mirrorGap; rTr=[]; mTr=[]; }
+
+function togglePause(){
+  paused=!paused;
+  D.pBtn.innerHTML         = paused?'&#9654; resume':'&#9646;&#9646; pause';
+  D.pBtn.style.borderColor = paused?GREEN:'';
+  D.pBtn.style.color       = paused?GREEN:'';
+}
+function resetSim(){
+  rPhase=mPhase=rTicks=mTicks=0; rTr=[]; mTr=[];
+  calcGamma(); updateStats();
+}
+function toggleDeriv(){
+  derivOpen=!derivOpen;
+  document.getElementById('derivDrawer').classList.toggle('open',derivOpen);
+}
+function clearPresets(){
+  for(var i=0;i<6;i++){ var b=document.getElementById('pr-'+i); if(b) b.classList.remove('active'); }
+}
+
+var PRESETS=[0,0.3,0.5,0.8,0.95,0.995];
+function loadPreset(i){
+  beta=PRESETS[i]; calcGamma();
+  document.getElementById('sl-beta').value=Math.round(beta*1000);
+  D.lblBeta.textContent=beta.toFixed(3);
+  resetSim(); clearPresets();
+  document.getElementById('pr-'+i).classList.add('active');
+}
+
+// Expose globals for inline handlers
+window.onBeta=onBeta; window.onSpeed=onSpeed; window.onGap=onGap;
+window.togglePause=togglePause; window.resetSim=resetSim;
+window.toggleDeriv=toggleDeriv; window.loadPreset=loadPreset;
+
+// ── Boot ─────────────────────────────────────────────────
+calcGamma(); updateStats();
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>

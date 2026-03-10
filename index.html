@@ -1420,11 +1420,113 @@ footer {
 
 <div class="divider"></div>
 
+<!-- ── LIVE SIM 04 - LIGHT CLOCK ─────────────────────── -->
+<div>
+  <div class="sec-head">
+    <div>
+      <p class="sec-super">Live · Visualisation 04 of 15</p>
+      <h2 class="sec-h2">Light Clock &amp; Time Dilation</h2>
+    </div>
+    <span class="sec-aside">Special Relativity</span>
+  </div>
+
+  <div class="live-wrap">
+    <div class="live-card">
+
+      <div class="live-card-top">
+        <div class="live-meta">
+          <div class="live-eyebrow">
+            <span class="tag tag-live">● Live</span>
+            <span class="tag tag-topic">Special Relativity</span>
+            <span class="tag tag-diff">Starter</span>
+          </div>
+          <h3 class="live-title">Light Clock &amp; Time Dilation</h3>
+          <p class="live-desc">Two mirrors, one photon bouncing between them. One clock is stationary, the other moves horizontally at any velocity up to c. As you increase &beta; = v/c, the moving photon traces a longer diagonal path, and the moving clock ticks slower. The Lorentz factor &gamma; is derived geometrically from the Pythagorean triangle formed by the vertical mirror gap, the horizontal drift, and the diagonal photon path &mdash; the same triangle that lives inside every time dilation calculation.</p>
+        </div>
+        <div class="live-actions">
+          <a href="light_clock.html" target="_blank" class="btn-ghost">Open Simulation &#x2197;</a>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="instr-panel">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'&#9650; Hide':'&#9660; How to use';">
+          <span class="instr-label">How to use</span>
+          <button class="instr-toggle">&#9660; How to use</button>
+        </div>
+        <div class="instr-body">
+          <div class="instr-steps">
+            <div class="instr-step">
+              <span class="instr-n">1</span>
+              <p class="instr-text"><b>Drag the &beta; slider</b> in the sidebar to set the velocity. Start at zero and increase slowly to see the effect build continuously.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">2</span>
+              <p class="instr-text"><b>Watch the tick counters</b> at the bottom. The rest clock (green) accumulates ticks faster than the moving clock (orange) as &beta; increases.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">3</span>
+              <p class="instr-text"><b>Enable the geometric derivation</b> overlay to see the right triangle: vertical leg L, horizontal leg v&middot;&Delta;t/2, and hypotenuse c&middot;&Delta;t&prime;/2. The Pythagorean relation between them gives &gamma;.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">4</span>
+              <p class="instr-text"><b>Load a preset</b> to jump to a specific velocity. Try &beta; = 0.866 where &gamma; = 2 exactly and the moving clock runs at half speed.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">5</span>
+              <p class="instr-text"><b>Open the theory drawer</b> at the bottom of the canvas for the full derivation of &gamma; from Pythagoras, with every step shown.</p>
+            </div>
+          </div>
+          <div class="instr-keys">
+            <span class="key">&beta; slider</span><span class="key-sep">set velocity</span>
+            <span class="key">Presets</span><span class="key-sep">jump to named velocity</span>
+            <span class="key">Geo overlay</span><span class="key-sep">show derivation triangle</span>
+            <span class="key">Theory drawer</span><span class="key-sep">full derivation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW -->
+      <a href="light_clock.html" target="_blank" class="sim-preview" aria-label="Open Light Clock &amp; Time Dilation" style="background:#020408;">
+        <canvas class="preview-canvas" id="lightClockPrev"></canvas>
+        <div class="preview-overlay">
+          <div class="preview-cta">
+            <span class="preview-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <circle cx="11" cy="11" r="10" stroke="white" stroke-width="1.2" opacity="0.6"/>
+                <polygon points="9,7 16,11 9,15" fill="white"/>
+              </svg>
+            </span>
+            <span class="preview-label">Open Interactive Simulation</span>
+            <span class="preview-sub">Opens in a new tab</span>
+          </div>
+        </div>
+      </a>
+
+      <div class="live-card-foot">
+        <span class="chip">Side-by-side clocks</span>
+        <span class="chip">&beta; = v/c slider</span>
+        <span class="chip">&gamma; readout</span>
+        <span class="chip">Tick counter</span>
+        <span class="chip">Geometric derivation</span>
+        <span class="chip">Photon trace</span>
+        <span class="chip">6 presets</span>
+        <span class="chip">Theory drawer</span>
+        <span class="chip">60 fps</span>
+        <span class="chip">Zero dependencies</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
 <!-- ── COMING SOON ───────────────────────────────────── -->
 <div id="coming-soon">
   <div class="sec-head">
     <div>
-      <p class="sec-super">Planned · 11 visualisations in development</p>
+      <p class="sec-super">Planned · 10 visualisations in development</p>
       <h2 class="sec-h2">What's Next</h2>
     </div>
     <span class="sec-aside">2025 - 2026</span>
@@ -1437,7 +1539,7 @@ footer {
       <div class="topic-label">
         <span class="topic-dot" style="background:#BE3A2A;"></span>
         <span class="topic-name">Special Relativity</span>
-        <span class="topic-n">3 visualisations</span>
+        <span class="topic-n">2 visualisations</span>
       </div>
       <div class="card-row">
 
@@ -1447,7 +1549,7 @@ footer {
           <p class="c-desc">Two observers start at the same event. Control Observer B's trajectory while A stays inertial. Watch proper time accumulate independently on each worldline until reunion.</p>
           <div class="c-chips">
             <span class="c-chip">Dual worldlines</span>
-            <span class="c-chip">τ comparison</span>
+            <span class="c-chip">&tau; comparison</span>
             <span class="c-chip">Simultaneity planes</span>
           </div>
         </div>
@@ -1455,22 +1557,11 @@ footer {
         <div class="c-card t-rel">
           <div class="c-top"><span class="c-num">03</span><span class="c-soon">Soon</span></div>
           <div class="c-title">Lorentz Boost Visualiser</div>
-          <p class="c-desc">Drag the β slider and watch Minkowski axes tilt in real time. Simultaneity shifts, length contracts, and time dilates, all emerging from the geometry of the diagram.</p>
+          <p class="c-desc">Drag the &beta; slider and watch Minkowski axes tilt in real time. Simultaneity shifts, length contracts, and time dilates, all emerging from the geometry of the diagram.</p>
           <div class="c-chips">
-            <span class="c-chip">β = v/c slider</span>
+            <span class="c-chip">&beta; = v/c slider</span>
             <span class="c-chip">Dual-frame axes</span>
             <span class="c-chip">Invariant hyperbola</span>
-          </div>
-        </div>
-
-        <div class="c-card t-rel">
-          <div class="c-top"><span class="c-num">04</span><span class="c-soon">Soon</span></div>
-          <div class="c-title">Light Clock &amp; Time Dilation</div>
-          <p class="c-desc">Two mirrors, one photon, two clocks, one stationary, one moving. Adjust velocity and watch the moving clock tick slower. γ derived geometrically alongside the animation.</p>
-          <div class="c-chips">
-            <span class="c-chip">Side-by-side clocks</span>
-            <span class="c-chip">γ readout</span>
-            <span class="c-chip">Geometric derivation</span>
           </div>
         </div>
 
@@ -2017,6 +2108,121 @@ footer {
     ctx.fillStyle = 'rgba(0,180,255,0.4)';
     ctx.font = '8px DM Mono, monospace';
     ctx.fillText('E = ' + (-2.847 + Math.sin(t*0.3)*0.002).toFixed(3) + ' kJ', 12, H - 12);
+
+    requestAnimationFrame(draw);
+  }
+
+  var ro = new ResizeObserver(function() { resize(); });
+  ro.observe(cv.parentElement);
+  resize();
+  draw();
+}());
+</script>
+
+<script>
+/* ── Light Clock preview canvas ── */
+(function() {
+  var cv = document.getElementById('lightClockPrev');
+  if (!cv) return;
+  var ctx = cv.getContext('2d');
+  var t = 0;
+  // Simulated beta oscillates between 0 and 0.9 slowly
+  var betaAnim = 0.7;
+
+  function resize() {
+    cv.width  = cv.offsetWidth;
+    cv.height = cv.offsetHeight;
+  }
+
+  function draw() {
+    t += 0.014;
+    var W = cv.width, H = cv.height;
+    if (!W || !H) { requestAnimationFrame(draw); return; }
+
+    ctx.fillStyle = '#020408';
+    ctx.fillRect(0, 0, W, H);
+
+    // Slowly oscillate beta for the preview
+    betaAnim = 0.5 + Math.sin(t * 0.18) * 0.42;
+    if (betaAnim < 0) betaAnim = 0;
+    var gamma = 1 / Math.sqrt(1 - betaAnim * betaAnim);
+
+    // Grid
+    ctx.strokeStyle = '#060f1c'; ctx.lineWidth = 0.5;
+    for (var x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (var y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    var gap   = H * 0.22;
+    var topY  = H * 0.5 - gap;
+    var botY  = H * 0.5 + gap;
+    var mW    = W * 0.14;
+
+    // Centre divider
+    ctx.strokeStyle = 'rgba(13,40,64,0.6)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4,6]);
+    ctx.beginPath(); ctx.moveTo(W*0.5,0); ctx.lineTo(W*0.5,H); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // REST clock (left) ── green
+    var rCx = W * 0.26;
+    var rFrac = (t * 0.9) % 1;
+    var rNorm = rFrac < 0.5 ? rFrac * 2 : (1 - rFrac) * 2;
+    var rPy = botY + (topY - botY) * rNorm;
+
+    ctx.shadowColor = '#00FFCC'; ctx.shadowBlur = 8;
+    ctx.strokeStyle = '#00FFCC'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(rCx - mW, topY); ctx.lineTo(rCx + mW, topY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(rCx - mW, botY); ctx.lineTo(rCx + mW, botY); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Photon glow
+    ctx.shadowColor = '#00FFCC'; ctx.shadowBlur = 18;
+    ctx.fillStyle = '#00FFCC';
+    ctx.beginPath(); ctx.arc(rCx, rPy, 5, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(rCx, rPy, 2, 0, Math.PI*2); ctx.fill();
+
+    // MOVING clock (right) ── orange, diagonal photon
+    var mCx = W * 0.74;
+    var halfH = betaAnim * gap * gamma;
+    var mFrac = (t * 0.9 / gamma) % 1;
+    var mNorm = mFrac < 0.5 ? mFrac * 2 : (1 - mFrac) * 2;
+    var mPy = botY + (topY - botY) * mNorm;
+    var mHalf = mFrac < 0.5 ? mFrac * 2 : (1 - mFrac) * 2;
+    var mPx = mFrac < 0.5
+      ? mCx - halfH + halfH * 2 * mHalf
+      : mCx + halfH - halfH * 2 * mHalf;
+
+    ctx.shadowColor = '#FF9500'; ctx.shadowBlur = 8;
+    ctx.strokeStyle = '#FF9500'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(mCx - mW, topY); ctx.lineTo(mCx + mW, topY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(mCx - mW, botY); ctx.lineTo(mCx + mW, botY); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    ctx.shadowColor = '#FF9500'; ctx.shadowBlur = 18;
+    ctx.fillStyle = '#FF9500';
+    ctx.beginPath(); ctx.arc(mPx, mPy, 5, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(mPx, mPy, 2, 0, Math.PI*2); ctx.fill();
+
+    // Gamma readout
+    ctx.font = '8px Orbitron, monospace';
+    ctx.fillStyle = 'rgba(255,149,0,0.55)';
+    ctx.fillText('\u03b3 = ' + gamma.toFixed(3), mCx - 18, topY - 8);
+
+    // Beta readout bottom
+    ctx.fillStyle = 'rgba(0,180,255,0.4)';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.fillText('\u03b2 = ' + betaAnim.toFixed(3) + 'c', 12, H - 12);
+
+    // Labels
+    ctx.font = '7px Orbitron, monospace';
+    ctx.fillStyle = 'rgba(0,255,204,0.35)';
+    ctx.fillText('REST', rCx - 10, topY - 8);
+    ctx.fillStyle = 'rgba(255,149,0,0.35)';
+    ctx.fillText('MOVING', mCx - 14, topY - 8 - 14);
 
     requestAnimationFrame(draw);
   }

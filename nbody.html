@@ -100,6 +100,13 @@ canvas{display:block;width:100%;height:100%}
 .tag-stable{color:var(--green);font-size:10px;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-left:6px}
 .tag-unstable{color:var(--red);font-size:10px;font-family:'Orbitron',sans-serif;letter-spacing:1px;margin-left:6px}
 
+/* EDITABLE VALUE LABELS */
+.rl span.editable{cursor:text;border-bottom:1px dashed rgba(0,180,255,0.35);transition:border-color .15s,color .15s}
+.rl span.editable:hover{color:#00ffcc;border-color:#00b4ff}
+.rl .val-input{display:none;width:48px;background:rgba(0,20,50,0.95);border:1px solid #00b4ff;color:#00ffcc;font-family:'Share Tech Mono',monospace;font-size:8px;text-align:right;padding:1px 4px;outline:none;border-radius:2px}
+.rl .val-input.active{display:inline-block}
+.rl span.editable.hidden{display:none}
+
 /* BOTTOMBAR */
 #bottombar{display:flex;align-items:center;gap:16px;padding:4px 14px;background:rgba(0,3,10,0.95);border-top:1px solid var(--border);font-size:7px;flex-shrink:0}
 #bottombar span{opacity:.4}
@@ -139,20 +146,20 @@ canvas{display:block;width:100%;height:100%}
       <button class="btn abtn" onclick="resetSim()" style="border-color:rgba(255,149,0,.3);color:#c87020">&#x21ba; reset</button>
       <button class="btn abtn" onclick="clearAll()" style="border-color:rgba(255,60,100,.3);color:#ff6688">&#x2715; clear all</button>
       <div class="sr" style="margin-top:9px">
-        <div class="rl"><span>time scale</span><span id="lbl-speed">1.0x</span></div>
-        <input type="range" id="sl-speed" min="1" max="40" value="10" oninput="onSpeedChange(this.value)">
+        <div class="rl"><span>time scale</span><span id="lbl-speed" class="editable">1.0x</span><input class="val-input" id="inp-speed" type="number" min="0.1" max="10" step="0.1"></div>
+        <input type="range" id="sl-speed" min="1" max="100" value="10" oninput="onSpeedChange(this.value)">
       </div>
       <div class="sr">
-        <div class="rl"><span>trail length</span><span id="lbl-trail">200</span></div>
-        <input type="range" id="sl-trail" min="0" max="800" value="200" oninput="onTrailChange(this.value)">
+        <div class="rl"><span>trail length</span><span id="lbl-trail" class="editable">200</span><input class="val-input" id="inp-trail" type="number" min="0" max="2000" step="50"></div>
+        <input type="range" id="sl-trail" min="0" max="2000" value="200" oninput="onTrailChange(this.value)">
       </div>
       <div class="sr">
-        <div class="rl"><span>new mass</span><span id="lbl-mass">10</span></div>
-        <input type="range" id="sl-mass" min="1" max="100" value="10" oninput="onMassChange(this.value)">
+        <div class="rl"><span>new mass</span><span id="lbl-mass" class="editable">10</span><input class="val-input" id="inp-mass" type="number" min="1" max="500" step="1"></div>
+        <input type="range" id="sl-mass" min="1" max="500" value="10" oninput="onMassChange(this.value)">
       </div>
       <div class="sr">
-        <div class="rl"><span>softening</span><span id="lbl-soft">5</span></div>
-        <input type="range" id="sl-soft" min="1" max="30" value="5" oninput="onSoftChange(this.value)">
+        <div class="rl"><span>softening</span><span id="lbl-soft" class="editable">5</span><input class="val-input" id="inp-soft" type="number" min="1" max="100" step="1"></div>
+        <input type="range" id="sl-soft" min="1" max="100" value="5" oninput="onSoftChange(this.value)">
       </div>
     </div>
 
@@ -170,6 +177,9 @@ canvas{display:block;width:100%;height:100%}
       <div class="pt">Display</div>
       <div class="tog-row"><span>trails</span>
         <label class="tog"><input type="checkbox" id="tog-trail" checked><div class="tog-track"></div><div class="tog-thumb"></div></label>
+      </div>
+      <div class="tog-row"><span>gravity zones</span>
+        <label class="tog"><input type="checkbox" id="tog-gzone"><div class="tog-track"></div><div class="tog-thumb"></div></label>
       </div>
       <div class="tog-row"><span>force vectors</span>
         <label class="tog"><input type="checkbox" id="tog-force"><div class="tog-track"></div><div class="tog-thumb"></div></label>
@@ -282,6 +292,7 @@ canvas{display:block;width:100%;height:100%}
   <span><b>Right-click</b> body to remove</span>
   <span><b>Scroll</b> to zoom</span>
   <span><b>Right-drag</b> to pan</span>
+  <span><b>Click</b> any value to type it directly</span>
   <span id="coords"></span>
 </div>
 
@@ -344,6 +355,16 @@ var C_ORANGE = '#FF9500';
 var C_RED    = '#FF3C64';
 var PALETTE  = ['#FF9500','#00B4FF','#00FFCC','#FF3C64','#ffdd44','#c084fc','#4ade80','#fb7185','#38bdf8','#fbbf24'];
 
+// Convert hex colour to rgba string — used by gravity zone gradient
+function hexToRgba(hex, alpha) {
+  var h = hex.replace('#','');
+  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var r = parseInt(h.slice(0,2),16);
+  var g = parseInt(h.slice(2,4),16);
+  var b = parseInt(h.slice(4,6),16);
+  return 'rgba('+r+','+g+','+b+','+alpha+')';
+}
+
 // ════════════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════════════
@@ -365,7 +386,7 @@ var D = {};
 ['sv-n','sv-mass','sv-ke','sv-pe','sv-te','sv-mom',
  'rd-n','rd-mass','rd-ke','rd-pe','rd-te','rd-derr','rd-mom',
  'pauseBtn','lbl-speed','lbl-trail','lbl-mass','lbl-soft',
- 'tog-trail','tog-force','tog-vel','tog-com','tog-lagrange','tog-merge',
+ 'tog-trail','tog-force','tog-vel','tog-com','tog-lagrange','tog-merge','tog-gzone',
  'coords','modeInd'
 ].forEach(function(id) { D[id] = gel(id); });
 
@@ -647,6 +668,39 @@ function draw() {
     }
   }
 
+  // Gravity zones — drawn before bodies so they sit underneath
+  // Each zone is a radial gradient circle whose world-space radius scales
+  // with sqrt(mass): R_zone = gravZoneScale * sqrt(mass).
+  // The ring fades from the body's colour at the edge to transparent at centre,
+  // giving a visual sense of the field falling off with distance.
+  if (D['tog-gzone'].checked) {
+    for (var i = 0; i < bodies.length; i++) {
+      var b = bodies[i];
+      var sx = w2sx(b.x), sy = w2sy(b.y);
+      // World-space zone radius: proportional to sqrt(mass) so doubling mass
+      // gives ~41% larger zone, reflecting the 1/r^2 falloff intuition.
+      var zoneR = Math.sqrt(b.mass) * 14; // world units
+      var zsr   = zoneR * zoom;           // screen pixels
+      if (zsr < 4) continue;             // skip if too small to see
+      var grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, zsr);
+      // Parse body colour to build rgba stops
+      grad.addColorStop(0,   'rgba(0,0,0,0)');
+      grad.addColorStop(0.55,'rgba(0,0,0,0)');
+      grad.addColorStop(1,    hexToRgba(b.colour, 0.10));
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(sx, sy, zsr, 0, Math.PI * 2); ctx.fill();
+      // Dashed boundary ring
+      ctx.globalAlpha = 0.28;
+      ctx.strokeStyle = b.colour;
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([3, 5]);
+      ctx.beginPath(); ctx.arc(sx, sy, zsr, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+    }
+  }
+
   // Bodies
   for (var i = 0; i < bodies.length; i++) {
     var b = bodies[i];
@@ -892,10 +946,10 @@ cv.addEventListener('wheel', function(e) {
 // ════════════════════════════════════════════════════════
 // CONTROLS
 // ════════════════════════════════════════════════════════
-function onSpeedChange(v) { timeScale = v/10; D['lbl-speed'].textContent = timeScale.toFixed(1)+'x'; }
-function onTrailChange(v) { trailLen = parseInt(v); D['lbl-trail'].textContent = trailLen; }
-function onMassChange(v)  { newMass = parseInt(v);  D['lbl-mass'].textContent  = newMass; }
-function onSoftChange(v)  { softening = parseInt(v); D['lbl-soft'].textContent = softening; }
+function onSpeedChange(v) { timeScale = v/10; D['lbl-speed'].textContent = timeScale.toFixed(1)+'x'; gel('sl-speed').value = v; }
+function onTrailChange(v) { trailLen = parseInt(v); D['lbl-trail'].textContent = trailLen; gel('sl-trail').value = v; }
+function onMassChange(v)  { newMass = parseInt(v);  D['lbl-mass'].textContent  = newMass; gel('sl-mass').value = v; }
+function onSoftChange(v)  { softening = parseFloat(v); D['lbl-soft'].textContent = softening; gel('sl-soft').value = Math.round(softening); }
 
 function togglePause() {
   paused = !paused;
@@ -918,8 +972,7 @@ function toggleTheory() {
 // ════════════════════════════════════════════════════════
 // PRESETS
 // ════════════════════════════════════════════════════════
-// All presets work in a canonical world space centred at origin (0,0).
-// The viewport is then fitted to the bodies after loading.
+// All presets in world space centred at origin. Viewport fitted after loading.
 
 var PRESET_HINTS = [
   'figure-8: three bodies, one shared orbit',
@@ -935,82 +988,115 @@ function loadPreset(idx) {
   lastPreset = idx;
 
   if (idx === 0) {
-    // ── Figure-8 — exact Chenciner-Montgomery ICs ────────────────
-    // Reference: Chenciner & Montgomery 2000, scaled to G=1000, m=1
-    // Position scale s, velocity scale v chosen so orbit ~fills view nicely
-    // With G=1000, m=1: characteristic vel = sqrt(G*m/s) ~ sqrt(1000/s)
-    // Published ICs (G=1, m=1): x = ±0.97000436, y = ∓0.24308753; vx=vy same
-    // Velocity: v3 = (-0.93240737, -0.86473146) * 2 split across 3 bodies
-    var s  = 120; // world-space position scale
-    var vs = Math.sqrt(G / s); // velocity scale: sqrt(G*m/s) with m=1 mapped to m=20 below
-    // Exact figure-8 ICs scaled by vs (published values for G=1 scaled by sqrt(G)):
-    var px1 =  0.97000436 * s, py1 = -0.24308753 * s;
-    var px2 = -px1,            py2 = -py1;
-    var px3 =  0,              py3 =  0;
-    var vx3 = -0.93240737 * vs, vy3 = -0.86473146 * vs;
-    var vx1 =  -vx3*0.5,  vy1 = -vy3*0.5;
-    var vx2 =  vx1,       vy2 = vy1;
+    // ── Figure-8 — Chenciner-Montgomery ICs scaled to G=1000, m=1
+    // Published coords (G=1, m=1): pos scale s, vel scale = sqrt(G*m/s)
+    // With G=1000, m=1: char speed = sqrt(1000). Scale positions by s=100.
+    // Published velocities (G=1): (0.466203685, 0.43236573) for body 3
+    // Scale rule: v_sim = v_pub * sqrt(G_sim / (G_pub * s)) = v_pub * sqrt(1000/100)
+    var s  = 100;
+    var vsc = Math.sqrt(G / s); // = sqrt(10) ~ 3.1623
+    // Published normalised positions (multiply by s)
+    var px1 =  0.97000436 * s,  py1 = -0.24308753 * s;
+    var px2 = -px1,              py2 = -py1;
+    var px3 =  0,                py3 =  0;
+    // Published v3 = (-0.93240737, -0.86473146) scaled by vsc
+    var vx3 = -0.93240737 * vsc, vy3 = -0.86473146 * vsc;
+    // v1 = v2 = -v3/2 (momentum conservation, equal masses)
+    var vx1 = -vx3 * 0.5, vy1 = -vy3 * 0.5;
     var m = 1;
     bodies.push(mkBody(px1, py1, vx1, vy1, m, PALETTE[0]));
-    bodies.push(mkBody(px2, py2, vx2, vy2, m, PALETTE[1]));
+    bodies.push(mkBody(px2, py2, vx1, vy1, m, PALETTE[1]));
     bodies.push(mkBody(px3, py3, vx3, vy3, m, PALETTE[2]));
 
   } else if (idx === 1) {
-    // ── Solar system — sun at origin, planets in circular orbits ──
-    var sun = mkBody(0, 0, 0, 0, 100, '#ffdd44');
-    bodies.push(sun);
-    [{r:80,  m:2, col:'#aab4c8'},
-     {r:130, m:4, col:'#00b4ff'},
-     {r:190, m:3, col:'#00ffcc'},
-     {r:270, m:5, col:'#ff9500'}
-    ].forEach(function(o) {
-      var v = Math.sqrt(G * sun.mass / o.r);
-      bodies.push(mkBody(o.r, 0, 0, v, o.m, o.col));
+    // ── Solar system — planets staggered around the sun, not collinear
+    // Staggering avoids all planets lining up on one side (which causes
+    // amplified mutual perturbations and early near-collisions)
+    var mSun = 200;
+    bodies.push(mkBody(0, 0, 0, 0, mSun, '#ffdd44'));
+    // Each planet at its own angle so they never start collinear
+    var planets = [
+      {r: 80,  m: 1,  col: '#aab4c8', ang: 0},
+      {r: 130, m: 2,  col: '#00b4ff', ang: Math.PI * 0.55},
+      {r: 195, m: 1,  col: '#00ffcc', ang: Math.PI * 1.1},
+      {r: 275, m: 3,  col: '#ff9500', ang: Math.PI * 1.65}
+    ];
+    planets.forEach(function(o) {
+      // Circular orbit: v = sqrt(G * M_sun / r) tangential to orbit
+      var v = Math.sqrt(G * mSun / o.r);
+      // Position at angle, velocity perpendicular (tangent = (-sin, cos))
+      bodies.push(mkBody(
+        o.r * Math.cos(o.ang),
+        o.r * Math.sin(o.ang),
+        -v  * Math.sin(o.ang),   // tangential x component
+         v  * Math.cos(o.ang),   // tangential y component
+        o.m, o.col
+      ));
     });
 
   } else if (idx === 2) {
-    // ── Binary star — equal mass, circular mutual orbit ─────────
-    var sep = 160, m = 40;
-    var v = Math.sqrt(G * m / (4 * sep));
-    bodies.push(mkBody(-sep, 0,  0, -v, m, PALETTE[0]));
-    bodies.push(mkBody( sep, 0,  0,  v, m, PALETTE[1]));
+    // ── Binary star — equal masses, stable circular mutual orbit
+    // Two bodies of mass m separated by 2d orbit their barycentre.
+    // Each needs v = sqrt(G*m / (4*d)) for a circular orbit.
+    // (Centripetal: m*v^2/d = G*m^2/(2d)^2 => v = sqrt(G*m/4d))
+    var d = 130, m = 50;
+    var v = Math.sqrt(G * m / (4 * d));
+    bodies.push(mkBody(-d, 0,  0, -v, m, PALETTE[0]));
+    bodies.push(mkBody( d, 0,  0,  v, m, PALETTE[1]));
 
   } else if (idx === 3) {
-    // ── Chaotic 3-body — slightly asymmetric ───────────────────
-    // Using well-known chaotic ICs that produce figure-8-like but diverging
-    var m = 20, s2 = 120;
-    bodies.push(mkBody(-s2,      0,        0,  1.5*Math.sqrt(G*m/s2)*0.8, m, PALETTE[0]));
-    bodies.push(mkBody( s2,      0,        0, -1.5*Math.sqrt(G*m/s2)*0.8, m, PALETTE[1]));
-    bodies.push(mkBody( 0,   s2*0.02,      Math.sqrt(G*m/s2)*0.3, 0,      m, PALETTE[2]));
+    // ── Chaotic 3-body — well-known asymmetric ICs that produce partner exchange
+    // Masses equal, initial positions form a near-equilateral triangle with
+    // small velocity perturbation. Ensures chaos without immediate ejection.
+    var m = 20, r = 110;
+    var ang0 = 0, ang1 = 2*Math.PI/3, ang2 = 4*Math.PI/3;
+    // Small tangential velocities in the same sense (counter-clockwise)
+    var v0 = Math.sqrt(G * m / r) * 0.55;
+    bodies.push(mkBody(r*Math.cos(ang0), r*Math.sin(ang0),
+                       -v0*Math.sin(ang0),  v0*Math.cos(ang0), m, PALETTE[0]));
+    bodies.push(mkBody(r*Math.cos(ang1), r*Math.sin(ang1),
+                       -v0*Math.sin(ang1),  v0*Math.cos(ang1), m, PALETTE[1]));
+    // Third body slightly perturbed inward to break symmetry and trigger chaos
+    var r2 = r * 0.88;
+    bodies.push(mkBody(r2*Math.cos(ang2), r2*Math.sin(ang2),
+                       -v0*Math.sin(ang2)*1.18, v0*Math.cos(ang2)*1.18, m, PALETTE[2]));
 
   } else if (idx === 4) {
-    // ── Slingshot — planet in circular orbit, probe on flyby ───
-    var star   = mkBody(0, 0, 0, 0, 100, '#ffdd44');
-    bodies.push(star);
-    var rp = 160, mp = 20;
-    var vp = Math.sqrt(G * star.mass / rp);
-    bodies.push(mkBody(-rp, 0, 0, -vp, mp, '#c87020')); // planet left of sun
-    // Probe: incoming from lower-left on hyperbolic trajectory
-    // Aim to pass just outside planet's orbit
-    bodies.push(mkBody(-380, 220, 55, -35, 1.5, PALETTE[2]));
+    // ── Slingshot — star, planet in circular orbit, probe on hyperbolic approach
+    var mStar = 150;
+    bodies.push(mkBody(0, 0, 0, 0, mStar, '#ffdd44'));
+    // Planet: circular orbit radius 160, start at left
+    var rp = 160, mp = 25;
+    var vp = Math.sqrt(G * mStar / rp);
+    bodies.push(mkBody(-rp, 0, 0, -vp, mp, '#c87020'));
+    // Probe: aimed to pass just behind the planet for a prograde gravity assist.
+    // Incoming from lower-left with a slight upward trajectory.
+    // Speed chosen just under escape velocity from star at launch distance.
+    var rLaunch = 400;
+    var vEsc = Math.sqrt(2 * G * mStar / rLaunch) * 0.72;
+    bodies.push(mkBody(-350, 300, vEsc * 0.55, -vEsc * 0.72, 1, PALETTE[2]));
 
   } else if (idx === 5) {
-    // ── Lagrange — Sun + Jupiter-analog + test particles at L4/L5
-    // In the rotating frame L4/L5 are 60 deg ahead/behind the planet.
-    // For a circular orbit the test particle needs:
-    //   same orbital radius r, velocity sqrt(G*M_total/r) where M_total = m_sun + m_planet
-    var mSun = 100, mJup = 22, r = 220;
+    // ── Lagrange — Sun + Jupiter-analog + test particles at L4 and L5
+    // In the inertial frame each body (including test particles) needs
+    // the circular orbital speed v = sqrt(G * M_total / r) tangential.
+    // Jupiter orbits the sun; test particles orbit at the same radius
+    // but offset by +/-60 deg. All three share the same angular speed.
+    var mSun = 120, mJup = 20, r = 220;
+    var mTot = mSun + mJup;
+    // Correct circular speed for all orbiting bodies around total mass centre
+    var vOrb = Math.sqrt(G * mSun / r); // planet speed around static sun approx
     var sun5 = mkBody(0, 0, 0, 0, mSun, '#ffdd44');
     bodies.push(sun5);
-    // Jupiter at angle 0 (positive x)
-    var vJup = Math.sqrt(G * mSun / r);
-    bodies.push(mkBody(r, 0, 0, vJup, mJup, '#c87020'));
-    // L4 at +60 deg from Jupiter
-    var vL = Math.sqrt(G * (mSun + mJup) / r);
-    var L4a =  Math.PI / 3;
-    var L5a = -Math.PI / 3;
-    bodies.push(mkBody(r*Math.cos(L4a), r*Math.sin(L4a), -vL*Math.sin(L4a), vL*Math.cos(L4a), 0.5, PALETTE[3]));
-    bodies.push(mkBody(r*Math.cos(L5a), r*Math.sin(L5a), -vL*Math.sin(L5a), vL*Math.cos(L5a), 0.5, PALETTE[4]));
+    // Jupiter at angle 0
+    bodies.push(mkBody(r, 0, 0, vOrb, mJup, '#c87020'));
+    // L4 at +60 deg from Jupiter; same speed, tangential
+    var a4 =  Math.PI / 3;
+    var a5 = -Math.PI / 3;
+    bodies.push(mkBody(r*Math.cos(a4), r*Math.sin(a4),
+                       -vOrb*Math.sin(a4), vOrb*Math.cos(a4), 0.5, PALETTE[3]));
+    bodies.push(mkBody(r*Math.cos(a5), r*Math.sin(a5),
+                       -vOrb*Math.sin(a5), vOrb*Math.cos(a5), 0.5, PALETTE[4]));
     D['tog-lagrange'].checked = true;
   }
 
@@ -1025,6 +1111,91 @@ function loadPreset(idx) {
   gel('pr-' + idx).classList.add('active');
   showMode(PRESET_HINTS[idx]);
 }
+
+// ════════════════════════════════════════════════════════
+// EDITABLE VALUE LABELS
+// Click a label to type a precise value directly.
+// ════════════════════════════════════════════════════════
+(function() {
+  var defs = [
+    {
+      lblId: 'lbl-speed', inpId: 'inp-speed',
+      getVal: function() { return timeScale; },
+      commit: function(v) {
+        v = Math.max(0.1, Math.min(10.0, v));
+        timeScale = v;
+        var slVal = Math.round(v * 10);
+        D['lbl-speed'].textContent = v.toFixed(1) + 'x';
+        gel('sl-speed').value = slVal;
+      },
+      fmt: function(v) { return v.toFixed(1); }
+    },
+    {
+      lblId: 'lbl-trail', inpId: 'inp-trail',
+      getVal: function() { return trailLen; },
+      commit: function(v) {
+        v = Math.max(0, Math.min(2000, Math.round(v)));
+        trailLen = v;
+        D['lbl-trail'].textContent = v;
+        gel('sl-trail').value = v;
+      },
+      fmt: function(v) { return String(Math.round(v)); }
+    },
+    {
+      lblId: 'lbl-mass', inpId: 'inp-mass',
+      getVal: function() { return newMass; },
+      commit: function(v) {
+        v = Math.max(1, Math.min(500, Math.round(v)));
+        newMass = v;
+        D['lbl-mass'].textContent = v;
+        gel('sl-mass').value = v;
+      },
+      fmt: function(v) { return String(Math.round(v)); }
+    },
+    {
+      lblId: 'lbl-soft', inpId: 'inp-soft',
+      getVal: function() { return softening; },
+      commit: function(v) {
+        v = Math.max(1, Math.min(100, Math.round(v)));
+        softening = v;
+        D['lbl-soft'].textContent = v;
+        gel('sl-soft').value = v;
+      },
+      fmt: function(v) { return String(Math.round(v)); }
+    }
+  ];
+
+  defs.forEach(function(def) {
+    var lbl = gel(def.lblId);
+    var inp = gel(def.inpId);
+    if (!lbl || !inp) return;
+
+    function openEdit() {
+      inp.value = def.fmt(def.getVal());
+      lbl.classList.add('hidden');
+      inp.classList.add('active');
+      inp.focus();
+      inp.select();
+    }
+
+    function closeEdit(save) {
+      if (save) {
+        var v = parseFloat(inp.value);
+        if (!isNaN(v)) def.commit(v);
+      }
+      inp.classList.remove('active');
+      lbl.classList.remove('hidden');
+    }
+
+    lbl.addEventListener('click', openEdit);
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter')  { closeEdit(true);  e.preventDefault(); }
+      if (e.key === 'Escape') { closeEdit(false); }
+    });
+    inp.addEventListener('blur', function() { closeEdit(true); });
+    inp.addEventListener('mousedown', function(e) { e.stopPropagation(); });
+  });
+}());
 
 // ════════════════════════════════════════════════════════
 // BOOT

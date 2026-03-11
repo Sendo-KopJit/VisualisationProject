@@ -1203,14 +1203,14 @@ footer {
 
 <div class="divider"></div>
 
-<!-- ── LIVE SIM 02 - SNELL'S LAW ─────────────────────── -->
+<!-- ── LIVE SIM 02 - LIGHT CLOCK ─────────────────────── -->
 <div>
   <div class="sec-head">
     <div>
-      <p class="sec-super">Live · Visualisation 10 of 15</p>
-      <h2 class="sec-h2">Snell's Law &amp; Total Internal Reflection</h2>
+      <p class="sec-super">Live · Visualisation 04 of 15</p>
+      <h2 class="sec-h2">Light Clock &amp; Time Dilation</h2>
     </div>
-    <span class="sec-aside">Waves &amp; Optics</span>
+    <span class="sec-aside">Special Relativity</span>
   </div>
 
   <div class="live-wrap">
@@ -1220,63 +1220,58 @@ footer {
         <div class="live-meta">
           <div class="live-eyebrow">
             <span class="tag tag-live">● Live</span>
-            <span class="tag tag-topic" style="color:#2A7055;background:#edf7f3;border-color:#b8dece;">Waves &amp; Optics</span>
-            <span class="tag tag-diff">Beginner</span>
+            <span class="tag tag-topic">Special Relativity</span>
+            <span class="tag tag-diff">Starter</span>
           </div>
-          <h3 class="live-title">Snell's Law &amp; Total Internal Reflection</h3>
-          <p class="live-desc">Drag the incident ray to set the angle of attack. Adjust n₁ and n₂ to switch between any pair of optical media (air, glass, water, diamond). Watch the refracted ray bend according to Snell's law, see Fresnel reflection and transmission coefficients update live, and cross the critical angle to trigger total internal reflection with its decaying evanescent field.</p>
+          <h3 class="live-title">Light Clock &amp; Time Dilation</h3>
+          <p class="live-desc">Two mirrors, one photon bouncing between them. One clock is stationary, the other moves horizontally at any velocity up to c. As you increase &beta; = v/c, the moving photon traces a longer diagonal path, and the moving clock ticks slower. The Lorentz factor &gamma; is derived geometrically from the Pythagorean triangle formed by the vertical mirror gap, the horizontal drift, and the diagonal photon path &mdash; the same triangle that lives inside every time dilation calculation.</p>
         </div>
         <div class="live-actions">
-          <a href="snells_law.html" target="_blank" class="btn-ghost">Open Simulation ↗</a>
+          <a href="light_clock.html" target="_blank" class="btn-ghost">Open Simulation &#x2197;</a>
         </div>
       </div>
 
       <!-- INSTRUCTIONS -->
       <div class="instr-panel">
-        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ Hide':'▼ How to use';">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'&#9650; Hide':'&#9660; How to use';">
           <span class="instr-label">How to use</span>
-          <button class="instr-toggle">▼ How to use</button>
+          <button class="instr-toggle">&#9660; How to use</button>
         </div>
         <div class="instr-body">
           <div class="instr-steps">
             <div class="instr-step">
               <span class="instr-n">1</span>
-              <p class="instr-text"><b>Drag the ray tip</b>: the glowing yellow dot at the end of the incident ray. Moving it left or right changes θ₁, the angle of incidence.</p>
+              <p class="instr-text"><b>Drag the &beta; slider</b> in the sidebar to set the velocity. Start at zero and increase slowly to see the effect build continuously.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">2</span>
-              <p class="instr-text"><b>Adjust n₁ and n₂</b> using the sidebar sliders to change the refractive indices of the upper and lower media.</p>
+              <p class="instr-text"><b>Watch the tick counters</b> at the bottom. The rest clock (green) accumulates ticks faster than the moving clock (orange) as &beta; increases.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">3</span>
-              <p class="instr-text"><b>Find the critical angle</b>: set n₁ &gt; n₂ (e.g. glass → air) and slowly increase θ₁. The refracted ray bends further until it disappears entirely.</p>
+              <p class="instr-text"><b>Enable the geometric derivation</b> overlay to see the right triangle: vertical leg L, horizontal leg v&middot;&Delta;t/2, and hypotenuse c&middot;&Delta;t&prime;/2. The Pythagorean relation between them gives &gamma;.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">4</span>
-              <p class="instr-text"><b>Total Internal Reflection</b>: once θ₁ exceeds θ꜀, all light reflects. Watch the evanescent field glow just below the boundary.</p>
+              <p class="instr-text"><b>Load a preset</b> to jump to a specific velocity. Try &beta; = 0.866 where &gamma; = 2 exactly and the moving clock runs at half speed.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">5</span>
-              <p class="instr-text"><b>Drag the boundary</b> up or down to reposition the interface. Use presets in the sidebar for classic scenarios like optical fibre or diamond.</p>
-            </div>
-            <div class="instr-step">
-              <span class="instr-n">6</span>
-              <p class="instr-text"><b>Read the Fresnel coefficients</b> R and T in the sidebar: they show how much light is reflected vs transmitted at each angle.</p>
+              <p class="instr-text"><b>Open the theory drawer</b> at the bottom of the canvas for the full derivation of &gamma; from Pythagoras, with every step shown.</p>
             </div>
           </div>
           <div class="instr-keys">
-            <span class="key">Drag ray tip</span><span class="key-sep">set θ₁</span>
-            <span class="key">Drag boundary</span><span class="key-sep">move interface</span>
-            <span class="key">n₁ / n₂ sliders</span><span class="key-sep">change media</span>
-            <span class="key">θ₁ slider</span><span class="key-sep">precise angle control</span>
-            <span class="key">Presets</span><span class="key-sep">load named scenarios</span>
+            <span class="key">&beta; slider</span><span class="key-sep">set velocity</span>
+            <span class="key">Presets</span><span class="key-sep">jump to named velocity</span>
+            <span class="key">Geo overlay</span><span class="key-sep">show derivation triangle</span>
+            <span class="key">Theory drawer</span><span class="key-sep">full derivation</span>
           </div>
         </div>
       </div>
 
       <!-- PREVIEW -->
-      <a href="snells_law.html" target="_blank" class="sim-preview" aria-label="Open Snell's Law Simulator" style="background:#020408;">
-        <canvas class="preview-canvas" id="snellPrev"></canvas>
+      <a href="light_clock.html" target="_blank" class="sim-preview" aria-label="Open Light Clock &amp; Time Dilation" style="background:#020408;">
+        <canvas class="preview-canvas" id="lightClockPrev"></canvas>
         <div class="preview-overlay">
           <div class="preview-cta">
             <span class="preview-icon">
@@ -1292,14 +1287,14 @@ footer {
       </a>
 
       <div class="live-card-foot">
-        <span class="chip">Draggable ray</span>
-        <span class="chip">n₁/n₂ sliders</span>
-        <span class="chip">Critical angle θ꜀</span>
-        <span class="chip">Total internal reflection</span>
-        <span class="chip">Evanescent field</span>
-        <span class="chip">Wavefronts</span>
-        <span class="chip">Fresnel R/T</span>
-        <span class="chip">8 presets</span>
+        <span class="chip">Side-by-side clocks</span>
+        <span class="chip">&beta; = v/c slider</span>
+        <span class="chip">&gamma; readout</span>
+        <span class="chip">Tick counter</span>
+        <span class="chip">Geometric derivation</span>
+        <span class="chip">Photon trace</span>
+        <span class="chip">6 presets</span>
+        <span class="chip">Theory drawer</span>
         <span class="chip">60 fps</span>
         <span class="chip">Zero dependencies</span>
       </div>
@@ -1307,9 +1302,6 @@ footer {
     </div>
   </div>
 </div>
-
-<div class="divider"></div>
-
 <!-- ── LIVE SIM 03 - N-BODY ──────────────────────────── -->
 <div>
   <div class="sec-head">
@@ -1420,14 +1412,14 @@ footer {
 
 <div class="divider"></div>
 
-<!-- ── LIVE SIM 04 - LIGHT CLOCK ─────────────────────── -->
+<!-- ── LIVE SIM 04 - SNELL'S LAW ─────────────────────── -->
 <div>
   <div class="sec-head">
     <div>
-      <p class="sec-super">Live · Visualisation 04 of 15</p>
-      <h2 class="sec-h2">Light Clock &amp; Time Dilation</h2>
+      <p class="sec-super">Live · Visualisation 10 of 15</p>
+      <h2 class="sec-h2">Snell's Law &amp; Total Internal Reflection</h2>
     </div>
-    <span class="sec-aside">Special Relativity</span>
+    <span class="sec-aside">Waves &amp; Optics</span>
   </div>
 
   <div class="live-wrap">
@@ -1437,58 +1429,63 @@ footer {
         <div class="live-meta">
           <div class="live-eyebrow">
             <span class="tag tag-live">● Live</span>
-            <span class="tag tag-topic">Special Relativity</span>
-            <span class="tag tag-diff">Starter</span>
+            <span class="tag tag-topic" style="color:#2A7055;background:#edf7f3;border-color:#b8dece;">Waves &amp; Optics</span>
+            <span class="tag tag-diff">Beginner</span>
           </div>
-          <h3 class="live-title">Light Clock &amp; Time Dilation</h3>
-          <p class="live-desc">Two mirrors, one photon bouncing between them. One clock is stationary, the other moves horizontally at any velocity up to c. As you increase &beta; = v/c, the moving photon traces a longer diagonal path, and the moving clock ticks slower. The Lorentz factor &gamma; is derived geometrically from the Pythagorean triangle formed by the vertical mirror gap, the horizontal drift, and the diagonal photon path &mdash; the same triangle that lives inside every time dilation calculation.</p>
+          <h3 class="live-title">Snell's Law &amp; Total Internal Reflection</h3>
+          <p class="live-desc">Drag the incident ray to set the angle of attack. Adjust n₁ and n₂ to switch between any pair of optical media (air, glass, water, diamond). Watch the refracted ray bend according to Snell's law, see Fresnel reflection and transmission coefficients update live, and cross the critical angle to trigger total internal reflection with its decaying evanescent field.</p>
         </div>
         <div class="live-actions">
-          <a href="light_clock.html" target="_blank" class="btn-ghost">Open Simulation &#x2197;</a>
+          <a href="snells_law.html" target="_blank" class="btn-ghost">Open Simulation ↗</a>
         </div>
       </div>
 
       <!-- INSTRUCTIONS -->
       <div class="instr-panel">
-        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'&#9650; Hide':'&#9660; How to use';">
+        <div class="instr-head" onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('.instr-toggle').textContent=this.nextElementSibling.classList.contains('open')?'▲ Hide':'▼ How to use';">
           <span class="instr-label">How to use</span>
-          <button class="instr-toggle">&#9660; How to use</button>
+          <button class="instr-toggle">▼ How to use</button>
         </div>
         <div class="instr-body">
           <div class="instr-steps">
             <div class="instr-step">
               <span class="instr-n">1</span>
-              <p class="instr-text"><b>Drag the &beta; slider</b> in the sidebar to set the velocity. Start at zero and increase slowly to see the effect build continuously.</p>
+              <p class="instr-text"><b>Drag the ray tip</b>: the glowing yellow dot at the end of the incident ray. Moving it left or right changes θ₁, the angle of incidence.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">2</span>
-              <p class="instr-text"><b>Watch the tick counters</b> at the bottom. The rest clock (green) accumulates ticks faster than the moving clock (orange) as &beta; increases.</p>
+              <p class="instr-text"><b>Adjust n₁ and n₂</b> using the sidebar sliders to change the refractive indices of the upper and lower media.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">3</span>
-              <p class="instr-text"><b>Enable the geometric derivation</b> overlay to see the right triangle: vertical leg L, horizontal leg v&middot;&Delta;t/2, and hypotenuse c&middot;&Delta;t&prime;/2. The Pythagorean relation between them gives &gamma;.</p>
+              <p class="instr-text"><b>Find the critical angle</b>: set n₁ &gt; n₂ (e.g. glass → air) and slowly increase θ₁. The refracted ray bends further until it disappears entirely.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">4</span>
-              <p class="instr-text"><b>Load a preset</b> to jump to a specific velocity. Try &beta; = 0.866 where &gamma; = 2 exactly and the moving clock runs at half speed.</p>
+              <p class="instr-text"><b>Total Internal Reflection</b>: once θ₁ exceeds θ꜀, all light reflects. Watch the evanescent field glow just below the boundary.</p>
             </div>
             <div class="instr-step">
               <span class="instr-n">5</span>
-              <p class="instr-text"><b>Open the theory drawer</b> at the bottom of the canvas for the full derivation of &gamma; from Pythagoras, with every step shown.</p>
+              <p class="instr-text"><b>Drag the boundary</b> up or down to reposition the interface. Use presets in the sidebar for classic scenarios like optical fibre or diamond.</p>
+            </div>
+            <div class="instr-step">
+              <span class="instr-n">6</span>
+              <p class="instr-text"><b>Read the Fresnel coefficients</b> R and T in the sidebar: they show how much light is reflected vs transmitted at each angle.</p>
             </div>
           </div>
           <div class="instr-keys">
-            <span class="key">&beta; slider</span><span class="key-sep">set velocity</span>
-            <span class="key">Presets</span><span class="key-sep">jump to named velocity</span>
-            <span class="key">Geo overlay</span><span class="key-sep">show derivation triangle</span>
-            <span class="key">Theory drawer</span><span class="key-sep">full derivation</span>
+            <span class="key">Drag ray tip</span><span class="key-sep">set θ₁</span>
+            <span class="key">Drag boundary</span><span class="key-sep">move interface</span>
+            <span class="key">n₁ / n₂ sliders</span><span class="key-sep">change media</span>
+            <span class="key">θ₁ slider</span><span class="key-sep">precise angle control</span>
+            <span class="key">Presets</span><span class="key-sep">load named scenarios</span>
           </div>
         </div>
       </div>
 
       <!-- PREVIEW -->
-      <a href="light_clock.html" target="_blank" class="sim-preview" aria-label="Open Light Clock &amp; Time Dilation" style="background:#020408;">
-        <canvas class="preview-canvas" id="lightClockPrev"></canvas>
+      <a href="snells_law.html" target="_blank" class="sim-preview" aria-label="Open Snell's Law Simulator" style="background:#020408;">
+        <canvas class="preview-canvas" id="snellPrev"></canvas>
         <div class="preview-overlay">
           <div class="preview-cta">
             <span class="preview-icon">
@@ -1504,14 +1501,14 @@ footer {
       </a>
 
       <div class="live-card-foot">
-        <span class="chip">Side-by-side clocks</span>
-        <span class="chip">&beta; = v/c slider</span>
-        <span class="chip">&gamma; readout</span>
-        <span class="chip">Tick counter</span>
-        <span class="chip">Geometric derivation</span>
-        <span class="chip">Photon trace</span>
-        <span class="chip">6 presets</span>
-        <span class="chip">Theory drawer</span>
+        <span class="chip">Draggable ray</span>
+        <span class="chip">n₁/n₂ sliders</span>
+        <span class="chip">Critical angle θ꜀</span>
+        <span class="chip">Total internal reflection</span>
+        <span class="chip">Evanescent field</span>
+        <span class="chip">Wavefronts</span>
+        <span class="chip">Fresnel R/T</span>
+        <span class="chip">8 presets</span>
         <span class="chip">60 fps</span>
         <span class="chip">Zero dependencies</span>
       </div>
@@ -1519,6 +1516,9 @@ footer {
     </div>
   </div>
 </div>
+
+<div class="divider"></div>
+
 
 <div class="divider"></div>
 

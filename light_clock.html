@@ -109,6 +109,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;heigh
       <div class="tog-row"><span>geometric derivation</span><label class="tog"><input type="checkbox" id="tog-geo" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
       <div class="tog-row"><span>tick counters</span><label class="tog"><input type="checkbox" id="tog-ticks" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
       <div class="tog-row"><span>velocity arrow</span><label class="tog"><input type="checkbox" id="tog-vel" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
+      <div class="tog-row"><span>spacetime fabric</span><label class="tog"><input type="checkbox" id="tog-fabric" checked><div class="tog-track"></div><div class="tog-thumb"></div></label></div>
     </div>
     <div class="pnl">
       <div class="pt">Readout</div>
@@ -203,6 +204,8 @@ var rTicks = 0, mTicks = 0;
 
 var TMAX  = 400;
 var rTr   = [], mTr = [];
+var rFabTr = [], mFabTr = []; // 3D fabric particle trails
+var FAB_TRAIL = 40;
 var lastTs = null;
 
 // ── DOM ──────────────────────────────────────────────────
@@ -225,7 +228,8 @@ var D = {
   tTrace:  document.getElementById('tog-trace'),
   tGeo:    document.getElementById('tog-geo'),
   tTicks:  document.getElementById('tog-ticks'),
-  tVel:    document.getElementById('tog-vel')
+  tVel:    document.getElementById('tog-vel'),
+  tFabric: document.getElementById('tog-fabric')
 };
 
 // ── Physics ──────────────────────────────────────────────
@@ -313,6 +317,126 @@ function triangle(cx, topY, botY, halfW){
 }
 
 // ── Main draw ────────────────────────────────────────────
+// ── 3D Spacetime Fabric ──────────────────────────────────
+// Simple perspective projection: world (wx, wy, wz) -> screen (sx, sy)
+// wx = horizontal, wy = depth into screen, wz = vertical (up)
+// Camera sits above and behind, looking down at the grid.
+var CAM_PITCH = 0.55;  // radians, tilt down
+var CAM_DIST  = 3.2;   // perspective distance
+
+function proj3(wx, wy, wz, cx, cy, scale){
+  // Rotate around x-axis (pitch)
+  var ry = wy * Math.cos(CAM_PITCH) - wz * Math.sin(CAM_PITCH);
+  var rz = wy * Math.sin(CAM_PITCH) + wz * Math.cos(CAM_PITCH);
+  // Perspective divide
+  var d = CAM_DIST + ry;
+  if(d < 0.1) d = 0.1;
+  var f = CAM_DIST / d;
+  return {
+    sx: cx + wx * scale * f,
+    sy: cy + rz * scale * f
+  };
+}
+
+function drawFabric(cx, cy, fabricW, fabricH, wellDepth, wellSharpness, col, photonPx, photonPy3d, trail){
+  // Draw a curved grid panel centred at (cx, cy) on the canvas
+  // wellDepth: how deep the Gaussian well is (0 = flat)
+  // wellSharpness: controls width of the Gaussian
+  var N = 10;   // grid lines each direction
+  var GW = 1.2; // half-width of grid in world units
+  var scale = fabricW * 0.38;
+
+  function wellZ(wx, wy){
+    var r2 = wx*wx + wy*wy;
+    return -wellDepth * Math.exp(-r2 * wellSharpness);
+  }
+
+  function p(wx, wy){
+    var wz = wellZ(wx, wy);
+    return proj3(wx, wy, wz, cx, cy, scale);
+  }
+
+  // Draw grid lines along wx direction
+  ctx.save();
+  ctx.lineWidth = 0.8;
+  for(var j = 0; j <= N; j++){
+    var wy = -GW + j * (2*GW/N);
+    ctx.globalAlpha = 0.18 + (j === N/2 ? 0.2 : 0);
+    ctx.strokeStyle = col;
+    ctx.beginPath();
+    var first = true;
+    for(var i = 0; i <= N*2; i++){
+      var wx = -GW + i * (2*GW/(N*2));
+      var s = p(wx, wy);
+      if(first){ ctx.moveTo(s.sx, s.sy); first=false; }
+      else ctx.lineTo(s.sx, s.sy);
+    }
+    ctx.stroke();
+  }
+  // Draw grid lines along wy direction
+  for(var i = 0; i <= N; i++){
+    var wx = -GW + i * (2*GW/N);
+    ctx.globalAlpha = 0.18 + (i === N/2 ? 0.2 : 0);
+    ctx.strokeStyle = col;
+    ctx.beginPath();
+    var first = true;
+    for(var j = 0; j <= N*2; j++){
+      var wy = -GW + j * (2*GW/(N*2));
+      var s = p(wx, wy);
+      if(first){ ctx.moveTo(s.sx, s.sy); first=false; }
+      else ctx.lineTo(s.sx, s.sy);
+    }
+    ctx.stroke();
+  }
+
+  // Well depth glow at the bottom of the well
+  if(wellDepth > 0.02){
+    var wellP  = p(0, 0);
+    var glowR  = Math.min(wellDepth * scale * 0.7, 44);
+    var glowCol = col === ORANGE ? 'rgba(255,149,0,' : 'rgba(0,255,204,';
+    var grad = ctx.createRadialGradient(wellP.sx, wellP.sy, 0, wellP.sx, wellP.sy, glowR);
+    grad.addColorStop(0, glowCol + '0.3)');
+    grad.addColorStop(1, glowCol + '0)');
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(wellP.sx, wellP.sy, glowR, 0, Math.PI*2); ctx.fill();
+  }
+
+  // Photon dot + trail on the fabric surface
+  if(photonPx !== undefined){
+    var wz3 = wellZ(photonPx, photonPy3d) + 0.04;
+    var ps = proj3(photonPx, photonPy3d, wz3, cx, cy, scale);
+
+    // Draw trail as separate segments - each gets its own stroke() so globalAlpha works
+    if(trail && trail.length > 1){
+      for(var ti = 1; ti < trail.length; ti++){
+        var tp0 = proj3(trail[ti-1].wx, trail[ti-1].wy, wellZ(trail[ti-1].wx, trail[ti-1].wy) + 0.04, cx, cy, scale);
+        var tp1 = proj3(trail[ti].wx,   trail[ti].wy,   wellZ(trail[ti].wx,   trail[ti].wy)   + 0.04, cx, cy, scale);
+        ctx.globalAlpha = (ti / trail.length) * 0.6;
+        ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(tp0.sx, tp0.sy); ctx.lineTo(tp1.sx, tp1.sy); ctx.stroke();
+      }
+    }
+
+    ctx.shadowColor = col; ctx.shadowBlur = 18;
+    ctx.globalAlpha = 0.9; ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(ps.sx, ps.sy, 4.5, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1; ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(ps.sx, ps.sy, 2, 0, Math.PI*2); ctx.fill();
+  }
+
+  // Depth label
+  if(wellDepth > 0.02){
+    ctx.globalAlpha = 0.55; ctx.fillStyle = col;
+    ctx.font = '7px Orbitron, monospace';
+    var labelP = p(-GW*0.85, -GW*0.85);
+    ctx.fillText('\u03b3 = ' + gam.toFixed(3), labelP.sx, labelP.sy - 4);
+  }
+
+  ctx.restore();
+}
+
 function draw(){
   ctx.fillStyle = '#020408';
   ctx.fillRect(0, 0, W, H);
@@ -322,10 +446,12 @@ function draw(){
   for(var x=0; x<W; x+=50){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
   for(var y=0; y<H; y+=50){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
 
-  // Layout — gap scales with canvas height
-  var gap  = Math.max(55, Math.min(mirrorGap*(H/600), H*0.32));
-  var topY = H*0.5 - gap;
-  var botY = H*0.5 + gap;
+  // Layout — upper half for 2D clocks, lower third for fabric
+  var fabricFrac = D.tFabric.checked ? 0.30 : 0; // fraction of H for fabric
+  var clockH = H * (1 - fabricFrac);
+  var gap  = Math.max(44, Math.min(mirrorGap*(clockH/600), clockH*0.32));
+  var topY = clockH*0.5 - gap;
+  var botY = clockH*0.5 + gap;
   var rCx  = W*0.27;
   var mCx  = W*0.73;
 
@@ -335,6 +461,12 @@ function draw(){
   ctx.beginPath(); ctx.moveTo(W*0.5,0); ctx.lineTo(W*0.5,H); ctx.stroke();
   ctx.setLineDash([]); ctx.restore();
 
+  // Horizontal divider between 2D clocks and 3D fabric
+  ctx.save(); ctx.strokeStyle='rgba(13,40,64,0.55)'; ctx.lineWidth=1;
+  ctx.setLineDash([2,4]);
+  ctx.beginPath(); ctx.moveTo(0, clockH); ctx.lineTo(W, clockH); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+
   // Normal (dashed vertical) for each clock
   ctx.save(); ctx.strokeStyle='rgba(100,140,170,0.22)'; ctx.lineWidth=1;
   ctx.setLineDash([5,5]);
@@ -342,12 +474,11 @@ function draw(){
   ctx.beginPath(); ctx.moveTo(mCx, topY-40); ctx.lineTo(mCx, botY+40); ctx.stroke();
   ctx.setLineDash([]); ctx.restore();
 
-  // Frame labels — clear of velocity arrow (which is at topY-38)
+  // Frame labels
   ctx.save(); ctx.font='7px Orbitron,monospace'; ctx.globalAlpha=0.4;
   ctx.fillStyle=GREEN;
   ctx.fillText('REST FRAME', rCx-22, topY-46);
   ctx.restore();
-  // Moving label drawn after velocity arrow so it doesn't conflict — done below
 
   // ── Rest clock ──
   var rF = rPhase%1;
@@ -392,12 +523,10 @@ function draw(){
     ctx.font='8px Share Tech Mono,monospace';
     ctx.fillText('v = '+beta.toFixed(3)+'c', mCx-24, ay+14);
     ctx.restore();
-    // MOVING FRAME label above the arrow
     ctx.save(); ctx.font='7px Orbitron,monospace'; ctx.globalAlpha=0.4;
     ctx.fillStyle=ORANGE; ctx.fillText('MOVING FRAME', mCx-30, topY-50);
     ctx.restore();
   } else {
-    // No arrow — label at standard position
     ctx.save(); ctx.font='7px Orbitron,monospace'; ctx.globalAlpha=0.4;
     ctx.fillStyle=ORANGE; ctx.fillText('MOVING FRAME', mCx-30, topY-46);
     ctx.restore();
@@ -407,20 +536,53 @@ function draw(){
   if(D.tTicks.checked){
     ctx.save(); ctx.globalAlpha=0.85;
     ctx.font='7px Orbitron,monospace';
-    ctx.fillStyle=GREEN;  ctx.fillText('REST TICKS',   rCx-20, H-34);
-    ctx.fillStyle=ORANGE; ctx.fillText('MOVING TICKS', mCx-24, H-34);
+    ctx.fillStyle=GREEN;  ctx.fillText('REST TICKS',   rCx-20, clockH-34);
+    ctx.fillStyle=ORANGE; ctx.fillText('MOVING TICKS', mCx-24, clockH-34);
     ctx.font='13px Orbitron,monospace';
-    ctx.fillStyle=GREEN;  ctx.fillText(rTicks, rCx-6, H-16);
-    ctx.fillStyle=ORANGE; ctx.fillText(mTicks, mCx-6, H-16);
+    ctx.fillStyle=GREEN;  ctx.fillText(rTicks, rCx-6, clockH-16);
+    ctx.fillStyle=ORANGE; ctx.fillText(mTicks, mCx-6, clockH-16);
     ctx.restore();
   }
 
-  // ── γ on canvas — below top mirror, centred on moving clock ──
+  // ── γ on canvas ──
   ctx.save(); ctx.font='9px Orbitron,monospace';
   ctx.fillStyle='rgba(255,149,0,0.65)';
   ctx.fillText('\u03b3 = '+gam.toFixed(4), mCx-28, topY+18);
   ctx.restore();
-}
+
+  // ── 3D Spacetime Fabric panels ───────────────────────────
+  if(D.tFabric.checked){
+    var fabCy  = clockH + (H - clockH) * 0.52;
+    var fabW   = W * 0.45;
+    var rFabCx = W * 0.25;
+    var mFabCx = W * 0.75;
+
+    // Well: depth proportional to (gamma-1)/gamma, sharpens with speed
+    var wellD = (gam - 1) / Math.max(gam, 1) * 1.5;
+    var wellS = 1.8 + beta * 3.0;
+
+    // Photon world-coords: both sweep horizontally across the grid (wx: -GW to +GW)
+    // Rest particle: straight line at constant wy depth row
+    // Moving particle: same horizontal sweep but wy is pulled toward 0 (well centre)
+    //   by the well depth — so it dips down into the gravity well as it crosses
+    var GW = 1.2;
+    // Both particles sweep wx from -GW to +GW using their phase
+    // They sit on a fixed wy row — wellZ(wx, wy) places them on the surface automatically
+    // The moving particle's path curves because the surface itself curves under the well
+    var PART_WY = 0.3;  // fixed depth row for both particles
+    var rSweep  = ((rPhase % 1) * 2 - 1) * GW;
+    var mSweep  = ((mPhase % 1) * 2 - 1) * GW;
+
+    drawFabric(rFabCx, fabCy, fabW, H - clockH, 0,     1.8,  GREEN,  rSweep, PART_WY, rFabTr);
+    drawFabric(mFabCx, fabCy, fabW, H - clockH, wellD, wellS, ORANGE, mSweep, PART_WY, mFabTr);
+
+    ctx.save();
+    ctx.font = '7px Orbitron, monospace'; ctx.globalAlpha = 0.45;
+    ctx.fillStyle = GREEN;  ctx.fillText('FLAT SPACETIME',   rFabCx - 34, clockH + 14);
+    ctx.fillStyle = ORANGE; ctx.fillText('CURVED SPACETIME', mFabCx - 38, clockH + 14);
+    ctx.restore();
+  }
+} // end draw()
 
 // ── Loop ────────────────────────────────────────────────
 function loop(ts){
@@ -441,10 +603,12 @@ function loop(ts){
     mPhase += step/gam;
     if(Math.floor(mPhase)>mOld) mTicks++;
 
-    // traces
+    // traces — use clockH not H so positions match the visible clock area
     if(W>0&&H>0){
-      var g2  = Math.max(55, Math.min(mirrorGap*(H/600), H*0.32));
-      var t2  = H*0.5-g2, b2 = H*0.5+g2;
+      var fabricFrac2 = D.tFabric.checked ? 0.30 : 0;
+      var clockH2 = H * (1 - fabricFrac2);
+      var g2  = Math.max(44, Math.min(mirrorGap*(clockH2/600), clockH2*0.32));
+      var t2  = clockH2*0.5-g2, b2 = clockH2*0.5+g2;
       var rF2 = rPhase%1, rN2 = rF2<0.5?rF2*2:2-rF2*2;
       rTr.push({x:W*0.27, y:b2+(t2-b2)*rN2});
       if(rTr.length>TMAX) rTr.shift();
@@ -454,6 +618,20 @@ function loop(ts){
       var mx2 = mF2<0.5?W*0.73-hh2+hh2*2*mp2:W*0.73+hh2-hh2*2*mp2;
       mTr.push({x:mx2, y:b2+(t2-b2)*mN2});
       if(mTr.length>TMAX) mTr.shift();
+    }
+
+    // Record fabric particle trails — clear when phase wraps (sweep snaps back)
+    if(D.tFabric && D.tFabric.checked && W>0 && H>0){
+      var GW3 = 1.2, PART_WY3 = 0.3;
+      var rSweep3 = ((rPhase % 1) * 2 - 1) * GW3;
+      var mSweep3 = ((mPhase % 1) * 2 - 1) * GW3;
+      // Detect wrap: if new sweep is far left but last point was far right, clear trail
+      if(rFabTr.length > 0 && rSweep3 < -GW3*0.8 && rFabTr[rFabTr.length-1].wx > GW3*0.5) rFabTr = [];
+      if(mFabTr.length > 0 && mSweep3 < -GW3*0.8 && mFabTr[mFabTr.length-1].wx > GW3*0.5) mFabTr = [];
+      rFabTr.push({wx: rSweep3, wy: PART_WY3});
+      if(rFabTr.length > FAB_TRAIL) rFabTr.shift();
+      mFabTr.push({wx: mSweep3, wy: PART_WY3});
+      if(mFabTr.length > FAB_TRAIL) mFabTr.shift();
     }
 
     updateStats();
@@ -495,7 +673,7 @@ function togglePause(){
   D.pBtn.style.color       = paused?GREEN:'';
 }
 function resetSim(){
-  rPhase=mPhase=rTicks=mTicks=0; rTr=[]; mTr=[];
+  rPhase=mPhase=rTicks=mTicks=0; rTr=[]; mTr=[]; rFabTr=[]; mFabTr=[];
   calcGamma(); updateStats();
 }
 function toggleDeriv(){

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OCR AS Physics A — Exam Method Notes</title>
+<title>OCR AS Physics A — Revision Notes by Spec Point</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -11,938 +11,1640 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
   onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false});"></script>
 <style>
-:root {
-  --ink:#1A1714; --ink2:#3D3730; --ink3:#6B6158; --ink4:#9E958D; --ink5:#C2BAB3;
-  --bg:#F8F6F3; --surf:#FFFFFF; --raised:#F0EDE9; --sunken:#EAE6E1;
-  --border:#DDD8D2; --soft:#E8E4DF; --mid:#C8C2BB;
-  --red:#BE3A2A; --redbg:#FDF1EF; --redbd:#F2D0CB;
-  --blue:#2E74B5; --bluebg:#EFF3FA; --bluebd:#C5D8EE;
-  --green:#1A6644; --greenbg:#EDF7F3; --greenbd:#B8DECE;
-  --amber:#A06B28; --amberbg:#FDF6EE; --amberbd:#E8CFA0;
-  --navy:#1F4E79; --navybg:#F0F6FC; --navybd:#C5D8EE;
-  --purple:#6B3FA0; --purplebg:#F5F0FC; --purplebd:#D4BFF2;
+:root{
+  --ink:#1A1714;--ink2:#3D3730;--ink3:#6B6158;--ink4:#9E958D;--ink5:#C2BAB3;
+  --bg:#F8F6F3;--surf:#FFFFFF;--raised:#F0EDE9;--sunken:#EAE6E1;
+  --border:#DDD8D2;--soft:#E8E4DF;--mid:#C8C2BB;
+  --red:#BE3A2A;--redbg:#FDF1EF;--redbd:#F2D0CB;
+  --blue:#2E74B5;--bluebg:#EFF3FA;--bluebd:#C5D8EE;
+  --green:#1A6644;--greenbg:#EDF7F3;--greenbd:#B8DECE;
+  --amber:#A06B28;--amberbg:#FDF6EE;--amberbd:#E8CFA0;
+  --navy:#1F4E79;--navybg:#F0F6FC;--navybd:#C5D8EE;
+  --purple:#6B3FA0;--purplebg:#F5F0FC;--purplebd:#D4BFF2;
   --serif:"Source Serif 4",Georgia,serif;
   --sans:"DM Sans",system-ui,sans-serif;
   --mono:"JetBrains Mono","Courier New",monospace;
-  --r:6px; --rl:10px;
+  --r:6px;--rl:10px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.65;-webkit-font-smoothing:antialiased;}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:100;background:rgba(248,246,243,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--soft);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
-.nav-brand{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--ink);}
+nav{position:sticky;top:0;z-index:200;background:rgba(248,246,243,.97);backdrop-filter:blur(14px);border-bottom:1px solid var(--soft);display:flex;align-items:center;justify-content:space-between;padding:0 1.75rem;height:52px;gap:1rem;}
+.nav-brand{font-family:var(--serif);font-size:.95rem;font-weight:600;color:var(--ink);white-space:nowrap;}
 .nav-brand b{color:var(--red)}
-.nav-links{display:flex;gap:0;list-style:none;flex-wrap:wrap}
-.nav-links a{font-size:.75rem;font-weight:400;color:var(--ink3);text-decoration:none;padding:.28rem .6rem;border-radius:var(--r);transition:color .12s,background .12s;white-space:nowrap;}
+.nav-links{display:flex;gap:0;list-style:none;flex-wrap:wrap;}
+.nav-links a{font-size:.72rem;color:var(--ink3);text-decoration:none;padding:.28rem .55rem;border-radius:var(--r);transition:color .12s,background .12s;white-space:nowrap;}
 .nav-links a:hover{color:var(--ink);background:var(--raised)}
 
+/* MODULE TABS */
+.module-tabs{display:flex;gap:.5rem;padding:1rem 2rem;border-bottom:1px solid var(--soft);background:var(--surf);flex-wrap:wrap;}
+.mod-tab{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:.3rem .75rem;border-radius:100px;border:1px solid var(--border);background:var(--bg);color:var(--ink4);cursor:pointer;transition:all .14s;}
+.mod-tab:hover{border-color:var(--mid);color:var(--ink2);}
+.mod-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+
 /* LAYOUT */
-.wrap{max-width:900px;margin:0 auto;padding:0 2rem 5rem}
+.wrap{max-width:1000px;margin:0 auto;padding:0 2rem 5rem;}
 
 /* HERO */
-.hero{padding:3rem 0 2rem;border-bottom:2px solid var(--blue);margin-bottom:2.5rem;}
-.hero-kicker{font-family:var(--mono);font-size:.58rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem;}
-.hero-kicker::before{content:'';width:16px;height:1px;background:var(--red)}
-.hero h1{font-family:var(--serif);font-size:2.6rem;font-weight:700;line-height:1.06;letter-spacing:-.035em;color:var(--ink);margin-bottom:.5rem;}
-.hero-sub{font-size:.875rem;color:var(--ink3);line-height:1.7;margin-bottom:1.2rem;max-width:58ch;}
-.hero-chips{display:flex;flex-wrap:wrap;gap:.4rem}
-.chip{font-family:var(--mono);font-size:.52rem;font-weight:400;letter-spacing:.06em;color:var(--ink4);background:var(--surf);border:1px solid var(--border);padding:.15rem .45rem;border-radius:100px;}
+.hero{padding:2.5rem 0 1.8rem;border-bottom:2px solid var(--blue);margin-bottom:2rem;}
+.hero-kicker{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem;}
+.hero-kicker::before{content:'';width:14px;height:1px;background:var(--red)}
+.hero h1{font-family:var(--serif);font-size:2.4rem;font-weight:700;line-height:1.08;letter-spacing:-.03em;margin-bottom:.45rem;}
+.hero-sub{font-size:.85rem;color:var(--ink3);line-height:1.7;margin-bottom:1rem;max-width:62ch;}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.35rem;}
+.chip{font-family:var(--mono);font-size:.5rem;font-weight:400;letter-spacing:.06em;color:var(--ink4);background:var(--surf);border:1px solid var(--border);padding:.13rem .4rem;border-radius:100px;}
 
-/* SECTION */
-.sec{margin-top:3rem}
-.sec-num{font-family:var(--mono);font-size:.58rem;font-weight:400;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4);margin-bottom:.3rem;}
-.sec h2{font-family:var(--serif);font-size:1.7rem;font-weight:700;letter-spacing:-.025em;color:var(--ink);border-bottom:1.5px solid var(--soft);padding-bottom:.5rem;margin-bottom:1.2rem;}
-.sec h3{font-family:var(--serif);font-size:1.05rem;font-weight:600;color:var(--blue);letter-spacing:-.015em;margin:1.8rem 0 .5rem;}
-.sec p{font-size:.875rem;color:var(--ink2);line-height:1.75;margin-bottom:.75rem}
-.sec ul,.sec ol{padding-left:1.3rem;margin-bottom:.75rem}
-.sec li{font-size:.875rem;color:var(--ink2);line-height:1.75;margin-bottom:.25rem}
+/* TWO-COLUMN LAYOUT */
+.page-body{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:calc(100vh - 52px);}
 
-/* TOC */
-.toc{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:1.2rem 1.4rem;margin-bottom:2rem;}
-.toc-title{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4);margin-bottom:.7rem;}
-.toc ol{padding-left:1.2rem;margin:0}
-.toc li{font-size:.82rem;margin-bottom:.2rem}
-.toc a{color:var(--blue);text-decoration:none}
-.toc a:hover{text-decoration:underline}
+/* SIDEBAR TOC */
+.sidebar{position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto;border-right:1px solid var(--soft);padding:1.25rem 0;background:var(--surf);}
+.sidebar-section{margin-bottom:.15rem;}
+.sidebar-mod{font-family:var(--mono);font-size:.52rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink5);padding:.4rem 1.1rem .2rem;display:block;}
+.sidebar a{display:block;font-size:.73rem;color:var(--ink3);text-decoration:none;padding:.28rem 1.1rem .28rem 1.5rem;border-left:2px solid transparent;transition:all .1s;line-height:1.35;}
+.sidebar a:hover{color:var(--ink);background:var(--raised);border-left-color:var(--mid);}
+.sidebar a.active{color:var(--blue);background:var(--bluebg);border-left-color:var(--blue);font-weight:400;}
+.sidebar a .spec-ref{font-family:var(--mono);font-size:.55rem;color:var(--ink5);display:block;}
 
-/* FORMULA BLOCK */
-.formula-block{background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:.9rem 1.2rem;margin:.75rem 0 1rem;overflow-x:auto;}
-.formula-block .katex-display{margin:.3rem 0;text-align:left}
-.formula-block .katex{font-size:1.05rem}
-.formula-label{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:500;margin-bottom:.5rem;display:block;}
-.formula-note{font-size:.78rem;color:var(--ink3);margin-top:.4rem;line-height:1.6}
+/* CONTENT */
+.content{padding:0 0 4rem 2.5rem;}
 
-/* METHOD BOX */
-.method{display:grid;grid-template-columns:3px 1fr;margin:.75rem 0 1.25rem;border-radius:0 var(--rl) var(--rl) 0;overflow:hidden;}
-.method-bar{background:var(--blue)}
-.method-inner{background:var(--bluebg);border:1px solid var(--bluebd);border-left:none;padding:.9rem 1.1rem;}
-.method-title{font-family:var(--sans);font-size:.78rem;font-weight:500;color:var(--blue);margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem;}
-.method-title::before{content:'▶';font-size:.58rem;opacity:.7}
-.method ol,.method ul{padding-left:1.15rem;margin:.3rem 0}
-.method ol li,.method ul li{font-size:.825rem;color:var(--ink2);line-height:1.65;margin-bottom:.28rem}
-.method ol li strong,.method ul li strong{color:var(--ink);font-weight:500}
-.trap{font-size:.78rem;color:var(--red);background:var(--redbg);border:1px solid var(--redbd);border-radius:var(--r);padding:.4rem .7rem;margin-top:.55rem;display:flex;gap:.4rem;align-items:flex-start;line-height:1.6}
-.trap::before{content:'⚠';flex-shrink:0;font-size:.85rem}
+/* MODULE section */
+.mod-section{margin-top:3rem;}
+.mod-section[hidden]{display:none !important;}
+.mod-header{border-bottom:2px solid var(--blue);padding-bottom:.6rem;margin-bottom:2rem;}
+.mod-num{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4);margin-bottom:.3rem;}
+.mod-title{font-family:var(--serif);font-size:1.8rem;font-weight:700;letter-spacing:-.025em;color:var(--ink);}
 
-/* DEFINITION BLOCK */
-.def-block{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin:.75rem 0 1rem;}
-.def-block-head{background:var(--ink);padding:.5rem .9rem;display:flex;align-items:baseline;gap:.6rem;}
-.def-block-head .def-term{font-family:var(--serif);font-size:.9rem;font-weight:600;color:#fff;}
-.def-block-head .def-tag{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.2);padding:.1rem .35rem;border-radius:100px;}
-.def-body{padding:.7rem .9rem;font-size:.85rem;color:var(--ink2);line-height:1.7;}
-.def-body strong{color:var(--ink);font-weight:500}
-.def-ocr{font-family:var(--mono);font-size:.78rem;color:var(--blue);background:var(--bluebg);border:1px solid var(--bluebd);border-radius:var(--r);padding:.35rem .65rem;margin-top:.4rem;display:block;line-height:1.6}
-.def-reject{font-size:.75rem;color:var(--red);margin-top:.3rem;display:block}
+/* Spec section */
+.spec-section{margin-top:2.5rem;}
+.spec-section-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1px solid var(--soft);}
+.spec-code{font-family:var(--mono);font-size:.62rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;background:var(--blue);color:#fff;padding:.18rem .5rem;border-radius:var(--r);white-space:nowrap;flex-shrink:0;}
+.spec-section h2{font-family:var(--serif);font-size:1.25rem;font-weight:700;color:var(--blue);letter-spacing:-.015em;}
 
-/* TIP */
-.tip{background:var(--greenbg);border:1px solid var(--greenbd);border-left:3px solid var(--green);border-radius:0 var(--r) var(--r) 0;padding:.65rem .9rem;margin:.6rem 0 1rem;font-size:.8rem;color:var(--green);line-height:1.6;}
-.tip strong{font-weight:500}
+/* Subsection */
+.spec-sub{margin-top:1.5rem;}
+.spec-sub-head{display:flex;align-items:baseline;gap:.6rem;margin-bottom:.75rem;}
+.spec-sub-code{font-family:var(--mono);font-size:.55rem;font-weight:500;color:var(--blue);background:var(--bluebg);border:1px solid var(--bluebd);padding:.12rem .4rem;border-radius:var(--r);white-space:nowrap;flex-shrink:0;}
+.spec-sub h3{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--ink);letter-spacing:-.01em;}
 
-/* NOTE BOX (amber) */
-.note-box{background:var(--amberbg);border:1px solid var(--amberbd);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:.65rem .9rem;margin:.6rem 0 1rem;font-size:.8rem;color:var(--amber);line-height:1.6;}
-.note-box strong{font-weight:500}
+/* Spec point row */
+.spec-point{display:grid;grid-template-columns:28px 1fr;gap:.4rem .8rem;margin:.35rem 0;padding:.5rem .6rem;border-radius:var(--r);border:1px solid transparent;transition:border-color .12s, background .12s;}
+.spec-point:hover{background:var(--raised);border-color:var(--border);}
+.sp-letter{font-family:var(--mono);font-size:.62rem;font-weight:500;color:var(--blue);background:var(--bluebg);border:1px solid var(--bluebd);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;}
+.sp-body{display:flex;flex-direction:column;gap:.4rem;}
+.sp-statement{font-size:.875rem;color:var(--ink2);line-height:1.65;}
+.sp-statement strong{color:var(--ink);font-weight:500;}
 
-/* 6-MARK LoR BOX */
-.sixmark{background:var(--purplebg);border:1px solid var(--purplebd);border-radius:var(--rl);overflow:hidden;margin:.75rem 0 1.25rem;}
-.sixmark-head{background:var(--purple);padding:.55rem 1rem;display:flex;align-items:center;justify-content:space-between;}
-.sixmark-head-title{font-family:var(--sans);font-size:.78rem;font-weight:500;color:#fff;display:flex;align-items:center;gap:.4rem;}
-.sixmark-head-title::before{content:'★';font-size:.7rem}
-.sixmark-head-badge{font-family:var(--mono);font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.25);padding:.12rem .4rem;border-radius:100px;}
-.sixmark-body{padding:.9rem 1rem;}
-.level-row{display:grid;grid-template-columns:auto 1fr;gap:.4rem .8rem;margin-bottom:.6rem;padding-bottom:.6rem;border-bottom:1px solid var(--purplebd);}
-.level-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
-.level-badge{font-family:var(--mono);font-size:.58rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .5rem;border-radius:var(--r);white-space:nowrap;align-self:start;margin-top:.1rem;}
-.lv3{background:var(--purple);color:#fff}
-.lv2{background:var(--blue);color:#fff}
-.lv1{background:var(--ink4);color:#fff}
-.level-content{font-size:.8rem;color:var(--ink2);line-height:1.65}
-.level-content em{color:var(--purple);font-style:italic;font-size:.76rem;}
-.sixmark-tip{background:rgba(107,63,160,.08);border-top:1px solid var(--purplebd);padding:.65rem 1rem;font-size:.78rem;color:var(--purple);line-height:1.6}
+/* Formula block inside spec point */
+.sp-formula{background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:0 var(--r) var(--r) 0;padding:.6rem 1rem;margin:.3rem 0;overflow-x:auto;}
+.sp-formula .katex-display{margin:.2rem 0;text-align:left;}
+.sp-formula .katex{font-size:.95rem;}
 
-/* QUICK REF TABLE */
-.ref-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:1rem 0 1.5rem;}
-.ref-table thead th{background:var(--blue);color:#fff;font-weight:500;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem .75rem;text-align:left;}
-.ref-table tbody tr:nth-child(odd){background:var(--bluebg)}
-.ref-table tbody tr:nth-child(even){background:var(--surf)}
-.ref-table td{padding:.48rem .75rem;vertical-align:top;border-bottom:1px solid var(--soft);}
-.ref-table td:first-child{font-weight:500;color:var(--blue);white-space:nowrap;font-size:.75rem;font-family:var(--mono);}
-.ref-table .katex{font-size:.86rem}
+/* Method box */
+.method{display:grid;grid-template-columns:3px 1fr;border-radius:0 var(--rl) var(--rl) 0;overflow:hidden;margin:.4rem 0;}
+.method-bar{background:var(--blue);}
+.method-inner{background:var(--bluebg);border:1px solid var(--bluebd);border-left:none;padding:.75rem 1rem;}
+.method-title{font-size:.75rem;font-weight:500;color:var(--blue);margin-bottom:.45rem;display:flex;align-items:center;gap:.35rem;}
+.method-title::before{content:'▶';font-size:.55rem;opacity:.7;}
+.method ol,.method ul{padding-left:1.1rem;margin:.25rem 0;}
+.method li{font-size:.8rem;color:var(--ink2);line-height:1.6;margin-bottom:.22rem;}
+.method li strong{color:var(--ink);font-weight:500;}
+.trap{font-size:.76rem;color:var(--red);background:var(--redbg);border:1px solid var(--redbd);border-radius:var(--r);padding:.35rem .65rem;margin-top:.45rem;display:flex;gap:.35rem;align-items:flex-start;line-height:1.55;}
+.trap::before{content:'⚠';flex-shrink:0;font-size:.82rem;}
 
-/* OBJECTIVES */
-.objectives{background:var(--navybg);border:1px solid var(--navybd);border-left:4px solid var(--navy);border-radius:0 var(--rl) var(--rl) 0;padding:1.2rem 1.4rem;margin-top:2.5rem;}
-.objectives h3{font-family:var(--sans);font-size:.75rem;font-weight:500;color:var(--navy);letter-spacing:.05em;text-transform:uppercase;margin:0 0 .8rem;}
-.objectives ul{padding-left:1.2rem}
-.objectives li{font-size:.8rem;color:var(--navy);line-height:1.68;margin-bottom:.3rem}
+/* Definition block */
+.def-block{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin:.4rem 0;}
+.def-head{background:var(--ink);padding:.42rem .8rem;display:flex;align-items:baseline;gap:.5rem;}
+.def-term{font-family:var(--serif);font-size:.85rem;font-weight:600;color:#fff;}
+.def-tag{font-family:var(--mono);font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.18);padding:.08rem .3rem;border-radius:100px;}
+.def-body{padding:.6rem .8rem;font-size:.82rem;color:var(--ink2);line-height:1.68;}
+.def-body strong{color:var(--ink);font-weight:500;}
+.def-ocr{font-family:var(--mono);font-size:.75rem;color:var(--blue);background:var(--bluebg);border:1px solid var(--bluebd);border-radius:var(--r);padding:.3rem .6rem;margin-top:.35rem;display:block;line-height:1.55;}
+.def-reject{font-size:.73rem;color:var(--red);margin-top:.25rem;display:block;}
 
-/* WRITING GUIDE */
-.writing-guide{background:var(--surf);border:1px solid var(--border);border-radius:var(--rl);padding:1rem 1.2rem;margin:.75rem 0 1rem;}
-.writing-guide-title{font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:.6rem;}
-.writing-steps{display:flex;flex-direction:column;gap:.35rem;}
-.writing-step{display:flex;gap:.7rem;align-items:flex-start;}
-.ws-num{font-family:var(--mono);font-size:.6rem;font-weight:500;background:var(--blue);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;}
-.ws-text{font-size:.8rem;color:var(--ink2);line-height:1.6}
-.ws-text strong{color:var(--ink);font-weight:500}
+/* Tip / note */
+.tip{background:var(--greenbg);border:1px solid var(--greenbd);border-left:3px solid var(--green);border-radius:0 var(--r) var(--r) 0;padding:.55rem .85rem;margin:.4rem 0;font-size:.78rem;color:var(--green);line-height:1.58;}
+.tip strong{font-weight:500;}
+.note-box{background:var(--amberbg);border:1px solid var(--amberbd);border-left:3px solid var(--amber);border-radius:0 var(--r) var(--r) 0;padding:.55rem .85rem;margin:.4rem 0;font-size:.78rem;color:var(--amber);line-height:1.58;}
 
-@media print{nav{display:none}.wrap{padding:0}.method{break-inside:avoid}.formula-block{break-inside:avoid}.sixmark{break-inside:avoid}}
-@media(max-width:640px){.wrap{padding:0 1rem 3rem}.hero h1{font-size:1.9rem}nav{padding:0 1rem}}
+/* 6-mark LoR */
+.sixmark{background:var(--purplebg);border:1px solid var(--purplebd);border-radius:var(--rl);overflow:hidden;margin:.6rem 0;}
+.sixmark-head{background:var(--purple);padding:.48rem .9rem;display:flex;align-items:center;justify-content:space-between;}
+.sixmark-title{font-size:.75rem;font-weight:500;color:#fff;display:flex;align-items:center;gap:.35rem;}
+.sixmark-title::before{content:'★';font-size:.68rem;}
+.sixmark-badge{font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.22);padding:.1rem .35rem;border-radius:100px;}
+.sixmark-body{padding:.8rem .9rem;display:flex;flex-direction:column;gap:.5rem;}
+.level-row{display:grid;grid-template-columns:64px 1fr;gap:.35rem .7rem;}
+.lv-badge{font-family:var(--mono);font-size:.55rem;font-weight:500;padding:.18rem .42rem;border-radius:var(--r);text-align:center;align-self:start;margin-top:.1rem;}
+.lv3{background:var(--purple);color:#fff;}
+.lv2{background:var(--blue);color:#fff;}
+.lv1{background:var(--ink4);color:#fff;}
+.level-content{font-size:.78rem;color:var(--ink2);line-height:1.62;}
+.level-content em{color:var(--purple);font-style:italic;font-size:.73rem;}
+
+/* Writing guide */
+.writing-steps{display:flex;flex-direction:column;gap:.35rem;margin:.5rem 0;}
+.ws{display:flex;gap:.65rem;align-items:flex-start;}
+.ws-n{font-family:var(--mono);font-size:.58rem;font-weight:500;background:var(--blue);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.12rem;}
+.ws-t{font-size:.8rem;color:var(--ink2);line-height:1.58;}
+.ws-t strong{color:var(--ink);font-weight:500;}
+
+/* Quick ref table */
+.ref-table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.75rem 0 1.25rem;}
+.ref-table thead th{background:var(--blue);color:#fff;font-weight:500;font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.48rem .7rem;text-align:left;}
+.ref-table tbody tr:nth-child(odd){background:var(--bluebg);}
+.ref-table tbody tr:nth-child(even){background:var(--surf);}
+.ref-table td{padding:.44rem .7rem;vertical-align:top;border-bottom:1px solid var(--soft);}
+.ref-table td:first-child{font-weight:500;color:var(--blue);white-space:nowrap;font-size:.72rem;font-family:var(--mono);}
+.ref-table .katex{font-size:.84rem;}
+
+/* Objectives */
+.objectives{background:var(--navybg);border:1px solid var(--navybd);border-left:4px solid var(--navy);border-radius:0 var(--rl) var(--rl) 0;padding:1rem 1.2rem;margin-top:2rem;}
+.objectives h3{font-family:var(--sans);font-size:.72rem;font-weight:500;color:var(--navy);letter-spacing:.05em;text-transform:uppercase;margin:0 0 .7rem;}
+.objectives ul{padding-left:1.15rem;}
+.objectives li{font-size:.78rem;color:var(--navy);line-height:1.65;margin-bottom:.28rem;}
+
+/* Progress badges */
+.spec-progress{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;}
+.prog-badge{font-family:var(--mono);font-size:.5rem;font-weight:400;letter-spacing:.08em;text-transform:uppercase;padding:.1rem .38rem;border-radius:100px;border:1px solid;white-space:nowrap;}
+.prog-know{color:var(--green);border-color:var(--greenbd);background:var(--greenbg);}
+.prog-learn{color:var(--amber);border-color:var(--amberbd);background:var(--amberbg);}
+.prog-recall{color:var(--blue);border-color:var(--bluebd);background:var(--bluebg);}
+
+@media(max-width:720px){
+  .page-body{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .content{padding:0 0 3rem;}
+  .wrap{padding:0 1rem 4rem;}
+}
+@media print{nav,.sidebar,.module-tabs{display:none;}.page-body{display:block;}.content{padding:0;}.spec-point{break-inside:avoid;}.method{break-inside:avoid;}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-brand"><b>Phys</b>Viz Notes</div>
+  <span class="nav-brand"><b>Phys</b>Viz Notes</span>
   <ul class="nav-links">
-    <li><a href="#s1">Units</a></li>
-    <li><a href="#s2">Forces</a></li>
-    <li><a href="#s3">Materials</a></li>
-    <li><a href="#s4">Electricity</a></li>
-    <li><a href="#s5">Waves</a></li>
-    <li><a href="#s6">Quantum</a></li>
-    <li><a href="#s7">Writing</a></li>
-    <li><a href="#s8">Formulas</a></li>
+    <li><a href="#m2">Module 2</a></li>
+    <li><a href="#m3">Module 3</a></li>
+    <li><a href="#m4">Module 4</a></li>
+    <li><a href="#writing">Writing</a></li>
+    <li><a href="#formulas">Formulas</a></li>
   </ul>
 </nav>
 
 <div class="wrap">
 
 <div class="hero">
-  <p class="hero-kicker">H156/01 · Breadth in Physics · OCR AS Level</p>
-  <h1>OCR AS Physics A<br>Exam Method Notes</h1>
-  <p class="hero-sub">Formulas rendered with KaTeX. Exam methods, definitions and written-answer techniques extracted directly from 2023 and 2024 question papers and mark schemes. Covers calculation, explain, describe, define and 6-mark Level of Response questions.</p>
+  <p class="hero-kicker">OCR H156/01 · Breadth in Physics · Spec ref H556</p>
+  <h1>OCR AS Physics A<br>Revision Notes by Spec Point</h1>
+  <p class="hero-sub">Every spec point from Modules 2, 3 and 4 — the modules assessed in H156/01. Each entry shows the spec reference code, the learning outcome, key definitions, formulas (KaTeX), exam methods, and mark-scheme traps from the 2022, 2023 and 2024 papers.</p>
   <div class="hero-chips">
-    <span class="chip">2023 + 2024 papers</span>
-    <span class="chip">Section A MCQ · 20 marks</span>
-    <span class="chip">Section B written · 50 marks</span>
+    <span class="chip">Organised by spec point</span>
+    <span class="chip">Module 2: Foundations</span>
+    <span class="chip">Module 3: Forces &amp; Motion</span>
+    <span class="chip">Module 4: Electrons, Waves &amp; Photons</span>
     <span class="chip">KaTeX equations</span>
-    <span class="chip">Definitions</span>
-    <span class="chip">6-mark LoR guide</span>
-    <span class="chip">Mark-scheme traps</span>
+    <span class="chip">2022 + 2023 + 2024 mark schemes</span>
   </div>
 </div>
 
-<div class="toc">
-  <p class="toc-title">Contents</p>
-  <ol>
-    <li><a href="#s1">SI Units, Quantities and Measurements</a></li>
-    <li><a href="#s2">Forces and Motion</a></li>
-    <li><a href="#s3">Work, Energy and Materials</a></li>
-    <li><a href="#s4">Electricity</a></li>
-    <li><a href="#s5">Waves</a></li>
-    <li><a href="#s6">Quantum Physics and the Photoelectric Effect</a></li>
-    <li><a href="#s7">Written Answer and 6-Mark Technique</a></li>
-    <li><a href="#s8">Key Formula Quick-Reference</a></li>
-  </ol>
-</div>
+<div class="page-body">
 
-<!-- ═══ SECTION 1: UNITS ═══ -->
-<section class="sec" id="s1">
-  <p class="sec-num">Section 01 · Spec 1.1</p>
-  <h2>SI Units, Quantities and Measurements</h2>
+<!-- ═══ SIDEBAR ══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-section">
+    <span class="sidebar-mod">Module 2</span>
+    <a href="#s-2-1">2.1 Physical Quantities &amp; Units</a>
+    <a href="#s-2-2">2.2 Measurements &amp; Uncertainties</a>
+    <a href="#s-2-3">2.3 Scalars &amp; Vectors</a>
+  </div>
+  <div class="sidebar-section">
+    <span class="sidebar-mod">Module 3</span>
+    <a href="#s-3-1">3.1 Kinematics</a>
+    <a href="#s-3-2">3.2 Forces in Action</a>
+    <a href="#s-3-3">3.3 Work, Energy &amp; Power</a>
+    <a href="#s-3-4">3.4 Materials</a>
+    <a href="#s-3-5">3.5 Newton's Laws &amp; Momentum</a>
+  </div>
+  <div class="sidebar-section">
+    <span class="sidebar-mod">Module 4</span>
+    <a href="#s-4-1">4.1 Charge &amp; Current</a>
+    <a href="#s-4-2">4.2 Energy, Power &amp; Resistance</a>
+    <a href="#s-4-3">4.3 Electrical Circuits</a>
+    <a href="#s-4-4">4.4 Waves</a>
+    <a href="#s-4-5">4.5 Quantum Physics</a>
+  </div>
+  <div class="sidebar-section">
+    <span class="sidebar-mod">Technique</span>
+    <a href="#writing">Written Answer Guide</a>
+    <a href="#formulas">Formula Reference</a>
+  </div>
+</aside>
 
-  <h3>Key Definitions</h3>
+<!-- ═══ CONTENT ══════════════════════════════════════════════ -->
+<div class="content">
 
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">SI Base Unit</span><span class="def-tag">Define</span></div>
-    <div class="def-body">A unit from which all other units are derived. There are seven: kilogram, metre, second, ampere, kelvin, mole, candela.
-      <span class="def-ocr">OCR wording: "A unit that cannot be expressed in terms of other units"</span>
-      <span class="def-reject">Reject: listing derived units as examples of base units. The ampere IS a base unit; the coulomb is NOT.</span>
+<!-- ════════════════════════════════════════════════════════
+     MODULE 2: FOUNDATIONS OF PHYSICS
+     ════════════════════════════════════════════════════════ -->
+<div class="mod-section" id="m2">
+  <div class="mod-header">
+    <p class="mod-num">Module 2</p>
+    <h1 class="mod-title">Foundations of Physics</h1>
+  </div>
+
+  <!-- 2.1 Physical Quantities and Units -->
+  <div class="spec-section" id="s-2-1">
+    <div class="spec-section-head">
+      <span class="spec-code">2.1</span>
+      <h2>Physical Quantities and Units</h2>
+    </div>
+
+    <div class="spec-sub" id="s-2-1-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">2.1.1</span><h3>Physical Quantities</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Physical quantities have a <strong>numerical value</strong> and a <strong>unit</strong>.</p>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b</span>
+        <div class="sp-body">
+          <p class="sp-statement">Making <strong>estimates</strong> of physical quantities listed in the specification.</p>
+          <div class="tip">OCR expects you to estimate sensible values, e.g. speed of a car ~30 m s⁻¹, wavelength of visible light ~500 nm, mass of an electron ~9×10⁻³¹ kg.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spec-sub" id="s-2-1-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">2.1.2</span><h3>SI Units</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">SI base quantities and units: mass (kg), length (m), time (s), current (A), temperature (K), amount of substance (mol).</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">SI Base Unit</span><span class="def-tag">Define · 2.1.2a</span></div>
+            <div class="def-body">A unit from which all other units are derived. There are six assessed at AS level.
+              <span class="def-ocr">kg · m · s · A · K · mol  — memorise all six</span>
+              <span class="def-reject">Reject: the candela (cd) is the 7th but not assessed. The coulomb and ohm are derived, not base.</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">MCQ method: identify a base unit</p>
+              <ol>
+                <li>Recall: kg, m, s, A, K, mol.</li>
+                <li>Reject any unit with a compound name or a slash: $\text{coulomb} = \text{A\,s}$, $\Omega = \text{kg\,m}^2\text{s}^{-3}\text{A}^{-2}$, $\text{V} = \text{kg\,m}^2\text{s}^{-3}\text{A}^{-1}$.</li>
+              </ol>
+              <div class="trap">The ampere IS a base unit. The coulomb is NOT.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b</span>
+        <div class="sp-body">
+          <p class="sp-statement">Derived units of SI base units (e.g. momentum kg m s⁻¹, density kg m⁻³).</p>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Checking the <strong>homogeneity</strong> of physical equations using SI base units.</p>
+          <div class="tip">Both sides of a valid equation must have the same base units. If they don't, the equation is wrong.</div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Prefixes: pico (p, 10⁻¹²), nano (n, 10⁻⁹), micro (μ, 10⁻⁶), milli (m, 10⁻³), centi (c, 10⁻²), kilo (k, 10³), mega (M, 10⁶), giga (G, 10⁹), tera (T, 10¹²).</p>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Conventions for labelling graph axes and table columns, e.g. <em>speed</em> / m s⁻¹.</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Absolute uncertainty</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The range above and below a measured value within which the true value is expected to lie. Written as $\pm \Delta Q$.
-      <span class="def-ocr">Percentage uncertainty $= \dfrac{\Delta Q}{Q} \times 100$</span>
+  <!-- 2.2 Measurements and Uncertainties -->
+  <div class="spec-section" id="s-2-2">
+    <div class="spec-section-head">
+      <span class="spec-code">2.2</span>
+      <h2>Making Measurements and Analysing Data</h2>
+    </div>
+    <div class="spec-sub" id="s-2-2-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">2.2.1</span><h3>Measurements and Uncertainties</h3></div>
+
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Systematic errors (including zero errors) and random errors in measurements.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Random vs Systematic Error</span><span class="def-tag">Define · 2.2.1a</span></div>
+            <div class="def-body"><strong>Random error:</strong> unpredictable scatter in readings around a true value. Reduced by taking repeated measurements and calculating a mean.<br><br><strong>Systematic error:</strong> a consistent offset in all readings in the same direction (e.g. zero error on a ruler). Cannot be reduced by repeating — must be identified and corrected.
+              <span class="def-reject">Reject: "human error" — too vague. Name the specific source (reaction time, parallax, zero error).</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b</span>
+        <div class="sp-body">
+          <p class="sp-statement">Precision and accuracy.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Precision and Accuracy</span><span class="def-tag">Define · 2.2.1b</span></div>
+            <div class="def-body"><strong>Precise:</strong> readings are close together (small random error / small spread).<br><strong>Accurate:</strong> readings are close to the true value (small systematic error).<br><br>A precise instrument is not necessarily accurate (e.g. a poorly calibrated digital balance gives consistent but wrong readings).
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Absolute and percentage uncertainties when data are combined by addition, subtraction, multiplication, division and raising to powers.</p>
+          <div class="sp-formula">
+            $$\%\text{unc} = \frac{\Delta Q}{Q} \times 100$$
+            $$\text{Add or subtract: add } \mathbf{absolute} \text{ uncertainties}$$
+            $$\text{Multiply or divide: add } \mathbf{percentage} \text{ uncertainties}$$
+            $$Q^n : \quad \%\text{unc}(Q^n) = n \times \%\text{unc}(Q)$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">MCQ method: W = VIt percentage uncertainty (2024)</p>
+              <ol>
+                <li>$\%V = (0.20/12) \times 100 = 1.67\%$</li>
+                <li>$\%I = (1.0/80) \times 100 = 1.25\%$ (convert mA → A first)</li>
+                <li>$\%t = (0.01/60) \times 100 = 0.017\%$</li>
+                <li>Total $= 1.67 + 1.25 + 0.017 = 2.9\%$</li>
+              </ol>
+              <div class="trap">Never add absolute uncertainties for multiplied quantities. Always convert units before calculating percentages.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Graphical treatment of errors: line of best fit, worst line, absolute and percentage uncertainties from gradients, percentage difference.</p>
+          <div class="sp-formula">
+            $$\text{Gradient uncertainty} = \frac{\text{gradient}_\text{worst} - \text{gradient}_\text{best}}{2}$$
+            $$\text{Consistency: } \%\text{diff} = \frac{|E_\text{calc} - E_\text{ref}|}{E_\text{ref}} \times 100 \quad \text{Consistent if } \%\text{diff} < \%\text{unc}$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: consistency check (2023 Q21c-iii)</p>
+              <ol>
+                <li>Calculate $\%\text{diff} = |1.15 - 1.17|/1.17 \times 100 = 1.7\%$</li>
+                <li>Compare: $1.7\% < 3.3\%$ (calculated uncertainty).</li>
+                <li>State: "% difference &lt; % uncertainty, therefore the values are consistent."</li>
+              </ol>
+              <div class="trap">Always write the comparison explicitly in words. A number alone scores 0.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Random error</span><span class="def-tag">Define</span></div>
-    <div class="def-body">Unpredictable variation in measurements that causes readings to scatter around a true value. Reduced by taking more measurements and calculating a mean.
-      <span class="def-reject">Distinguished from systematic error (which shifts all readings in the same direction and cannot be reduced by repeating).</span>
+  <!-- 2.3 Scalars and Vectors -->
+  <div class="spec-section" id="s-2-3">
+    <div class="spec-section-head">
+      <span class="spec-code">2.3</span>
+      <h2>Nature of Quantities</h2>
+    </div>
+    <div class="spec-sub" id="s-2-3-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">2.3.1</span><h3>Scalars and Vectors</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Scalar and vector quantities — give examples of each.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Scalar vs Vector</span><span class="def-tag">Define · 2.3.1a</span></div>
+            <div class="def-body"><strong>Scalar:</strong> has magnitude only (distance, speed, mass, energy, temperature, time, power).<br><strong>Vector:</strong> has magnitude and direction (displacement, velocity, acceleration, force, momentum, weight).
+              <span class="def-reject">Speed is scalar; velocity is vector. Distance is scalar; displacement is vector.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b</span>
+        <div class="sp-body">
+          <p class="sp-statement">Vector addition and subtraction.</p>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Vector triangle to determine the resultant of any two coplanar vectors — by calculation or scale drawing.</p>
+          <div class="sp-formula">
+            $$\text{Resultant: draw vectors tip-to-tail; resultant closes the triangle from tail to tip.}$$
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Resolving a vector into two perpendicular components.</p>
+          <div class="sp-formula">
+            $$F_x = F\cos\theta \qquad F_y = F\sin\theta$$
+          </div>
+          <div class="tip">$\theta$ is always measured from the reference direction (usually horizontal). Horizontal component uses cos, vertical uses sin.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /module 2 -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     MODULE 3: FORCES AND MOTION
+     ════════════════════════════════════════════════════════ -->
+<div class="mod-section" id="m3">
+  <div class="mod-header">
+    <p class="mod-num">Module 3</p>
+    <h1 class="mod-title">Forces and Motion</h1>
+  </div>
+
+  <!-- 3.1 Kinematics -->
+  <div class="spec-section" id="s-3-1">
+    <div class="spec-section-head"><span class="spec-code">3.1</span><h2>Motion</h2></div>
+    <div class="spec-sub" id="s-3-1-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.1.1</span><h3>Kinematics</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Displacement, instantaneous speed, average speed, velocity and acceleration.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Key kinematic quantities</span><span class="def-tag">3.1.1a</span></div>
+            <div class="def-body">
+              <strong>Displacement:</strong> distance in a specified direction (vector).<br>
+              <strong>Speed:</strong> rate of change of distance (scalar).<br>
+              <strong>Velocity:</strong> rate of change of displacement (vector).<br>
+              <strong>Acceleration:</strong> rate of change of velocity (vector). $a = \Delta v / \Delta t$.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b–d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Graphical representations: displacement–time (gradient = velocity), velocity–time (gradient = acceleration, area = displacement).</p>
+          <div class="sp-formula">
+            $$s\text{-}t\text{ graph: gradient} = v \qquad v\text{-}t\text{ graph: gradient} = a,\quad \text{area} = s$$
+          </div>
+          <div class="note-box">For non-linear graphs OCR expects you to estimate the area by counting squares or using the trapezoid rule.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-1-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.1.2</span><h3>Linear Motion (SUVAT)</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">—</span>
+        <div class="sp-body">
+          <div class="sp-formula">
+            $$v = u + at \qquad s = ut + \tfrac{1}{2}at^2 \qquad v^2 = u^2 + 2as \qquad s = \tfrac{(u+v)}{2}t$$
+            $$\text{Free fall from rest: } u=0,\ a=g=9.81\ \mathrm{m\,s^{-2}},\quad v=\sqrt{2gh},\quad g=\frac{2s}{t^2}$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: distance from v-t graph (3 marks, 2022 Q21a)</p>
+              <ol>
+                <li>Split the area under the graph into simple shapes (trapezoids, rectangles, triangles).</li>
+                <li>Trapezoid (0–3 s): $s_1 = \frac{1}{2}(4.0 + 10.0)\times 3.0 = 21\ \mathrm{m}$</li>
+                <li>Rectangle (3–8 s): $s_2 = 10.0\times 5.0 = 50\ \mathrm{m}$. Total $= 71\ \mathrm{m}$.</li>
+              </ol>
+              <div class="trap">C marks are awarded for each correct partial area — an incorrect total can still score if the method is right. Always show the separate areas.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: find g from drop-time data (2024)</p>
+              <ol>
+                <li>Inspect all readings; if one is clearly different, <strong>state it is anomalous</strong> and exclude it.</li>
+                <li>Calculate mean $t$ from remaining values.</li>
+                <li>Substitute into $g = 2s/t^2$.</li>
+              </ol>
+              <div class="trap">Must identify the anomaly before excluding it. Silently discarding it loses the mark.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-1-3">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.1.3</span><h3>Projectile Motion</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–b</span>
+        <div class="sp-body">
+          <p class="sp-statement">Independence of vertical and horizontal motion. Two-dimensional motion: constant horizontal velocity, constant vertical acceleration $g$.</p>
+          <div class="sp-formula">
+            $$\text{Horizontal: } x = v_x t \qquad \text{Vertical: } y = \tfrac{1}{2}gt^2\ (\text{from rest})$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: projectile landing check (2023 Q24b)</p>
+              <ol>
+                <li>Horizontal distance $= v_\text{rebound} \times t = 3.6 \times 0.58 = 2.09\ \mathrm{m}$</li>
+                <li>Acceptable range: centre $\pm$ radius $= 2.0 \pm 0.15\ \mathrm{m}$.</li>
+                <li>State explicitly: $1.85\ \mathrm{m} < 2.09\ \mathrm{m} < 2.15\ \mathrm{m}$ — ball lands in ring.</li>
+              </ol>
+              <div class="trap">The numerical comparison to the target range must be written. A distance alone scores 0.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>1.1 · SI Base Units — MCQ Method</h3>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: SI base unit MCQ</p>
-      <ol>
-        <li>Memorise the seven: <strong>kg, m, s, A, K, mol, cd</strong>.</li>
-        <li>Reject compound names: coulomb $= \mathrm{A\,s}$, ohm $= \mathrm{kg\,m^2\,s^{-3}\,A^{-2}}$, volt $= \mathrm{kg\,m^2\,s^{-3}\,A^{-1}}$.</li>
-      </ol>
-      <div class="trap">The ampere IS a base unit. The coulomb is NOT — it is charge, a derived quantity.</div>
+  <!-- 3.2 Forces in Action -->
+  <div class="spec-section" id="s-3-2">
+    <div class="spec-section-head"><span class="spec-code">3.2</span><h2>Forces in Action</h2></div>
+    <div class="spec-sub" id="s-3-2-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.2.1</span><h3>Dynamics</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">$F = ma$. Weight $W = mg$. Forces: tension, normal contact, upthrust, friction.</p>
+          <div class="sp-formula">
+            $$F = ma \qquad W = mg \quad (g = 9.81\ \mathrm{m\,s^{-2}})$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: resolve tension to find resistance force (3 marks, 2022 Q21b)</p>
+              <ol>
+                <li>Read acceleration from v–t graph gradient: $a = \Delta v / \Delta t = 6.0/3.0 = 2.0\ \mathrm{m\,s^{-2}}$.</li>
+                <li>Resolve the known force (tension) into the direction of motion: $T_x = T\cos\theta = 680\cos55° = 390\ \mathrm{N}$.</li>
+                <li>Apply Newton's 2nd law: $T_x - R = ma \Rightarrow R = 390 - 150\times2.0 = 90\ \mathrm{N}$.</li>
+              </ol>
+              <div class="trap">If you give both horizontal and vertical components, it must be clear which one you are using in $F = ma$. The mark scheme penalises ambiguity.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Free-body diagrams: show all forces on a single object, labelled with type and magnitude.</p>
+          <div class="tip">Forces on a free-body diagram must be drawn from a single point or the surface they act on. Never draw forces from other objects.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-2-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.2.2</span><h3>Motion with Non-Uniform Acceleration (Drag and Terminal Velocity)</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Drag as the frictional force through a fluid. Factors affecting drag: speed, cross-sectional area, shape, fluid viscosity. Motion falling in gravitational field with drag. Terminal velocity.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Terminal velocity</span><span class="def-tag">Define · 3.2.2d</span></div>
+            <div class="def-body">The constant velocity reached when the resultant force on a falling object is zero — because weight equals the sum of air resistance and upthrust.
+              <span class="def-reject">Reject: "forces balance" alone. Must say "resultant force = 0". Reject: "velocity stops increasing" without the force reason.</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain terminal velocity (3 marks, 2024)</p>
+              <ol>
+                <li><strong>Mark 1:</strong> weight = air resistance (+ upthrust).</li>
+                <li><strong>Mark 2:</strong> resultant force $= 0\ \mathrm{N}$.</li>
+                <li><strong>Mark 3:</strong> acceleration $= 0$, so velocity is constant.</li>
+              </ol>
+              <div class="trap">"Forces are balanced" alone scores 0. Never say velocity decreases at terminal velocity.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-2-3">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.2.3</span><h3>Moments, Couples and Equilibrium</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Moment $= Fx$. Couple: torque $= Fd$ (pair of equal, opposite, parallel forces). Principle of moments. Centre of gravity. Equilibrium under forces and torques. Triangle of forces.</p>
+          <div class="sp-formula">
+            $$\text{Moment} = F \times d_\perp \qquad \text{Torque of couple} = F \times d$$
+            $$\text{Equilibrium: } \sum F = 0 \text{ and } \sum M = 0$$
+            $$\text{Hanging picture: } W = 2T\cos\theta \quad (\theta \text{ from vertical})$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain why bending knees reduces spine force (3 marks, 2024)</p>
+              <ol>
+                <li>The perpendicular distance between the line of action of the weight and the hips (pivot H) is <strong>reduced</strong>.</li>
+                <li>Therefore the moment about the hips is smaller.</li>
+                <li>So the compressive force on the spine is reduced.</li>
+              </ol>
+              <div class="trap">Do not mention centre of mass. Do not use knees as pivot — it is always the hips.</div>
+            </div>
+          </div>
+          <div class="note-box"><strong>Two-force equilibrium MCQ (2023 Q16):</strong> Only "forces are equal and opposite" is true. Newton's 3rd law pairs act on different bodies — so two forces on the same object are NOT a 3rd law pair. An object moving at constant velocity is also in equilibrium. Answer: A (Only 1).</div>
+          <div class="note-box"><strong>Balanced rod / inverse proportionality MCQ (2022 Q15, Answer D):</strong> Principle of moments: $F \times x = W \times d_W$ (constant). So $F \propto 1/x$ — $x$ is inversely proportional to $F$. The graph of $F$ vs $x$ is a hyperbola, not a straight line. Upward force at pivot $= F + W$ (not just $F$). The moment of $W$ is constant, not $Fx$.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-2-4">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.2.4</span><h3>Density and Pressure</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <div class="sp-formula">
+            $$\rho = \frac{m}{V} \qquad p = \frac{F}{A} \qquad p = h\rho g$$
+            $$\text{Upthrust} = \text{weight of fluid displaced} = \rho_\text{fluid}\,Vg = mg_\text{displaced}$$
+          </div>
+          <div class="note-box"><strong>Upthrust MCQ:</strong> only "mass of water displaced × g" is physically and dimensionally correct. "Density of object × g" is a trap.</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>1.2 · Percentage Uncertainty</h3>
-  <div class="formula-block">
-    <span class="formula-label">Uncertainty rules</span>
-    $$\%\text{unc} = \frac{\Delta Q}{Q} \times 100$$
-    $$W = V \cdot I \cdot t \implies \%W = \%V + \%I + \%t$$
-    $$Q^n \implies \%Q^n = n\,\%Q$$
-    $$\text{Consistency: } \%\text{diff} = \frac{|E_\text{calc}-E_\text{ref}|}{E_\text{ref}}\times100 \quad\text{Consistent if } \%\text{diff} < \%\text{unc}$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: W = VIt uncertainty (2024)</p>
-      <ol>
-        <li>$\%V = (0.20/12)\times100 = 1.67\%$</li>
-        <li>$\%I = (1.0/80)\times100 = 1.25\%$ &nbsp;(note: current given in mA)</li>
-        <li>$\%t = (0.01/60)\times100 = 0.017\%$</li>
-        <li>Total $= 2.9\%$</li>
-      </ol>
-      <div class="trap">Never add absolute uncertainties. Always write the explicit conclusion: "% difference &lt; % uncertainty, therefore consistent."</div>
+  <!-- 3.3 Work, Energy and Power -->
+  <div class="spec-section" id="s-3-3">
+    <div class="spec-section-head"><span class="spec-code">3.3</span><h2>Work, Energy and Power</h2></div>
+    <div class="spec-sub">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.3.1–3</span><h3>Work, KE, GPE and Power</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">—</span>
+        <div class="sp-body">
+          <div class="sp-formula">
+            $$W = Fx\cos\theta \qquad E_k = \tfrac{1}{2}mv^2 \qquad E_p = mgh$$
+            $$P = \frac{W}{t} = Fv = F\cos\theta\cdot v$$
+            $$\text{Efficiency} = \frac{\text{useful output energy}}{\text{total input energy}} \times 100\%$$
+          </div>
+          <div class="tip">Derive $E_k = \frac{1}{2}mv^2$ from first principles using $v^2 = u^2 + 2as$ and $F = ma$, or via work done: $W = Fs = mas = m \cdot \frac{v^2}{2s} \cdot s = \frac{1}{2}mv^2$.</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>1.3 · Improving Experimental Accuracy (Describe questions)</h3>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: suggest improvements to reduce uncertainty</p>
-      <ol>
-        <li><strong>Increase the measured quantity</strong> — e.g. measure across more fringes, use a longer wire, drop from a greater height. This reduces % uncertainty without changing the absolute uncertainty.</li>
-        <li><strong>Use electronic timing</strong> — light gates, data logger, or video camera with known frame rate eliminates human reaction time error (~0.2 s).</li>
-        <li><strong>Repeat and average</strong> — reduces the effect of random errors.</li>
-        <li><strong>Control variables</strong> — state explicitly which variables are kept constant and how.</li>
-      </ol>
-      <div class="trap">Saying "be more careful" or "reduce human error" scores 0. Name the specific technique and explain why it helps.</div>
+  <!-- 3.4 Materials -->
+  <div class="spec-section" id="s-3-4">
+    <div class="spec-section-head"><span class="spec-code">3.4</span><h2>Materials</h2></div>
+    <div class="spec-sub" id="s-3-4-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.4.1</span><h3>Springs</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Tensile/compressive deformation. Hooke's Law. Force constant $k$. Force-extension graphs.</p>
+          <div class="sp-formula">
+            $$F = kx \qquad E_\text{el} = \tfrac{1}{2}Fx = \tfrac{1}{2}kx^2 = \text{area under }F\text{-}x\text{ graph}$$
+          </div>
+          <div class="tip">Compressing or extending both increase stored elastic PE. The direction of displacement does not matter.</div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: verify force constant in lab (2 marks, 2022 Q22a)</p>
+              <ol>
+                <li>Add a range of known loads (forces/weights) to the spring and measure the compression (or extension) for each load.</li>
+                <li>Plot a graph of force against compression. The gradient equals the force constant $k = F/x$.</li>
+              </ol>
+              <div class="trap">Do not write "length" for compression — OCR requires the change in length (compression/extension), not the absolute length. Allow $W = mg$ for the force. Allow $k = F/x$ but $k$ must be the subject.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: elastic PE calculation (2 marks, 2022 Q22c)</p>
+              <ol>
+                <li>Identify the compression $x = x_\text{max} - x_\text{natural} = 0.45 - 0.25 = 0.20\ \mathrm{m}$.</li>
+                <li>$E = \frac{1}{2}kx^2 = \frac{1}{2}\times 1.7\times10^4\times(0.20)^2 = 340\ \mathrm{J}$.</li>
+              </ol>
+              <div class="trap">Ignore $E = \frac{1}{2}Fx$ — OCR explicitly ignores this form. Do not confuse spring compression with platform height above ground.</div>
+            </div>
+          </div>
+          <div class="note-box"><strong>Energy chain A → B → C (2022 Q22b, 1 mark):</strong> From B (moving, maximum speed) to C (stationary, highest point) the energy change is kinetic energy transferred to gravitational potential energy. <strong>Not</strong> elastic potential energy — the spring is at its natural length at B and C. Ignore thermal losses.</div>
+          <div class="note-box"><strong>Why the energy equation is wrong (2022 Q22d, 1 mark):</strong> The expression $E = \frac{1}{2}mv^2$ omits the gravitational PE gained by the person rising from B to C. The elastic PE stored goes to both KE and GPE — not KE alone.</div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-
-<!-- ═══ SECTION 2: FORCES ═══ -->
-<section class="sec" id="s2">
-  <p class="sec-num">Section 02 · Spec 3.1</p>
-  <h2>Forces and Motion</h2>
-
-  <h3>Key Definitions</h3>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Newton's First Law</span><span class="def-tag">State</span></div>
-    <div class="def-body">An object remains at rest or moves with constant velocity unless acted upon by a resultant force.
-      <span class="def-ocr">Key phrase: "resultant force" — not just "a force". An object with balanced forces obeys Newton's 1st law.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Terminal velocity</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The constant velocity reached when the driving force equals the resistive forces, giving zero resultant force and therefore zero acceleration.
-      <span class="def-reject">Reject: "velocity stops increasing" without explaining the force balance. Reject: "forces cancel" — say "resultant force = 0".</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Newton's Third Law</span><span class="def-tag">State</span></div>
-    <div class="def-body">When object A exerts a force on object B, object B exerts an equal and opposite force of the same type on object A. The forces act on <strong>different</strong> bodies.
-      <span class="def-reject">A Newton's 3rd law pair CANNOT act on the same body. Two forces on the same object in equilibrium are NOT a 3rd law pair.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Momentum</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The product of an object's mass and velocity. $p = mv$. A vector quantity, units kg m s$^{-1}$.
-      <span class="def-ocr">Conservation of momentum: total momentum before = total momentum after, provided no external resultant force acts.</span>
-    </div>
-  </div>
-
-  <h3>2.1 · Terminal Velocity — Explain question</h3>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain terminal velocity (3 marks, 2024 Q24a)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> weight = air resistance (+ upthrust if relevant).</li>
-        <li><strong>Mark 2:</strong> resultant/net force $= 0\ \mathrm{N}$.</li>
-        <li><strong>Mark 3:</strong> acceleration $= 0$, so velocity is constant.</li>
-      </ol>
-      <div class="trap">"Forces are balanced" alone scores 0. Never say velocity <em>decreases</em> at terminal velocity.</div>
-    </div>
-  </div>
-
-  <h3>2.2 · Kinematics</h3>
-  <div class="formula-block">
-    <span class="formula-label">SUVAT equations</span>
-    $$v = u + at \qquad s = ut + \tfrac{1}{2}at^2 \qquad v^2 = u^2 + 2as \qquad s = \tfrac{(u+v)}{2}t$$
-    $$\text{Free fall: } u=0,\ a=g=9.81\ \mathrm{m\,s^{-2}} \implies v = \sqrt{2gh} \qquad g = \frac{2s}{t^2}$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: calculate g from timing data (3 marks, 2024)</p>
-      <ol>
-        <li>Inspect all readings. If one is clearly different, <strong>state it is anomalous</strong>, then exclude it.</li>
-        <li>Calculate mean $t$ from the remaining values.</li>
-        <li>Substitute into $g = 2s/t^2$ and evaluate.</li>
-      </ol>
-      <div class="trap">Silently ignoring a value loses the mark — you must identify it as anomalous first. Improvement: use electronic timer or light gate to eliminate ~0.2 s reaction time error.</div>
-    </div>
-  </div>
-
-  <h3>2.3 · Impulse and Momentum</h3>
-  <div class="formula-block">
-    <span class="formula-label">Impulse, force, projectile</span>
-    $$\text{Impulse} = F\Delta t = \Delta p = m(v_2 - v_1)$$
-    $$F = \frac{m(v_2-v_1)}{\Delta t} \qquad \text{Projectile: } x = v_x\,t$$
-  </div>
-  <div class="tip"><strong>Sign rule for rebounds:</strong> if ball reverses direction, $v_1$ and $v_2$ are in opposite directions. Use a sign convention and <em>add</em> the magnitudes: $|\Delta p| = m(v_1 + v_2)$.</div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: force from wall collision + projectile check (2023 Q24)</p>
-      <ol>
-        <li>$\Delta p = m(v_2-v_1) = 0.058\times(7.2-(-3.6)) = 0.626\ \mathrm{kg\,m\,s^{-1}}$</li>
-        <li>$F = \Delta p/\Delta t = 0.626/0.052 = 12\ \mathrm{N}$</li>
-        <li>Horizontal range $= v_\text{rebound}\times t = 3.6\times0.58 = 2.09\ \mathrm{m}$</li>
-        <li>Acceptable range: $2.0\pm0.15\ \mathrm{m}$. State: $1.85 < 2.09 < 2.15$ ✓</li>
-      </ol>
-      <div class="trap">Forgetting the sign reversal halves $\Delta p$. The comparison to the target range must be written explicitly.</div>
+    <div class="spec-sub" id="s-3-4-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.4.2</span><h3>Mechanical Properties of Matter</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Stress, strain, Young modulus, UTS. Stress–strain graphs for ductile, brittle and polymeric materials. Elastic and plastic deformation.</p>
+          <div class="sp-formula">
+            $$\sigma = \frac{F}{A} \quad (\mathrm{Pa}) \qquad \varepsilon = \frac{x}{L} \quad (\text{no units}) \qquad E = \frac{\sigma}{\varepsilon} = \frac{FL}{Ax} = \frac{kL}{A}$$
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Brittle vs Ductile vs Polymeric</span><span class="def-tag">3.4.2e</span></div>
+            <div class="def-body">
+              <strong>Brittle:</strong> linear stress–strain graph, fractures abruptly at elastic limit with no plastic region (e.g. glass, ceramic).<br>
+              <strong>Ductile:</strong> linear elastic region then large plastic region before fracture (e.g. copper, steel).<br>
+              <strong>Polymeric:</strong> non-linear, large extensions at low stress, may show loading/unloading hysteresis (e.g. rubber).
+              <span class="def-reject">MCQ: brittle = straight line ending abruptly. If the graph curves or has a plastic region, it is not brittle.</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: measure cross-sectional area of wire (3 marks, 2023 Q21b)</p>
+              <ol>
+                <li>Use a <strong>micrometer</strong> to measure the diameter.</li>
+                <li>Measure in <strong>different places</strong> along the wire and calculate a mean.</li>
+                <li>$A = \pi r^2 = \pi d^2/4$.</li>
+              </ol>
+              <div class="trap">Must measure in multiple places — wires are not perfectly uniform.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: derive E = kL/A (2 marks, 2023 Q21c-i)</p>
+              <ol>
+                <li>State all four: $E = \sigma/\varepsilon$, $F = kx$, $\sigma = F/A$, $\varepsilon = x/L$.</li>
+                <li>Substitute: $E = \dfrac{F/A}{x/L} = \dfrac{kx \cdot L}{A \cdot x} = \dfrac{kL}{A}$.</li>
+              </ol>
+              <div class="trap">Do not skip steps — every substitution must be visible on the page.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>2.4 · Stokes' Law and Fluid Terminal Velocity</h3>
-  <div class="formula-block">
-    <span class="formula-label">Stokes terminal velocity</span>
-    $$v = \frac{2r^2\,g\,(\rho_s - \rho_w)}{9\eta} \qquad r = \sqrt{\frac{9\eta v}{2g(\rho_s-\rho_w)}}$$
-    <p class="formula-note">$r$ = radius (m), $\rho_s$ = particle density, $\rho_w$ = fluid density (kg m$^{-3}$), $\eta$ = viscosity (Pa s)</p>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: show terminal velocity from displacement data (2023 Q25c)</p>
-      <ol>
-        <li>Use data <strong>from 0.2 s onwards</strong> only (before that the particle is still accelerating).</li>
-        <li>Calculate $v = \Delta s/\Delta t$ for two adjacent intervals: both give $0.27\ \mathrm{m\,s^{-1}}$ → constant → terminal velocity confirmed.</li>
-      </ol>
-      <div class="trap">Using data from 0.0 s includes the acceleration phase — the velocity is not yet constant there.</div>
+  <!-- 3.5 Newton's Laws and Momentum -->
+  <div class="spec-section" id="s-3-5">
+    <div class="spec-section-head"><span class="spec-code">3.5</span><h2>Newton's Laws of Motion and Momentum</h2></div>
+    <div class="spec-sub" id="s-3-5-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.5.1</span><h3>Newton's Laws of Motion</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Newton's three laws of motion.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Newton's Laws</span><span class="def-tag">State · 3.5.1a</span></div>
+            <div class="def-body">
+              <strong>1st:</strong> An object remains at rest or moves with constant velocity unless acted upon by a resultant force.<br>
+              <strong>2nd:</strong> $F = ma$ (net force = rate of change of momentum: $F = \Delta p / \Delta t$).<br>
+              <strong>3rd:</strong> When A exerts a force on B, B exerts an equal and opposite force of the same type on A — on a different body.
+              <span class="def-reject">3rd law: forces act on DIFFERENT bodies. Two forces on the same body in equilibrium are NOT a 3rd law pair.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Linear momentum $p = mv$ (vector). Net force = rate of change of momentum. Impulse $= F\Delta t = \Delta p$ = area under F–t graph.</p>
+          <div class="sp-formula">
+            $$p = mv \qquad F = \frac{\Delta p}{\Delta t} \qquad \text{Impulse} = F\Delta t = m(v_2 - v_1)$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: force from collision with wall (3 marks, 2023 Q24a)</p>
+              <ol>
+                <li>Define positive direction. Ball in at $+7.2\ \mathrm{m\,s^{-1}}$, rebounds at $-3.6\ \mathrm{m\,s^{-1}}$.</li>
+                <li>$\Delta p = m(v_2 - v_1) = 0.058 \times (7.2 + 3.6) = 0.626\ \mathrm{kg\,m\,s^{-1}}$</li>
+                <li>$F = \Delta p / \Delta t = 0.626 / 0.052 = 12\ \mathrm{N}$</li>
+              </ol>
+              <div class="trap">Missing the sign reversal on rebound halves $\Delta p$. Add the two speeds for a rebound — do not subtract.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-3-5-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">3.5.2</span><h3>Collisions</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Conservation of momentum (no external resultant force). Elastic (KE conserved) and inelastic (KE not conserved) collisions.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Elastic vs Inelastic Collision</span><span class="def-tag">3.5.2c</span></div>
+            <div class="def-body">
+              <strong>Perfectly elastic:</strong> total KE is conserved. Momentum is always conserved.<br>
+              <strong>Inelastic:</strong> total KE decreases (converted to heat/sound/deformation). Momentum is still conserved.<br>
+              <span class="def-reject">MCQ: the quantity always conserved in collisions = total momentum. KE is NOT always conserved.</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: Newton's 3rd law from p-t graphs (2 marks, 2022 Q23a)</p>
+              <ol>
+                <li><strong>Mark 1:</strong> The gradients of the two p–t lines are opposite in sign (one positive, one negative) — forces on A and B are in opposite directions.</li>
+                <li><strong>Mark 2:</strong> The magnitudes of the gradients are equal — so the forces on A and B are equal in magnitude (both = 24 000 N in 2022).</li>
+              </ol>
+              <div class="trap">Simply saying "the forces are equal and opposite" without reference to the graphs scores only 1 mark. Must link to the gradients / rate of change of momentum.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: show momentum is conserved using a p-t graph (2 marks, 2022 Q23b)</p>
+              <ol>
+                <li>Read momentum values before collision: A $= +20$, B $= -30$. Total $= -10\ \mathrm{kg\,m\,s^{-1}}$.</li>
+                <li>Read values after collision: A $= -4$, B $= -6$. Total $= -10\ \mathrm{kg\,m\,s^{-1}}$.</li>
+                <li>Totals are equal — therefore momentum is conserved.</li>
+              </ol>
+              <div class="trap">An alternative valid approach: loss of momentum of A $= 24$ kg m s⁻¹; gain of momentum by B $= 24$ kg m s⁻¹ — equal exchange, therefore conserved.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: velocity of combined objects after collision (2 marks, 2022 Q23c)</p>
+              <ol>
+                <li>Total momentum after $= -10\ \mathrm{kg\,m\,s^{-1}}$, combined mass $= 2.0 + 3.0 = 5.0\ \mathrm{kg}$.</li>
+                <li>$v = p/m = 10/5.0 = 2.0\ \mathrm{m\,s^{-1}}$ (ignore sign for magnitude).</li>
+              </ol>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: free-fall time after mid-air collision (3 marks, 2022 Q23d)</p>
+              <ol>
+                <li>Objects fall from rest vertically after collision (horizontal velocity is separate and doesn't affect vertical motion).</li>
+                <li>$s = \frac{1}{2}gt^2 \Rightarrow 120 = \frac{1}{2}\times9.81\times t^2$</li>
+                <li>$t = \sqrt{240/9.81} = 4.9\ \mathrm{s}$</li>
+              </ol>
+              <div class="trap">Allow 4.95 s, but not 5.0 s (insufficient precision). The horizontal velocity does not affect the vertical fall time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: why use a video camera over a stopwatch (2 marks, 2023 Q25a)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> time interval is very small / particle velocity is high — a stopwatch cannot resolve these intervals.</li>
-        <li><strong>Mark 2:</strong> video camera has a smaller time resolution / stopwatch has large uncertainty due to human reaction time (~0.2 s).</li>
-      </ol>
-      <div class="trap">Saying "video camera is more accurate" without explaining <em>why</em> scores 0. Name the specific problem: reaction time.</div>
+</div><!-- /module 3 -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     MODULE 4: ELECTRONS, WAVES AND PHOTONS
+     ════════════════════════════════════════════════════════ -->
+<div class="mod-section" id="m4">
+  <div class="mod-header">
+    <p class="mod-num">Module 4</p>
+    <h1 class="mod-title">Electrons, Waves and Photons</h1>
+  </div>
+
+  <!-- 4.1 Charge and Current -->
+  <div class="spec-section" id="s-4-1">
+    <div class="spec-section-head"><span class="spec-code">4.1</span><h2>Charge and Current</h2></div>
+    <div class="spec-sub" id="s-4-1-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.1.1</span><h3>Charge</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Electric current as rate of flow of charge: $I = \Delta Q / \Delta t$.</p>
+          <div class="sp-formula">$$I = \frac{\Delta Q}{\Delta t} \qquad Q = It$$</div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">The coulomb as the unit of charge. Elementary charge $e = 1.6 \times 10^{-19}\ \mathrm{C}$ (electron = $-e$, proton = $+e$).</p>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Net charge on a particle or object is quantised — always a multiple of $e$.</p>
+          <div class="sp-formula">$$Q = ne \quad\Rightarrow\quad n = Q/e = 4.0\times10^{-18}/1.6\times10^{-19} = 25\ \text{electrons lost (2023 Q20)}$$</div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">e–g</span>
+        <div class="sp-body">
+          <p class="sp-statement">Current as movement of electrons (metals) / ions (electrolytes). Conventional current vs electron flow. Kirchhoff's 1st law: conservation of charge at a junction.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Kirchhoff's First Law</span><span class="def-tag">4.1.1g</span></div>
+            <div class="def-body">The sum of currents entering a junction equals the sum leaving it. This is a statement of conservation of charge.
+              <span class="def-ocr">$\sum I_\text{in} = \sum I_\text{out}$</span>
+            </div>
+          </div>
+          <div class="note-box"><strong>Current from electron flow MCQ (2022 Q10, Answer C):</strong> $I = \Delta Q/\Delta t = nq/t = 3.8\times10^7\times1.6\times10^{-19}/(1.2\times10^{-6}) = 5.1\times10^{-6}\ \mathrm{A}$. Watch the $\mu\mathrm{s}$ prefix: $1.2\ \mu\mathrm{s} = 1.2\times10^{-6}\ \mathrm{s}$.</div>
+          <div class="note-box"><strong>Total energy of N electrons through pd V MCQ (2022 Q18, Answer D):</strong> Energy gained by one electron $= eV = 1.60\times10^{-19}\times V$. For N electrons: $E = N\times V\times1.60\times10^{-19}\ \mathrm{J}$. Option C is wrong — it lacks the factor N. Option A has wrong units (V alone is not energy).</div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <h3>2.5 · Moments and Equilibrium</h3>
-  <div class="formula-block">
-    <span class="formula-label">Moments and power</span>
-    $$\text{Moment} = F \times d_\perp \qquad P = Fv = F\cos\theta\cdot v$$
-    $$\text{Hanging picture (2023 Q15):}\ W = 2T\cos\theta \quad (\theta\text{ from vertical})$$
-    $$\text{Equilibrium:}\ \sum F = 0 \text{ and } \sum M = 0$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why bending knees reduces spine force (3 marks, 2024 Q22c)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> the perpendicular distance between the line of action of the weight and the hips (pivot H) is reduced.</li>
-        <li><strong>Mark 2:</strong> therefore the moment about the hips is smaller.</li>
-        <li><strong>Mark 3:</strong> so the compressive force on the spine is reduced.</li>
-      </ol>
-      <div class="trap">Do not reference the centre of mass changing. Do not use the knees as the pivot — the pivot is always the hips, point H.</div>
-    </div>
-  </div>
-  <div class="note-box"><strong>Two-force equilibrium MCQ (2023 Q16):</strong> Only statement 1 is true (forces equal and opposite). Statement 2 is false — Newton's 3rd law pairs act on <em>different</em> bodies. Statement 3 is false — constant velocity also satisfies equilibrium. Answer: A (Only 1).</div>
-</section>
-
-<!-- ═══ SECTION 3: MATERIALS ═══ -->
-<section class="sec" id="s3">
-  <p class="sec-num">Section 03 · Spec 3.2</p>
-  <h2>Work, Energy and Materials</h2>
-
-  <h3>Key Definitions</h3>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Young modulus</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The ratio of stress to strain for a material within the elastic limit.
-      <span class="def-ocr">$E = \sigma/\varepsilon = (F/A)/(x/L)$. Units: Pa (N m$^{-2}$). A material property — does not depend on the dimensions of the sample.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Elastic limit</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The maximum stress (or force) that can be applied to a material such that it returns to its original length when the stress is removed. Beyond the elastic limit, permanent (plastic) deformation occurs.</div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Brittle vs Ductile</span><span class="def-tag">Describe</span></div>
-    <div class="def-body"><strong>Brittle:</strong> fractures with little or no plastic deformation. Stress-strain graph is linear up to fracture with no yield point.<br><strong>Ductile:</strong> undergoes significant plastic deformation before fracture. Stress-strain graph has a large plastic region after the elastic limit.
-      <span class="def-reject">Do not confuse brittleness with hardness. Glass is brittle; steel is ductile.</span>
-    </div>
-  </div>
-
-  <h3>3.1 · Young Modulus Experiment</h3>
-  <div class="formula-block">
-    <span class="formula-label">Young modulus from wire experiment</span>
-    $$\sigma = \frac{F}{A} \qquad \varepsilon = \frac{x}{L} \qquad E = \frac{\sigma}{\varepsilon} = \frac{FL}{Ax} = \frac{kL}{A}$$
-    $$k = \text{gradient of }F\text{-}x\text{ graph} \qquad A = \frac{\pi d^2}{4}$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: describe how to find cross-sectional area (3 marks, 2023 Q21b)</p>
-      <ol>
-        <li>Use a <strong>micrometer</strong> (or callipers) to measure the <strong>diameter</strong>.</li>
-        <li>Measure the diameter in <strong>different places</strong> along the wire and calculate a mean.</li>
-        <li>Calculate $A = \pi r^2$ where $r = d/2$, or $A = \pi d^2/4$.</li>
-      </ol>
-      <div class="trap">Must measure in multiple places — wires are not perfectly uniform. One measurement loses mark 2. Must state the formula used.</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: derive E = kL/A (2 marks, 2023 Q21c-i)</p>
-      <ol>
-        <li><strong>State all four equations:</strong> $E = \sigma/\varepsilon$, $F = kx$, $\sigma = F/A$, $\varepsilon = x/L$.</li>
-        <li><strong>Substitute clearly:</strong> $E = \dfrac{F/A}{x/L} = \dfrac{kx/A}{x/L} = \dfrac{kL}{A}$. Every step must be shown.</li>
-      </ol>
-      <div class="trap">Do not just quote the result. OCR requires all four equations stated and clear algebraic steps.</div>
-    </div>
-  </div>
-
-  <h3>3.2 · Springs and Elastic PE</h3>
-  <div class="formula-block">
-    <span class="formula-label">Hooke's law and elastic energy</span>
-    $$F = kx \qquad E_\text{el} = \tfrac{1}{2}kx^2 = \text{area under }F\text{-}x\text{ graph}$$
-  </div>
-</section>
-
-<!-- ═══ SECTION 4: ELECTRICITY ═══ -->
-<section class="sec" id="s4">
-  <p class="sec-num">Section 04 · Spec 4.1</p>
-  <h2>Electricity</h2>
-
-  <h3>Key Definitions</h3>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">EMF (electromotive force)</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The energy transferred from chemical (or other) energy into electrical energy <strong>per unit charge</strong> that passes through the source. Units: V (or J C$^{-1}$).
-      <span class="def-ocr">OCR exact: "energy transferred per unit charge from chemical to electrical energy". EMF = terminal pd only when current = 0.</span>
-      <span class="def-reject">NOT the energy to the load. NOT the pd across the internal resistance. NOT "voltage of the cell".</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Potential difference</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The energy transferred from electrical energy to other forms <strong>per unit charge</strong> that passes between two points. Units: V (or J C$^{-1}$).
-      <span class="def-reject">Reject: "voltage across". Use "potential difference" or "pd".</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Resistivity</span><span class="def-tag">Define</span></div>
-    <div class="def-body">A material property that quantifies how strongly a material opposes the flow of electric current. $\rho = RA/L$. Units: $\Omega\,\mathrm{m}$.
-      <span class="def-reject">Resistivity does NOT change when you change the length or area of the wire — it is a material property. Resistance DOES change with geometry.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Internal resistance</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The resistance of the source itself (battery, cell). It causes energy to be dissipated as heat inside the source, reducing the terminal pd below the EMF.
-      <span class="def-ocr">"Lost volts" $= Ir$. Terminal pd $= \varepsilon - Ir$.</span>
-    </div>
-  </div>
-
-  <h3>4.1 · Resistance and Resistivity</h3>
-  <div class="formula-block">
-    <span class="formula-label">Resistance equations</span>
-    $$R = \frac{\rho L}{A} \qquad \text{Gradient of }R\text{-}L\text{ graph} = \frac{\rho}{A}$$
-    $$I = nAve \implies v_d = \frac{I}{nAe}$$
-    <p class="formula-note">$n$ = number density (material property — same for all wires of the same material regardless of dimensions)</p>
-  </div>
-  <div class="note-box"><strong>Series wires MCQ (2023 Q9):</strong> Same current $I$ and same $n$ (same material). Different $A$ means different $v_d$ and different $R$. Answer A: charge carrier density and current are equal.</div>
-
-  <h3>4.2 · EMF and Internal Resistance</h3>
-  <div class="formula-block">
-    <span class="formula-label">EMF and internal resistance</span>
-    $$\varepsilon = I(R+r) \qquad V_\text{terminal} = \varepsilon - Ir$$
-    $$\text{Cells in series: total EMF} = n\varepsilon,\quad r_\text{total} = nr$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why large internal resistance is undesirable (2 marks, 2024 Q21b)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> more energy is dissipated as heat in the internal resistance <em>r</em> (or: the pd drop $Ir$ is larger, so the terminal pd $V = \varepsilon - Ir$ is smaller).</li>
-        <li><strong>Mark 2:</strong> therefore less energy/power is delivered to the external load (bulb).</li>
-      </ol>
-      <div class="trap">Saying "the bulb is dimmer" alone scores 0 — you must state the physical reason (energy dissipated in r). Do not reference less current; that is ignored by the mark scheme.</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: show P = 3I(ε − Ir) for three cells (3 marks, 2024 Q21a)</p>
-      <ol>
-        <li><strong>Mark 1 (B):</strong> state $\varepsilon = Ir + IR$.</li>
-        <li><strong>Mark 2 (M):</strong> three cells in series: total EMF $= 3\varepsilon$, total $r = 3r$ → $3\varepsilon = 3Ir + IR$.</li>
-        <li><strong>Mark 3 (A):</strong> $P = I^2R = I(3\varepsilon - 3Ir) = 3I(\varepsilon - Ir)$. Show every line.</li>
-      </ol>
-      <div class="trap">Never skip steps in a "show that" question. The M mark requires seeing the total EMF and total resistance written explicitly.</div>
+    <div class="spec-sub" id="s-4-1-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.1.2</span><h3>Mean Drift Velocity</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Mean drift velocity. $I = Anev$ where $n$ is number density of charge carriers. Conductors, semiconductors and insulators differ in $n$.</p>
+          <div class="sp-formula">$$I = Anev \quad\Rightarrow\quad v_d = \frac{I}{Ane}$$</div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Number density $n$</span><span class="def-tag">4.1.2b</span></div>
+            <div class="def-body">The number of free charge carriers per unit volume of a material (m⁻³). It is a <strong>material property</strong> — it does not change if you change the length or cross-sectional area of the wire.
+              <span class="def-reject">Two copper wires always have the same $n$ regardless of their dimensions.</span>
+            </div>
+          </div>
+          <div class="note-box"><strong>Series wires MCQ (2023 Q9):</strong> same material → same $n$. Same circuit → same $I$. Different area $A$ → different $v_d$ and different $R$. Answer: A (charge carrier density and current equal).</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>4.3 · Potential Dividers and Sensing Circuits</h3>
-  <div class="formula-block">
-    <span class="formula-label">Potential divider and LED threshold</span>
-    $$V_\text{out} = \frac{R_2}{R_1+R_2}\cdot V_\text{supply} \qquad eV_0 = hf \implies V_0 = \frac{hf}{e}$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: describe R–T experiment circuit (4 marks, 2024 Q23a)</p>
-      <ol>
-        <li><strong>Circuit diagram:</strong> battery, ammeter in <em>series</em> with thermistor, voltmeter in <em>parallel</em> with thermistor. All symbols correct.</li>
-        <li><strong>Procedure:</strong> record voltage and current readings as temperature falls from starting value, using a thermometer to measure temperature.</li>
-        <li><strong>Range:</strong> take at least 5 readings, or readings at regular temperature intervals.</li>
-        <li><strong>Analysis:</strong> calculate $R = V/I$ for each reading and plot graph of $R$ against $\theta$.</li>
-      </ol>
-      <div class="trap">Voltmeter must be in parallel (not series). Must state at least 5 readings or regular intervals. Must say calculate R = V/I, not just "plot results".</div>
+  <!-- 4.2 Energy, Power and Resistance -->
+  <div class="spec-section" id="s-4-2">
+    <div class="spec-section-head"><span class="spec-code">4.2</span><h2>Energy, Power and Resistance</h2></div>
+    <div class="spec-sub" id="s-4-2-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.2.2</span><h3>E.m.f. and p.d.</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Potential difference (p.d.): energy transferred per unit charge between two points. E.m.f.: energy transferred from source per unit charge. Distinction between e.m.f. and p.d. in terms of energy transfer. Energy: $W = VQ = EQ$. Electron acceleration: $eV = \frac{1}{2}mv^2$.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">E.m.f. (electromotive force)</span><span class="def-tag">Define · 4.2.2b</span></div>
+            <div class="def-body">Energy transferred from chemical (or other) energy to electrical energy <strong>per unit charge</strong> flowing through the source. Units: V or J C⁻¹.
+              <span class="def-ocr">OCR wording: "energy transferred per unit charge from chemical to electrical energy"</span>
+              <span class="def-reject">NOT energy transferred to the load. NOT the pd across the internal resistance. NOT "voltage of the cell". EMF = terminal pd only when $I = 0$.</span>
+            </div>
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Potential difference</span><span class="def-tag">Define · 4.2.2a</span></div>
+            <div class="def-body">Energy transferred from electrical energy to other forms per unit charge passing between two points.
+              <span class="def-reject">Reject: "voltage across". Use "potential difference" or "p.d.".</span>
+            </div>
+          </div>
+          <div class="note-box"><strong>Similarity between e.m.f. and p.d. (1 mark, 2022 Q25a):</strong> Both are measured in volts / both are measured with a voltmeter / both are defined as energy per unit charge. This is a "state one similarity" question — any one of these three answers scores the mark.</div>
+          <div class="note-box"><strong>Kirchhoff's laws MCQ (2022 Q2, Answer A):</strong> "Which term is NOT used in either of Kirchhoff's two laws?" — Answer: charge. Kirchhoff's 1st law uses current; 2nd law uses e.m.f. and potential difference. Charge is conserved but not explicitly named in the laws.</div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: thermistor-LED switch-on explanation (4 marks, 2024 Q23b)</p>
-      <ol>
-        <li>Read LED switch-on voltage from I-V graph (where current just begins: e.g. $3.0\ \mathrm{V}$).</li>
-        <li>Read $R_\text{therm}$ at the threshold temperature from R-$\theta$ graph (e.g. $30\ \Omega$ at $30\,^\circ\mathrm{C}$).</li>
-        <li>$V_\text{LED} = \dfrac{55}{55+30}\times5 = 3.24\ \mathrm{V}$</li>
-        <li>State: $3.24\ \mathrm{V} > 3.0\ \mathrm{V}$, therefore LED switches on above $30\,^\circ\mathrm{C}$.</li>
-      </ol>
-      <div class="trap">The comparison must be written as an explicit inequality. Both the graph reading and the calculation must be shown.</div>
+    <div class="spec-sub" id="s-4-2-3">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.2.3–4</span><h3>Resistance and Resistivity</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">—</span>
+        <div class="sp-body">
+          <div class="sp-formula">
+            $$R = \frac{V}{I} \qquad R = \frac{\rho L}{A} \qquad \rho = \frac{RA}{L}$$
+            $$\text{Gradient of }R\text{-}L\text{ graph} = \frac{\rho}{A} \implies \rho = \text{gradient} \times A$$
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Resistivity $\rho$</span><span class="def-tag">Define · 4.2.4</span></div>
+            <div class="def-body">A material property quantifying resistance to current flow. Units: Ω m. Does <strong>not</strong> change when you change the dimensions of the wire.
+              <span class="def-reject">Resistance R changes with length and area. Resistivity ρ does not.</span>
+            </div>
+          </div>
+          <div class="note-box"><strong>Resistance vs resistivity MCQ (2023 Q10):</strong> increasing length → R increases. Resistivity is a material property — it stays constant. Answer: C.</div>
+          <p class="sp-statement" style="margin-top:.5rem">NTC thermistor: resistance decreases as temperature increases (negative temperature coefficient).</p>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: resistivity from circuit data (4 marks, 2022 Q25c-i)</p>
+              <ol>
+                <li>Find p.d. across the wire: $V_\text{wire} = \varepsilon - 2V_\text{lamp} = 14.4 - 2\times6.0 = 2.4\ \mathrm{V}$.</li>
+                <li>Find resistance of wire: $R = V/I = 2.4/3.0 = 0.80\ \Omega$.</li>
+                <li>Rearrange $R = \rho L/A$: $\rho = RA/L = 0.80\times0.54\times10^{-6}/25.0$.</li>
+                <li>$\rho = 1.7\times10^{-8}\ \Omega\text{ m}$.</li>
+              </ol>
+              <div class="trap">The two lamps are in series with the wire — do not forget both lamps contribute $2\times6.0 = 12\ \mathrm{V}$ to the voltage drop. Missing this gives $R = 2.8\ \Omega$ and $\rho = 6.0\times10^{-8}\ \Omega\text{ m}$ for ECF marks.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: drift velocity from $I = Anev$ (2 marks, 2022 Q25c-ii)</p>
+              <ol>
+                <li>Rearrange: $v = I/(Ane)$.</li>
+                <li>$v = 3.0\,/\,(0.54\times10^{-6}\times8.5\times10^{28}\times1.60\times10^{-19})$.</li>
+                <li>$v = 4.1\times10^{-4}\ \mathrm{m\,s^{-1}}$.</li>
+              </ol>
+              <div class="trap">Convert $A$ to m² before substituting: $0.54\ \mathrm{mm}^2 = 0.54\times10^{-6}\ \mathrm{m}^2$. A power-of-ten error on the area here is not penalised again if it was already penalised in (c)(i).</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
-
-<!-- ═══ SECTION 5: WAVES ═══ -->
-<section class="sec" id="s5">
-  <p class="sec-num">Section 05 · Spec 5.1 and 5.2</p>
-  <h2>Waves</h2>
-
-  <h3>Key Definitions</h3>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Longitudinal wave</span><span class="def-tag">Define</span></div>
-    <div class="def-body">A wave in which the oscillations of particles are <strong>parallel</strong> to the direction of energy transfer. Examples: sound, compression waves in a spring.
-      <span class="def-reject">Reject "perpendicular" — that describes transverse waves. Must say "parallel to direction of energy transfer/propagation", not just "parallel".</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Compression and Rarefaction</span><span class="def-tag">Define</span></div>
-    <div class="def-body"><strong>Compression:</strong> a region where molecules are closer together than average — higher pressure.<br><strong>Rarefaction:</strong> a region where molecules are further apart than average — lower pressure.
-      <span class="def-reject">NOT "varying amplitude". Amplitude is fixed for a given wave; compressions are about spacing/pressure, not amplitude.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Stationary (standing) wave</span><span class="def-tag">Define</span></div>
-    <div class="def-body">A wave pattern formed by the superposition of two waves of equal frequency and amplitude travelling in opposite directions. Energy is stored rather than transmitted. Has fixed nodes (zero amplitude) and antinodes (maximum amplitude).
-      <span class="def-ocr">Node spacing $= \lambda/2$. Antinodes are where constructive interference occurs; nodes where destructive interference occurs.</span>
-    </div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Superposition</span><span class="def-tag">Define</span></div>
-    <div class="def-body">When two or more waves meet at a point, the resultant displacement is the vector sum of the individual displacements at that point.</div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Coherence</span><span class="def-tag">Define</span></div>
-    <div class="def-body">Two sources are coherent if they have a constant phase difference and the same frequency. Required for a stable interference pattern.</div>
-  </div>
-
-  <h3>5.1 · Longitudinal Waves — Explain question</h3>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain how compressions and rarefactions are created (3 marks, 2023 Q22a)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> molecules vibrate/oscillate.</li>
-        <li><strong>Mark 2:</strong> the oscillations are <strong>parallel</strong> to the direction of energy transfer/propagation.</li>
-        <li><strong>Mark 3:</strong> this creates regions of high <strong>and</strong> low pressure — compressions and rarefactions.</li>
-      </ol>
-      <div class="trap">Do not reference "varying amplitude". Do not say oscillations are perpendicular. Must say "parallel to direction of energy transfer" — not just "parallel".</div>
-    </div>
-  </div>
-
-  <h3>5.2 · Stationary Waves — Formation and Imperfect Nodes</h3>
-  <div class="formula-block">
-    <span class="formula-label">Stationary wave relationships</span>
-    $$\text{Node spacing} = \frac{\lambda}{2} \implies \lambda = 2d_\text{node}$$
-    $$v = f\lambda = 2f\,d_\text{node} \qquad \text{Example: }d = 0.84\ \mathrm{m},\ f = 200\ \mathrm{Hz} \implies v = 336\ \mathrm{m\,s^{-1}}$$
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain stationary wave formation with nodes and antinodes (3 marks, 2023 Q22b-i)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> the incident and reflected waves <strong>interfere</strong> / superpose.</li>
-        <li><strong>Mark 2:</strong> constructive interference (waves in phase) gives maximum amplitude — these are <strong>antinodes</strong>.</li>
-        <li><strong>Mark 3:</strong> destructive interference (waves in antiphase) gives minimum/zero amplitude — these are <strong>nodes</strong>.</li>
-      </ol>
-      <div class="trap">Do not write "superimpose" — OCR ignores this term. Use "superpose" or "interfere". Antinodes are constructive; nodes are destructive — do not mix these up.</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why nodes are not exactly zero (3 marks, 2023 Q22b-ii)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> the amplitude/intensity/energy of the wave <strong>decreases with distance</strong> from the source.</li>
-        <li><strong>Mark 2:</strong> the reflected wave has a <strong>lower amplitude</strong> than the incident wave.</li>
-        <li><strong>Mark 3:</strong> <strong>incomplete destructive interference</strong> occurs — the amplitudes do not fully cancel, so nodes are not exactly zero. The difference between amplitudes increases with distance from the reflector, so nodes further from A are larger.</li>
-      </ol>
-      <div class="trap">Saying "energy is absorbed" alone scores 0 unless you link it to the amplitude difference causing incomplete cancellation.</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: suggest improvement to reduce uncertainty in speed of sound (1 mark, 2023 Q22b-iv)</p>
-      <ul>
-        <li>Measure the distance across <strong>more than one</strong> node spacing (e.g. across 5 gaps) and divide — reduces % uncertainty in distance.</li>
-        <li>Or: repeat measurements and calculate a mean.</li>
-        <li>Or: use a lower frequency (gives a longer wavelength, so larger node spacing → smaller % uncertainty).</li>
-      </ul>
+    <div class="spec-sub" id="s-4-2-5">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.2.5</span><h3>Power</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <div class="sp-formula">
+            $$P = VI = I^2R = \frac{V^2}{R} \qquad W = VIt \qquad 1\ \mathrm{kWh} = 3.6\times10^6\ \mathrm{J}$$
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>5.3 · Young Double-Slit and Interference</h3>
-  <div class="formula-block">
-    <span class="formula-label">Young's double-slit and interference conditions</span>
-    $$w = \frac{\lambda D}{d} \implies \lambda = \frac{wd}{D} \qquad \text{If "distance to }n\text{th fringe" given: } w = \frac{\text{total}}{n}$$
-    $$\text{Constructive: path diff} = n\lambda \qquad \text{Destructive: path diff} = (n+\tfrac{1}{2})\lambda$$
-  </div>
-  <div class="tip"><strong>What Young's experiment demonstrates:</strong> diffraction (at each slit), superposition, and the wave nature of light. It does <strong>NOT</strong> demonstrate refraction. MCQ asking which property is NOT demonstrated: always refraction.</div>
-
-  <h3>5.4 · Polarisation — Two MCQ Types</h3>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: distinguish the two polarisation MCQ types</p>
-      <ol>
-        <li><strong>Type 1 — unpolarised source, filter then rotated (2023 Q13):</strong> After the filter halves the intensity by selecting one polarisation plane, rotating the filter does <em>not</em> change the intensity — it still transmits half the unpolarised light. Answer: D (does not change).</li>
-        <li><strong>Type 2 — polarised source, e.g. laptop screen (2024 Q4):</strong> At 90° the filter is perpendicular to the polarisation plane → dark. At 180° it realigns → full brightness. Sequence: normal → dark → normal. Answer: B.</li>
-      </ol>
-      <div class="trap">Read carefully: is the <em>source</em> already polarised (Type 2), or is the source unpolarised and only the filter is polarising (Type 1)?</div>
+  <!-- 4.3 Electrical Circuits -->
+  <div class="spec-section" id="s-4-3">
+    <div class="spec-section-head"><span class="spec-code">4.3</span><h2>Electrical Circuits</h2></div>
+    <div class="spec-sub" id="s-4-3-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.3.1</span><h3>Series and Parallel Circuits</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Kirchhoff's second law: sum of e.m.f.s around a loop = sum of p.d.s. Series and parallel resistor combinations. Circuits with both series and parallel.</p>
+          <div class="sp-formula">
+            $$\text{Series: } R_T = R_1 + R_2 + \cdots$$
+            $$\text{Parallel: } \frac{1}{R_T} = \frac{1}{R_1} + \frac{1}{R_2} + \cdots$$
+            $$\text{Potential divider: } V_\text{out} = \frac{R_2}{R_1 + R_2} \times V_\text{supply}$$
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Kirchhoff's Second Law</span><span class="def-tag">4.3.1a</span></div>
+            <div class="def-body">The sum of the e.m.f.s around any closed loop equals the sum of the p.d.s around that loop. This is a statement of conservation of energy.
+              <span class="def-ocr">$\sum \varepsilon = \sum IR$ around any closed loop.</span>
+            </div>
+          </div>
+          <div class="note-box"><strong>Parallel resistors MCQ (2022 Q7, Answer B):</strong> $1/R_T = 1/12 + 1/R = 1/4$. So $1/R = 1/4 - 1/12 = 3/12 - 1/12 = 2/12$, giving $R = 6.0\ \Omega$.</div>
+          <div class="note-box"><strong>Internal resistance MCQ (2022 Q8, Answer C):</strong> "Lost volts" $= \varepsilon - V_\text{terminal} = 1.2 - 0.9 = 0.3\ \mathrm{V}$. Current $I = V/R = 0.9/6.0 = 0.15\ \mathrm{A}$. So $r = 0.3/0.15 = 2.0\ \Omega$.</div>
+          <div class="note-box"><strong>Power dissipated MCQ (2022 Q5, Answer C):</strong> Average KE lost $= \frac{1}{2}m(v_1^2 - v_2^2) = \frac{1}{2}\times1000\times(400 - 225) = 87\,500\ \mathrm{J}$. Average power $= E/t = 87\,500/2.4 = 3.6\times10^4\ \mathrm{W}$.</div>
+          <div class="note-box"><strong>Parallel resistors MCQ (2022 Q7, Answer B):</strong> $1/R_T = 1/12 + 1/R = 1/4 \Rightarrow 1/R = 1/4 - 1/12 = 2/12 \Rightarrow R = 6.0\ \Omega$.</div>
+          <div class="note-box"><strong>Internal resistance MCQ (2022 Q8, Answer C):</strong> Lost volts $= \varepsilon - V = 1.2 - 0.90 = 0.30\ \mathrm{V}$. Current $= V/R = 0.90/6.0 = 0.15\ \mathrm{A}$. So $r = 0.30/0.15 = 2.0\ \Omega$.</div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: thermistor-LED switch-on (4 marks, 2024)</p>
+              <ol>
+                <li>Read LED switch-on voltage from I-V graph (e.g. $3.0\ \mathrm{V}$).</li>
+                <li>Read $R_\text{therm}$ at threshold temperature from R–$\theta$ graph (e.g. $30\ \Omega$ at $30\,^\circ\mathrm{C}$).</li>
+                <li>$V_\text{LED} = \frac{55}{55+30} \times 5 = 3.24\ \mathrm{V}$</li>
+                <li>State: $3.24\ \mathrm{V} > 3.0\ \mathrm{V}$ — LED switches on.</li>
+              </ol>
+              <div class="trap">The comparison to the threshold must be written explicitly as an inequality.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: potential divider V vs x graph shape (2 marks, 2022 Q25b-i)</p>
+              <ol>
+                <li>At $x = 0$ (slider at A): the wire has zero resistance in parallel with R, so all voltage drops across R. But when the wire length is zero, $V_\text{out} = V_\text{supply} \times R/(0 + R) = 1.5\ \mathrm{V}$.</li>
+                <li>At $x = L$ (slider at B): the full wire resistance equals R, so $V_\text{out} = 1.5\times R/(R+R) = 0.75\ \mathrm{V}$.</li>
+                <li>The graph starts at 1.5 V when $x = 0$ and falls to 0 V at $x = L$ (wire resistance $\gg R$). Shape: <strong>curve of decreasing gradient</strong> (because wire resistance increases non-linearly relative to R).</li>
+              </ol>
+              <div class="trap">The graph goes from 1.5 V to 0 V, not 0.75 V. Allow a curve of increasing gradient or straight line for the M mark.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain V variation when BC wire is removed (2 marks, 2022 Q25b-ii)</p>
+              <ol>
+                <li>At A ($x = 0$): no wire length in circuit, so $V = 1.5\ \mathrm{V}$ (all e.m.f. across R, since wire has zero resistance in series).</li>
+                <li>As slider moves toward B: the length of wire AS increases, adding resistance in series with R. Total resistance increases so current decreases.</li>
+                <li>At B ($x = L$): resistance of wire $=$ resistance of R, so $V$ is shared equally. $V = 0.75\ \mathrm{V}$. (Alternatively: potential divider at B gives $V = 1.5 \times R/(R+R) = 0.75\ \mathrm{V}$.)</li>
+              </ol>
+              <div class="trap">This question has BC removed — without BC the fixed resistor R is in series with the section of wire AS, forming a simple potential divider. Do not treat it as a parallel circuit.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-4-3-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.3.2</span><h3>Internal Resistance</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Source of e.m.f. with internal resistance. Terminal p.d., "lost volts". Techniques to determine internal resistance.</p>
+          <div class="sp-formula">
+            $$\varepsilon = I(R + r) \qquad V_\text{terminal} = \varepsilon - Ir \qquad \text{"lost volts"} = Ir$$
+            $$\text{Cells in series: total } \varepsilon_\text{total} = n\varepsilon,\quad r_\text{total} = nr$$
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Internal resistance</span><span class="def-tag">Define · 4.3.2a</span></div>
+            <div class="def-body">The resistance of the source itself. It causes energy to be dissipated as heat inside the source, so the terminal p.d. is less than the e.m.f.
+              <span class="def-reject">NOT "resistance inside the cell". Must link to energy dissipation and reduced terminal pd.</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain why large internal resistance is undesirable (2 marks, 2024)</p>
+              <ol>
+                <li>More energy is dissipated as heat in $r$ (or: the voltage drop $Ir$ is larger, so terminal pd $= \varepsilon - Ir$ is smaller).</li>
+                <li>Therefore less power is delivered to the external load.</li>
+              </ol>
+              <div class="trap">Saying "the bulb is dimmer" alone scores 0. Must state the physical reason.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: show P = 3I(ε − Ir) for three cells (3 marks, 2024)</p>
+              <ol>
+                <li><strong>Mark 1 (B):</strong> $\varepsilon = Ir + IR$.</li>
+                <li><strong>Mark 2 (M):</strong> Three cells: $3\varepsilon = 3Ir + IR$.</li>
+                <li><strong>Mark 3 (A):</strong> $P = I^2R = I(3\varepsilon - 3Ir) = 3I(\varepsilon - Ir)$.</li>
+              </ol>
+              <div class="trap">Every algebraic step must be visible — never skip lines in a "show that" question.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>5.5 · Refraction and TIR</h3>
-  <div class="formula-block">
-    <span class="formula-label">Snell's law and critical angle</span>
-    $$n_1\sin\theta_1 = n_2\sin\theta_2 \qquad \sin\theta_c = \frac{n_2}{n_1}\ (n_1 > n_2)$$
-    $$n = 1.5 \implies \theta_c = 41.8^\circ \qquad \text{If incidence} > \theta_c \implies \text{TIR}$$
-  </div>
-</section>
-
-<!-- ═══ SECTION 6: QUANTUM ═══ -->
-<section class="sec" id="s6">
-  <p class="sec-num">Section 06 · Spec 6.1</p>
-  <h2>Quantum Physics and the Photoelectric Effect</h2>
-
-  <h3>Key Definitions</h3>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Photon</span><span class="def-tag">Define</span></div>
-    <div class="def-body">A discrete packet (quantum) of electromagnetic energy. The energy of a photon is $E = hf$, where $h$ is the Planck constant and $f$ is the frequency of the radiation.
-      <span class="def-reject">Reject: "particle of light" without mentioning energy or frequency.</span>
+  <!-- 4.4 Waves -->
+  <div class="spec-section" id="s-4-4">
+    <div class="spec-section-head"><span class="spec-code">4.4</span><h2>Waves</h2></div>
+    <div class="spec-sub" id="s-4-4-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.4.1</span><h3>Wave Motion</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a</span>
+        <div class="sp-body">
+          <p class="sp-statement">Progressive waves. Longitudinal and transverse waves.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Longitudinal vs Transverse</span><span class="def-tag">Define · 4.4.1a</span></div>
+            <div class="def-body">
+              <strong>Transverse:</strong> oscillations perpendicular to the direction of energy transfer (light, all EM waves, waves on strings).<br>
+              <strong>Longitudinal:</strong> oscillations parallel to the direction of energy transfer (sound, ultrasound, compression waves).
+              <span class="def-reject">Reject "perpendicular" for longitudinal. Must say "parallel to direction of energy transfer/propagation".</span>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain compressions and rarefactions (3 marks, 2023 Q22a)</p>
+              <ol>
+                <li>Molecules vibrate/oscillate.</li>
+                <li>The oscillations are <strong>parallel</strong> to the direction of energy transfer.</li>
+                <li>This creates regions of high <strong>and</strong> low pressure — compressions and rarefactions.</li>
+              </ol>
+              <div class="trap">Do not say "varying amplitude". Do not say "perpendicular". Must say "parallel to direction of energy transfer" — not just "parallel".</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">b–d</span>
+        <div class="sp-body">
+          <p class="sp-statement">Displacement, amplitude, wavelength, period, phase difference, frequency, speed. $f = 1/T$. Wave equation $v = f\lambda$.</p>
+          <div class="sp-formula">
+            $$v = f\lambda \qquad f = \frac{1}{T} \qquad I = \frac{P}{A} \propto A^2$$
+          </div>
+          <div class="note-box"><strong>Deep to shallow water MCQ (2023 Q17):</strong> speed decreases, frequency stays constant (set by source), wavelength decreases ($v = f\lambda$, $f$ fixed). Answer: B.</div>
+        </div>
+      </div>
+      <div class="spec-point">
+        <span class="sp-letter">f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Reflection, refraction, polarisation and diffraction of all waves. Diffraction effects significant when $\lambda \approx$ gap width.</p>
+          <div class="note-box"><strong>Diffraction MCQ:</strong> a 3 cm gap → microwaves ($\lambda \approx$ 1–10 cm) are significantly diffracted. Visible light ($\lambda \approx$ 400–700 nm) is not.</div>
+          <div class="note-box"><strong>Sound vs EM waves of same wavelength MCQ (2022 Q19, Answer B):</strong> 3 cm sound and 3 cm EM waves — what is true for <em>both</em>? (A) Polarisation: only EM waves can be polarised, not sound. (B) Stationary waves: both can form stationary waves. (C) Same frequency: sound speed $\approx340$ m/s, EM speed $= 3\times10^8$ m/s, so frequencies differ enormously. (D) Same speed: no, completely different. Answer: B.</div>
+          <div class="note-box"><strong>Intensity of laser beam MCQ (2022 Q20, Answer B):</strong> Intensity $= P/A$ (power per unit cross-sectional area). You need power and cross-sectional area only. Amplitude alone gives relative intensity; frequency and wavelength do not give absolute intensity.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-4-4-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.4.2</span><h3>Electromagnetic Waves</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">EM spectrum. Orders of magnitude of wavelengths: radio → gamma. Plane polarised waves. Refraction: refractive index $n = c/v$, Snell's law. Critical angle and TIR.</p>
+          <div class="sp-formula">
+            $$n = \frac{c}{v} \qquad n_1\sin\theta_1 = n_2\sin\theta_2 \qquad \sin\theta_c = \frac{1}{n}\ (n_2 = 1\ \text{for air})$$
+            $$n = 1.5 \implies \theta_c = \arcsin(1/1.5) = 41.8^\circ$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Polarisation MCQ — two types to distinguish</p>
+              <ol>
+                <li><strong>Unpolarised source, filter rotated (2023 Q13):</strong> after the first filter halves intensity, rotating it further does NOT change intensity. Answer: D.</li>
+                <li><strong>Polarised source (e.g. laptop, 2024 Q4):</strong> at 90° dark; at 180° bright again. Sequence: normal → dark → normal. Answer: B.</li>
+                <li><strong>Polarised filter rotated about horizontal axis (2022 Q12):</strong> rotating about the horizontal axis changes the angle between the filter's transmission axis and the polarisation plane. The intensity changes (Malus's Law). Answer: B (intensity changes).</li>
+              </ol>
+              <div class="trap">Read carefully: is the source already polarised, or only the filter? Rotating a filter about the axis of the beam (not the horizontal axis) for an unpolarised source does NOT change intensity after the first filter.</div>
+            </div>
+          </div>
+          <div class="note-box"><strong>Snell's law MCQ (2022 Q3, Answer C):</strong> Angles in Snell's law are always measured from the normal, not the boundary. If the diagram labels 50° and 20° from the boundary, the corresponding angles from the normal are 40° and 70°. Apply $n_1\sin\theta_1 = n_2\sin\theta_2$: $1.5\sin70° = n\sin50°$.</div>
+          <div class="note-box"><strong>UV wavelength MCQ (2022 Q1, Answer D):</strong> UV spans roughly $10^{-8}$ to $4\times10^{-7}$ m. Answer D ($2\times10^{-7}$ m = 200 nm) falls in the UV range. A ($3\times10^{-5}$ m) is IR, B ($1\times10^{-10}$ m) is X-ray, C ($4\times10^{2}$ m) is radio.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-4-4-3">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.4.3</span><h3>Superposition and Interference</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Principle of superposition. Graphical methods. Interference, coherence, path difference and phase difference. Constructive and destructive interference. Young double-slit experiment.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Superposition</span><span class="def-tag">Define · 4.4.3a</span></div>
+            <div class="def-body">When two or more waves meet, the resultant displacement at any point is the vector sum of the individual displacements at that point.</div>
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Coherence</span><span class="def-tag">Define · 4.4.3c</span></div>
+            <div class="def-body">Two sources are coherent if they have a <strong>constant phase difference</strong> and the same frequency. Required for a stable interference pattern.
+              <span class="def-reject">Two sources of the same frequency but varying phase are NOT coherent.</span>
+            </div>
+          </div>
+          <div class="sp-formula">
+            $$\text{Constructive: path diff} = n\lambda \quad (n = 0,1,2,\ldots)$$
+            $$\text{Destructive: path diff} = (n+\tfrac{1}{2})\lambda$$
+            $$\text{Young's slits: } w = \frac{\lambda D}{d} \implies \lambda = \frac{wd}{D}$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: find λ when given distance to nth fringe</p>
+              <ol>
+                <li>Fringe spacing $w = \text{total distance} / n$. E.g.: central to 6th fringe $= 9\ \mathrm{mm}$, so $w = 9/6 = 1.5\ \mathrm{mm}$.</li>
+                <li>$\lambda = wd/D = (1.5\times10^{-3} \times 1.5\times10^{-3})/3.5 = 6.4\times10^{-7}\ \mathrm{m}$</li>
+              </ol>
+              <div class="trap">Using 9 mm directly as $w$ instead of dividing by 6 gives an answer 6× too large.</div>
+            </div>
+          </div>
+          <div class="tip"><strong>What Young's experiment demonstrates:</strong> diffraction (at each slit), superposition, wave nature of light. It does <strong>NOT</strong> demonstrate refraction.</div>
+          <div class="note-box"><strong>Young's slits fringe spacing MCQ (2022 Q4, Answer B):</strong> $w = \lambda D/d$. Largest $w$ needs largest $\lambda/d$ ratio. Calculate for each: A = 450/0.20 = 2250, B = 510/0.15 = 3400, C = 550/0.25 = 2200, D = 610/0.30 = 2033. Answer: B gives the largest ratio.</div>
+          <div class="note-box"><strong>Phase difference MCQ (2022 Q6, Answer C):</strong> 270° phase difference $= \frac{3}{4}\lambda$ path difference $= \frac{3}{4}\times4.0 = 3.0\ \mathrm{cm}$. So $|b - a| = 3.0\ \mathrm{cm}$. Check row C: $|18.0 - 15.0| = 3.0\ \mathrm{cm}$. Correct.</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-4-4-4">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.4.4</span><h3>Stationary Waves</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Formation of stationary waves on strings and in air columns. Similarities and differences with progressive waves. Nodes and antinodes. Stationary wave patterns. Fundamental mode and harmonics.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Stationary wave</span><span class="def-tag">Define · 4.4.4a</span></div>
+            <div class="def-body">Formed by superposition of two waves of equal frequency and amplitude travelling in <strong>opposite directions</strong>. Energy is stored, not transmitted. Has fixed nodes (zero amplitude, destructive interference) and antinodes (maximum amplitude, constructive interference).
+              <span class="def-reject">Do not write "superimpose" — OCR ignores this term. Use "superpose" or "interfere".</span>
+            </div>
+          </div>
+          <div class="sp-formula">
+            $$\text{Node spacing} = \frac{\lambda}{2} \implies \lambda = 2d_\text{node}$$
+            $$v = f\lambda = 2fd_\text{node}$$
+            $$\text{Example: } d = 0.84\ \mathrm{m},\ f = 200\ \mathrm{Hz} \implies v = 200 \times 1.68 = 336\ \mathrm{m\,s^{-1}}$$
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain stationary wave formation — nodes and antinodes (3 marks, 2023 Q22b-i)</p>
+              <ol>
+                <li>Incident and reflected waves <strong>interfere / superpose</strong>.</li>
+                <li>Constructive interference (in phase) → maximum amplitude = <strong>antinodes</strong>.</li>
+                <li>Destructive interference (antiphase) → zero amplitude = <strong>nodes</strong>.</li>
+              </ol>
+              <div class="trap">Do not write "superimpose". Do not swap nodes and antinodes.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain why nodes are not exactly zero (3 marks, 2023 Q22b-ii)</p>
+              <ol>
+                <li>Amplitude of the wave <strong>decreases with distance</strong> from the source.</li>
+                <li>The reflected wave has a <strong>lower amplitude</strong> than the incident wave.</li>
+                <li><strong>Incomplete destructive interference</strong> — amplitudes do not fully cancel.</li>
+              </ol>
+              <div class="trap">Saying "energy is absorbed" alone scores 0. Must link to amplitude difference causing incomplete cancellation.</div>
+            </div>
+          </div>
+          <div class="note-box"><strong>How to identify a stationary wave (1 mark, 2022 Q24a):</strong> The observer sees fixed nodes and antinodes — regions that do not move. Accept "appearance of nodes/antinodes". Ignore "the waves don't move" — OCR does not credit this alone.</div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: measure fundamental frequency of stretched wire (2 marks, 2022 Q24b-i)</p>
+              <ol>
+                <li><strong>Method A (signal generator):</strong> Connect wire to vibration generator linked to calibrated signal generator. Adjust frequency until a clear stationary wave (fundamental mode) appears. Read frequency from the generator. Reduce background sound level.</li>
+                <li><strong>Method B (count oscillations):</strong> Count the number of oscillations in a measured time. Take many oscillations (e.g. 10) to reduce timing uncertainty. Use a stopwatch or oscilloscope.</li>
+                <li><strong>Method C (oscilloscope + microphone):</strong> Hold a microphone near the wire connected to an oscilloscope. Measure the period $T$ from the trace; $f = 1/T$.</li>
+              </ol>
+              <div class="trap">You need both the method AND the improvement (reduce background noise / take many oscillations / use calibrated equipment) for both marks.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: wavelength, wave speed and uncertainty in T (2022 Q24b-ii)</p>
+              <ol>
+                <li><strong>Wavelength:</strong> At the fundamental mode the wire shows one antinode. The wire length $L = \lambda/2$, so $\lambda = 2L = 2\times0.62 = 1.24\ \mathrm{m}$. (Allow 1.2 m.)</li>
+                <li><strong>Wave speed:</strong> $v = f\lambda = 58\times1.24 = 72\ \mathrm{m\,s^{-1}}$. (ECF from your wavelength.)</li>
+                <li><strong>% uncertainty in $T = 4f^2mL$:</strong> $T \propto f^2 \cdot m \cdot L$, so $\%\text{unc}(T) = 2\times\%f + \%m + \%L = 2\times2.5 + 1.0 + 0.5 = 6.5\%$. Absolute uncertainty $= 0.065\times[4\times58^2\times9.7\times10^{-4}\times0.62] = 0.53\ \mathrm{N}$ (to 2 s.f.).</li>
+              </ol>
+              <div class="trap">The power of 2 on $f$ means its % uncertainty is doubled. The absolute uncertainty answer must be given to 2 s.f. only.</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Work function $\phi$</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The minimum energy needed to release an electron from the surface of a metal. $\phi = hf_0$ where $f_0$ is the threshold frequency.
-      <span class="def-reject">NOT "the energy needed to remove an electron from an atom". The electron is already free in the metal — the work function is the energy to escape the surface.</span>
+  <!-- 4.5 Quantum Physics -->
+  <div class="spec-section" id="s-4-5">
+    <div class="spec-section-head"><span class="spec-code">4.5</span><h2>Quantum Physics</h2></div>
+    <div class="spec-sub" id="s-4-5-1">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.5.1</span><h3>Photons</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–e</span>
+        <div class="sp-body">
+          <p class="sp-statement">Particulate nature (photon model) of EM radiation. Photon as a quantum of energy. $E = hf = hc/\lambda$. The electronvolt. Using LEDs to estimate Planck constant $h$.</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Photon</span><span class="def-tag">Define · 4.5.1b</span></div>
+            <div class="def-body">A discrete packet (quantum) of electromagnetic energy. Its energy is $E = hf$, directly proportional to frequency. It has zero rest mass and travels at $c$ in a vacuum.
+              <span class="def-reject">Reject: "particle of light" without mentioning energy or frequency.</span>
+            </div>
+          </div>
+          <div class="sp-formula">
+            $$E = hf = \frac{hc}{\lambda} \qquad h = 6.63\times10^{-34}\ \mathrm{J\,s}$$
+            $$1\ \mathrm{eV} = 1.6\times10^{-19}\ \mathrm{J} \qquad \text{LED: } eV_0 = hf \implies h = \frac{eV_0}{f}$$
+            $$\text{Plot }V_0\text{ vs }f\text{: gradient} = h/e \implies h = \text{gradient} \times e$$
+          </div>
+          <div class="tip">The cardboard tube in the LED experiment excludes ambient light, making it easier to judge the exact switch-on point — reducing uncertainty in $V_0$.</div>
+        </div>
+      </div>
     </div>
+    <div class="spec-sub" id="s-4-5-2">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.5.2</span><h3>The Photoelectric Effect</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–f</span>
+        <div class="sp-body">
+          <p class="sp-statement">Photoelectric effect. One-to-one photon–electron interaction. Einstein's equation. Work function, threshold frequency. $KE_\text{max}$ independent of intensity. Rate of emission proportional to intensity (above threshold).</p>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Work function $\phi$</span><span class="def-tag">Define · 4.5.2c</span></div>
+            <div class="def-body">The minimum energy required to release an electron from the surface of a metal. $\phi = hf_0$ where $f_0$ is the threshold frequency.
+              <span class="def-reject">NOT "energy to remove an electron from an atom". Electrons in metals are already delocalised — the work function is the energy needed to escape the surface.</span>
+            </div>
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">$KE_\text{max}$</span><span class="def-tag">Define · 4.5.2e</span></div>
+            <div class="def-body">The maximum kinetic energy of electrons emitted from the metal surface. Depends on frequency of incident radiation only — <strong>not</strong> on intensity.
+              <span class="def-ocr">$hf = \phi + KE_\text{max}$</span>
+            </div>
+          </div>
+          <div class="sp-formula">
+            $$hf = \phi + KE_\text{max} \qquad hf_0 = \phi \qquad KE_\text{max} = hf - \phi$$
+            $$\text{Intensity} = \frac{P}{A} = \frac{\dot{n}\cdot hf}{A}$$
+          </div>
+          <div class="tip"><strong>Increasing intensity (above threshold):</strong> more photons/second → more electrons/second → higher current. $KE_\text{max}$ is unchanged because it depends only on frequency.</div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain why frequency must exceed minimum (3 marks, 2023 Q23b)</p>
+              <ol>
+                <li>Light is made of discrete packets of energy called <strong>photons</strong>.</li>
+                <li>An electron is emitted only if the photon energy is $\geq$ the <strong>work function</strong>.</li>
+                <li>$E = hf$ — so frequency must exceed the threshold $f_0 = \phi/h$.</li>
+              </ol>
+              <div class="trap">Do not mention intensity here. One photon interacts with one electron.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: current ∝ intensity (3 marks, 2023 Q23c-i)</p>
+              <ol>
+                <li>Intensity $\propto$ rate of incident photons (at above-threshold frequency).</li>
+                <li>Each photon interacts with one electron (<strong>one-to-one</strong>) → more photons → more electrons per second.</li>
+                <li>Current $= \dot{n}_e \cdot e$ → current $\propto$ photon rate $\propto$ intensity.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: gold leaf electroscope falls (3 marks, 2024)</p>
+              <ol>
+                <li>Electrons on metal surface absorb photons in a <strong>one-to-one</strong> interaction.</li>
+                <li>Electrons are emitted from the metal <strong>plate</strong>.</li>
+                <li>Electroscope loses negative charge → leaf falls.</li>
+              </ol>
+              <div class="trap">Do not say leaf gains positive charge. Electrons come from the metal plate, not the gold leaf.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: below threshold — why no emission (2 marks, 2024)</p>
+              <ol>
+                <li>Photon energy $hf < \phi$ (less than work function).</li>
+                <li>One photon cannot give an electron enough energy to escape the surface — no emission regardless of intensity.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: explain why metal C gives no photoelectrons (1 mark, 2022 Q26a-i)</p>
+              <ol>
+                <li>The photon energy at 380 nm $= hf = hc/\lambda = 3.2\ \mathrm{eV}$ (just enough for metal A).</li>
+                <li>Metal C has work function $\phi = 3.3\ \mathrm{eV} > 3.2\ \mathrm{eV}$ — photon energy is less than the work function, so no photoelectrons are emitted.</li>
+              </ol>
+              <div class="trap">Must state that photon energy is less than the work function of C. "The frequency is too low" alone scores 0 — must relate energy to work function.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: calculate maximum wavelength for photoelectric emission (1 mark, 2022 Q26a-ii)</p>
+              <ol>
+                <li>At threshold: $hf_0 = \phi \Rightarrow hc/\lambda_\text{max} = \phi$.</li>
+                <li>For metal D ($\phi = 6.4\ \mathrm{eV} = 6.4\times1.6\times10^{-19}\ \mathrm{J}$): $\lambda_\text{max} = hc/\phi = (6.63\times10^{-34}\times3\times10^8)/(6.4\times1.6\times10^{-19}) = 190\ \mathrm{nm}$.</li>
+              </ol>
+              <div class="trap">Allow 194 nm from direct calculation. Remember to convert eV to J before dividing.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: de Broglie wavelength of photoelectron (3 marks, 2022 Q26a-iii)</p>
+              <ol>
+                <li>Find $KE_\text{max}$: $hf = \phi + KE_\text{max} \Rightarrow KE_\text{max} = 5.3 - 4.1 = 1.2\ \mathrm{eV} = 1.92\times10^{-19}\ \mathrm{J}$.</li>
+                <li>Find electron speed: $\frac{1}{2}mv^2 = 1.92\times10^{-19} \Rightarrow v = 6.5\times10^5\ \mathrm{m\,s^{-1}}$.</li>
+                <li>de Broglie: $\lambda = h/(mv) = 6.63\times10^{-34}/(9.11\times10^{-31}\times6.5\times10^5) = 1.1\times10^{-9}\ \mathrm{m}$.</li>
+              </ol>
+              <div class="trap">Work function must match the metal being used (metal B = 4.1 eV here, not the threshold metal A). Alternatively use $p = \sqrt{2mKE}$ then $\lambda = h/p$.</div>
+            </div>
+          </div>
+          <div class="method">
+            <div class="method-bar"></div>
+            <div class="method-inner">
+              <p class="method-title">Exam method: determine work function from $KE_\text{max}$–$f$ graph (3 marks, 2022 Q26b-ii)</p>
+              <ol>
+                <li>Draw line of best fit through the data points (not forced through the origin or through any specific point like 0.5/5.0).</li>
+                <li>Calculate gradient of best-fit line: gradient $= \Delta KE_\text{max}/\Delta f = h$ (Planck's constant). Expected range: $5.8\text{–}6.6\times10^{-34}\ \mathrm{J\,s}$.</li>
+                <li>Use the equation of the line $KE_\text{max} = hf - \phi$. Find the y-intercept (where $f = 0$): $-\phi = y\text{-intercept}$, so $\phi = -(\text{y-intercept})$. Expected: $2.4\text{–}3.0\times10^{-19}\ \mathrm{J}$.</li>
+              </ol>
+              <div class="trap">You must use your calculated gradient value (not the given $h$) to find the y-intercept via the equation of the straight line — otherwise the M mark is not awarded.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-sub" id="s-4-5-3">
+      <div class="spec-sub-head"><span class="spec-sub-code">4.5.3</span><h3>Wave–Particle Duality</h3></div>
+      <div class="spec-point">
+        <span class="sp-letter">a–c</span>
+        <div class="sp-body">
+          <p class="sp-statement">Electron diffraction — evidence for wave-like behaviour of particles. Diffraction through polycrystalline graphite by atomic spacing. de Broglie equation.</p>
+          <div class="sp-formula">
+            $$\lambda = \frac{h}{p} = \frac{h}{mv}$$
+            $$\text{Electron diffraction: } \lambda \approx d\ (\text{atomic spacing}) \implies \text{significant diffraction}$$
+          </div>
+          <div class="def-block">
+            <div class="def-head"><span class="def-term">Wave–Particle Duality</span><span class="def-tag">4.5.3</span></div>
+            <div class="def-body">All particles have an associated wavelength (de Broglie wavelength). EM radiation behaves as waves (interference, diffraction) and as particles (photoelectric effect). Electrons behave as particles (deflected by electric fields) and as waves (electron diffraction).
+              <span class="def-ocr">Evidence for wave nature of electrons: diffraction pattern when electrons pass through graphite. Evidence for particle nature of light: photoelectric effect.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /module 4 -->
+
+
+<!-- ═══════════════════════════════════════════════
+     WRITING TECHNIQUE
+     ═══════════════════════════════════════════════ -->
+<div class="mod-section" id="writing">
+  <div class="mod-header">
+    <p class="mod-num">Technique</p>
+    <h1 class="mod-title">Written Answer and 6-Mark Guide</h1>
   </div>
 
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">Threshold frequency $f_0$</span><span class="def-tag">Define</span></div>
-    <div class="def-body">The minimum frequency of electromagnetic radiation required to release an electron from the surface of a given metal. Below this frequency, no electrons are emitted regardless of intensity.</div>
-  </div>
-
-  <div class="def-block">
-    <div class="def-block-head"><span class="def-term">$KE_\text{max}$</span><span class="def-tag">State meaning</span></div>
-    <div class="def-body">The maximum kinetic energy of an electron emitted from the surface of a metal due to the photoelectric effect. It depends on frequency only, not intensity.
-      <span class="def-ocr">From Einstein's equation: $KE_\text{max} = hf - \phi$</span>
-    </div>
-  </div>
-
-  <h3>6.1 · Photoelectric Effect — Explain questions</h3>
-  <div class="formula-block">
-    <span class="formula-label">Photoelectric equations</span>
-    $$hf = \phi + KE_\text{max} \qquad h = 6.63\times10^{-34}\ \mathrm{J\,s}$$
-    $$\text{Threshold: }hf_0 = \phi \qquad W = eV \qquad I = \frac{P}{A} = \frac{\dot{n}\,hf}{A}$$
-  </div>
-  <div class="tip"><strong>Intensity vs frequency summary:</strong> Increasing intensity → more photons/s → more electrons/s → higher current. $KE_\text{max}$ unchanged. Increasing frequency → higher photon energy → higher $KE_\text{max}$. Rate of emission unchanged (if intensity unchanged).</div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why frequency must exceed a minimum value (3 marks, 2023 Q23b)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> light is made of discrete packets of energy called <strong>photons</strong>.</li>
-        <li><strong>Mark 2:</strong> an electron is only emitted if the energy of a single photon is greater than or equal to the <strong>work function</strong>.</li>
-        <li><strong>Mark 3:</strong> the energy of a photon is proportional to its frequency ($E = hf$), so the frequency must exceed the threshold value $f_0 = \phi/h$.</li>
-      </ol>
-      <div class="trap">Do not mention intensity — that is irrelevant here. The problem is energy per photon, not the rate of photon arrival. One photon interacts with one electron (one-to-one).</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why current is proportional to intensity (3 marks, 2023 Q23c-i)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> the intensity of radiation is proportional to the <strong>rate of incident photons</strong> (above threshold frequency).</li>
-        <li><strong>Mark 2:</strong> each photon interacts with one electron (<strong>one-to-one</strong> interaction) — so more photons per second means more electrons emitted per second.</li>
-        <li><strong>Mark 3:</strong> current $=$ rate of flow of charge $= \dot{n}_e \cdot e$, so current is proportional to the rate of electron emission, which is proportional to intensity.</li>
-      </ol>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: explain why below threshold frequency leaf does not fall (2 marks, 2024 Q25c)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> the energy of a photon is less than the work function of the metal.</li>
-        <li><strong>Mark 2:</strong> the electron cannot receive enough energy from a single photon to be emitted from the surface.</li>
-      </ol>
-      <div class="trap">Do not say "the radiation is not intense enough" — intensity is irrelevant here. The problem is photon energy, not photon rate.</div>
-    </div>
-  </div>
-  <div class="method">
-    <div class="method-bar"></div>
-    <div class="method-inner">
-      <p class="method-title">Exam method: gold leaf electroscope falls (3 marks, 2024 Q25b)</p>
-      <ol>
-        <li><strong>Mark 1:</strong> electrons on the metal surface absorb photons in a <strong>one-to-one</strong> interaction.</li>
-        <li><strong>Mark 2:</strong> electrons are emitted from the metal <strong>plate</strong>.</li>
-        <li><strong>Mark 3:</strong> the electroscope loses negative charge — so the leaf becomes less charged and <strong>falls</strong>.</li>
-      </ol>
-      <div class="trap">Do not say the leaf gains positive charge — electrons leave, it does not gain positive charges. Electrons come from the metal plate, not the gold leaf itself.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ SECTION 7: WRITING TECHNIQUE ═══ -->
-<section class="sec" id="s7">
-  <p class="sec-num">Section 07 · Written Answer Technique</p>
-  <h2>Written Answer and 6-Mark Technique</h2>
-
-  <h3>7.1 · General Written Answer Principles</h3>
-  <div class="writing-guide">
-    <p class="writing-guide-title">Structure for all explain/describe questions</p>
+  <div class="spec-section">
+    <div class="spec-section-head"><span class="spec-code">ALL</span><h2>General Written Answer Structure</h2></div>
     <div class="writing-steps">
-      <div class="writing-step"><span class="ws-num">1</span><span class="ws-text"><strong>State the physical law or mechanism first.</strong> E.g. "The resultant force on the feather is zero because weight equals air resistance."</span></div>
-      <div class="writing-step"><span class="ws-num">2</span><span class="ws-text"><strong>Progress logically: cause → effect → consequence.</strong> Each sentence should follow from the last. OCR mark schemes are written as a chain — match that chain.</span></div>
-      <div class="writing-step"><span class="ws-num">3</span><span class="ws-text"><strong>Use precise OCR vocabulary.</strong> "Resultant force" not "net force". "Rate of flow of charge" not "current flowing". "Perpendicular distance" not "distance". "Superpose" not "superimpose".</span></div>
-      <div class="writing-step"><span class="ws-num">4</span><span class="ws-text"><strong>Quantify where possible.</strong> "Increases by a factor of 4" is better than "increases". "Zero resultant force" is better than "balanced".</span></div>
-      <div class="writing-step"><span class="ws-num">5</span><span class="ws-text"><strong>End with the observable outcome</strong> explicitly linked back to the opening mechanism. This closes the argument and picks up the A mark.</span></div>
+      <div class="ws"><span class="ws-n">1</span><span class="ws-t"><strong>State the physical law or mechanism first.</strong> E.g. "The resultant force on the feather is zero because weight equals air resistance."</span></div>
+      <div class="ws"><span class="ws-n">2</span><span class="ws-t"><strong>Progress logically: cause → effect → consequence.</strong> Each sentence should follow from the last. OCR mark schemes are written as a chain — match it.</span></div>
+      <div class="ws"><span class="ws-n">3</span><span class="ws-t"><strong>Use precise OCR vocabulary.</strong> "Resultant force" not "net force". "Rate of flow of charge" not "current flowing". "Perpendicular distance" not "distance". "Superpose" not "superimpose".</span></div>
+      <div class="ws"><span class="ws-n">4</span><span class="ws-t"><strong>Quantify where possible.</strong> "Resultant force = 0 N" is better than "forces balance".</span></div>
+      <div class="ws"><span class="ws-n">5</span><span class="ws-t"><strong>End with the observable outcome</strong> linked back to the opening mechanism. This closes the argument and picks up the A mark.</span></div>
     </div>
-  </div>
 
-  <h3>7.2 · Level of Response (LoR) — 6-Mark Questions</h3>
-  <p>LoR questions are marked holistically. The mark scheme gives level descriptors and a communication statement. Science content determines the level; quality of communication determines whether you get the higher or lower mark within that level.</p>
-
-  <div class="sixmark">
-    <div class="sixmark-head">
-      <span class="sixmark-head-title">Generic LoR Level Descriptors</span>
-      <span class="sixmark-head-badge">6 marks</span>
-    </div>
-    <div class="sixmark-body">
-      <div class="level-row">
-        <span class="level-badge lv3">Level 3<br>5–6</span>
-        <div class="level-content">A comprehensive and logically sequenced account, correct throughout, covering all the major points. Links between ideas are clear and the argument is coherent.<br><em>Communication statement: well-structured prose, correct spelling and grammar throughout, appropriate use of technical vocabulary.</em></div>
-      </div>
-      <div class="level-row">
-        <span class="level-badge lv2">Level 2<br>3–4</span>
-        <div class="level-content">A mostly correct account covering several major points. Some logical sequencing but gaps in the argument or some minor errors. Links between ideas are present but not always explicit.<br><em>Communication statement: generally clear prose, mostly correct technical vocabulary, minor errors in spelling or grammar.</em></div>
-      </div>
-      <div class="level-row">
-        <span class="level-badge lv1">Level 1<br>1–2</span>
-        <div class="level-content">Some relevant points included but significant gaps, errors or misunderstandings. Little logical structure. Isolated correct statements without a coherent argument.<br><em>Communication statement: limited structure, vocabulary sometimes imprecise, errors in spelling or grammar may be frequent.</em></div>
-      </div>
-    </div>
-    <div class="sixmark-tip">To reach Level 3: cover all three main mark points AND sequence them logically AND use correct technical vocabulary. Hitting two of these three usually gives Level 2.</div>
-  </div>
-
-  <h3>7.3 · LoR Model Answer Frameworks</h3>
-  <p>These frameworks match the type of 6-mark questions that have appeared on H156/01. Use them as templates.</p>
-
-  <div class="sixmark">
-    <div class="sixmark-head">
-      <span class="sixmark-head-title">Framework: Explain a physical phenomenon from first principles</span>
-      <span class="sixmark-head-badge">e.g. photoelectric effect, stationary waves</span>
-    </div>
-    <div class="sixmark-body">
-      <div class="level-row">
-        <span class="level-badge lv3">L3 content</span>
-        <div class="level-content">
-          <strong>Opening:</strong> State the underlying physical law or model (e.g. "Light consists of photons, each with energy $E = hf$").<br>
-          <strong>Middle:</strong> Apply the model to the situation step by step, naming each quantity (e.g. "For emission, the photon energy must exceed the work function $\phi$, so $hf \geq \phi$").<br>
-          <strong>Consequence:</strong> State what is observed and why (e.g. "Below the threshold frequency no electrons are emitted regardless of intensity because no single photon carries sufficient energy").<br>
-          <strong>Extension:</strong> Address the other variable (e.g. "Increasing intensity increases the photon rate and therefore the emission rate and current, but does not change $KE_\text{max}$").
+    <div class="spec-section" style="margin-top:1.5rem;">
+      <div class="spec-section-head"><span class="spec-code">6 marks</span><h2>Level of Response (LoR)</h2></div>
+      <div class="sixmark">
+        <div class="sixmark-head">
+          <span class="sixmark-title">Generic LoR Level Descriptors</span>
+          <span class="sixmark-badge">6 marks</span>
+        </div>
+        <div class="sixmark-body">
+          <div class="level-row">
+            <span class="lv-badge lv3">Level 3 5–6</span>
+            <div class="level-content">Comprehensive, logically sequenced, correct throughout. All major points covered. Links between ideas are explicit and coherent.<br><em>Higher mark: well-structured prose, correct technical vocabulary, clear spelling and grammar throughout.</em></div>
+          </div>
+          <div class="level-row">
+            <span class="lv-badge lv2">Level 2 3–4</span>
+            <div class="level-content">Mostly correct, several major points. Some logical sequencing but gaps or minor errors.<br><em>Higher mark: generally clear with mostly correct vocabulary; minor errors acceptable.</em></div>
+          </div>
+          <div class="level-row">
+            <span class="lv-badge lv1">Level 1 1–2</span>
+            <div class="level-content">Some relevant points but significant gaps, errors or poor structure. Isolated correct statements.<br><em>Higher mark: some clarity but frequent errors in structure or vocabulary.</em></div>
+          </div>
         </div>
       </div>
+      <div class="note-box" style="margin-top:.6rem"><strong>Key rule:</strong> science content determines the level. Communication statement (italicised) determines the mark within that level. Hit all mark points AND sequence them logically AND use correct vocabulary to reach Level 3 upper mark (6/6).</div>
     </div>
-    <div class="sixmark-tip">Always name the quantities with symbols and link them with causal language: "because", "therefore", "this means that".</div>
-  </div>
 
-  <div class="sixmark">
-    <div class="sixmark-head">
-      <span class="sixmark-head-title">Framework: Describe an experimental method</span>
-      <span class="sixmark-head-badge">e.g. measure resistivity, find Young modulus</span>
-    </div>
-    <div class="sixmark-body">
-      <div class="level-row">
-        <span class="level-badge lv3">L3 content</span>
-        <div class="level-content">
-          <strong>Apparatus:</strong> Name all instruments with their function (micrometer for diameter, metre rule for length, ammeter in series, voltmeter in parallel).<br>
-          <strong>Procedure:</strong> State what is varied, what is measured, and how (e.g. "Add masses in 100 g increments, record extension using a ruler and set square at eye level to avoid parallax").<br>
-          <strong>Range and repeats:</strong> State the number of readings (at least 5–6 over a suitable range) and that readings are repeated to reduce random error.<br>
-          <strong>Analysis:</strong> State exactly how the target quantity is calculated from the measurements, including which graph to plot and what the gradient represents.
-        </div>
+    <div class="spec-section" style="margin-top:1.5rem;">
+      <div class="spec-section-head"><span class="spec-code">vocab</span><h2>OCR Precision Vocabulary Pairs</h2></div>
+      <div class="note-box">
+        ✓ "resultant force" — <s>net force / total force</s><br>
+        ✓ "rate of flow of charge" — <s>current flowing</s><br>
+        ✓ "perpendicular distance from pivot" — <s>distance from pivot</s><br>
+        ✓ "superpose" or "interfere" — <s>superimpose</s> (OCR ignores this)<br>
+        ✓ "work function" — <s>energy to remove an electron</s><br>
+        ✓ "one-to-one interaction between photon and electron" — <s>electron absorbs photon</s> (alone)<br>
+        ✓ "amplitude decreases with distance from source" — <s>wave gets weaker</s><br>
+        ✓ "incomplete destructive interference" — <s>they don't cancel properly</s><br>
+        ✓ "terminal p.d." — <s>voltage of the battery</s><br>
+        ✓ "energy dissipated as heat in r" — <s>energy wasted inside the battery</s>
       </div>
     </div>
-    <div class="sixmark-tip">Marks are often awarded for: correct instrument named (1), correct circuit/setup (1), procedure detail (1), range/repeats (1), analysis (1), graph/gradient (1).</div>
   </div>
+</div>
 
-  <h3>7.4 · Precision Vocabulary Pairs</h3>
-  <div class="note-box">
-    <strong>Use these exact phrases — OCR mark schemes ALLOW these and often REJECT informal alternatives:</strong><br><br>
-    ✓ "resultant force" — not "net force" or "total force"<br>
-    ✓ "rate of flow of charge" — not "current flowing"<br>
-    ✓ "perpendicular distance from the pivot" — not "distance from the pivot"<br>
-    ✓ "superpose" or "interfere" — not "superimpose" (ignored by OCR)<br>
-    ✓ "work function" — not "energy needed to remove an electron"<br>
-    ✓ "one-to-one interaction between photon and electron" — not "the electron absorbs the photon" alone<br>
-    ✓ "amplitude decreases with distance from source" — not "the wave gets weaker"<br>
-    ✓ "incomplete destructive interference" — not "they don't cancel properly"<br>
-    ✓ "terminal pd" — not "voltage of the battery"<br>
-    ✓ "energy dissipated as heat in the internal resistance" — not "energy wasted inside the battery"
+
+<!-- ═══════════════════════════════════════════════
+     FORMULA QUICK REFERENCE
+     ═══════════════════════════════════════════════ -->
+<div class="mod-section" id="formulas">
+  <div class="mod-header">
+    <p class="mod-num">Reference</p>
+    <h1 class="mod-title">Formula Quick-Reference</h1>
   </div>
-</section>
-
-<!-- ═══ SECTION 8: FORMULA TABLE ═══ -->
-<section class="sec" id="s8">
-  <p class="sec-num">Section 08 · Quick Reference</p>
-  <h2>Key Formula Quick-Reference</h2>
   <table class="ref-table">
-    <thead><tr><th>Topic</th><th>Formula / Key Rule</th></tr></thead>
+    <thead><tr><th>Spec ref</th><th>Formula / Key Rule</th></tr></thead>
     <tbody>
-      <tr><td>Resistance</td><td>$R = V/I = \rho L/A$. Series: $R_T = R_1+R_2$. Parallel: $1/R_T = 1/R_1 + 1/R_2$</td></tr>
-      <tr><td>Resistivity graph</td><td>Gradient of $R$ vs $L$ graph $= \rho/A$. Find $\rho$: multiply gradient by $A$</td></tr>
-      <tr><td>Drift velocity</td><td>$I = nAve \implies v_d = I/(nAe)$. Series wires: same $I$, same $n$; different $A$ → different $v_d$</td></tr>
-      <tr><td>Power</td><td>$P = IV = I^2R = V^2/R$. Mechanical: $P = Fv = F\cos\theta\cdot v$</td></tr>
-      <tr><td>EMF</td><td>$\varepsilon = I(R+r)$. $V = \varepsilon - Ir$. Lost volts $= Ir$. EMF $=$ terminal pd when $I = 0$</td></tr>
-      <tr><td>Momentum</td><td>$p = mv$. Impulse $= F\Delta t = \Delta p = m(v_2-v_1)$. Rebound: add speeds for $|\Delta p|$</td></tr>
-      <tr><td>Kinematics</td><td>$v=u+at$. $s=ut+\frac{1}{2}at^2$. $v^2=u^2+2as$. Free fall: $v=\sqrt{2gh}$, $g=2s/t^2$</td></tr>
-      <tr><td>Young modulus</td><td>$E = \sigma/\varepsilon = FL/(Ax) = kL/A$. $\sigma=F/A$, $\varepsilon=x/L$, $k=$ gradient of $F$-$x$ graph</td></tr>
-      <tr><td>Springs</td><td>$F=kx$. $E_\text{el}=\frac{1}{2}kx^2=$ area under $F$-$x$ graph</td></tr>
-      <tr><td>Waves</td><td>$v=f\lambda$. Young: $w=\lambda D/d$. Node spacing $=\lambda/2$. $n_1\sin\theta_1=n_2\sin\theta_2$</td></tr>
-      <tr><td>Sound (stationary)</td><td>$v = 2f\,d_\text{node}$. Improve: measure across multiple node spacings</td></tr>
-      <tr><td>Quantum</td><td>$E=hf$. $hf=\phi+KE_\text{max}$. $eV_0=hf$. Intensity $= P/A = \dot{n}hf/A$</td></tr>
-      <tr><td>Stokes' law</td><td>$v=\dfrac{2r^2g(\rho_s-\rho_w)}{9\eta}$. Rearranged: $r=\sqrt{\dfrac{9\eta v}{2g(\rho_s-\rho_w)}}$</td></tr>
-      <tr><td>Uncertainty</td><td>$\%\text{unc}=(\Delta Q/Q)\times100$. Multiply/divide: add $\%$. $Q^n$: multiply by $n$</td></tr>
-      <tr><td>Consistency</td><td>$\%\text{diff}=|E_\text{calc}-E_\text{ref}|/E_\text{ref}\times100$. Consistent if $\%\text{diff}<\%\text{unc}$</td></tr>
-      <tr><td>Charge</td><td>$Q=ne$. $e=1.6\times10^{-19}\ \mathrm{C}$. Lost electrons $\Leftrightarrow$ gained positive charge</td></tr>
-      <tr><td>Equilibrium</td><td>$W=2T\cos\theta$ (cable at $\theta$ from vertical). $\sum F=0$, $\sum M=0$</td></tr>
+      <tr><td>2.2.1c</td><td>$\%\text{unc} = (\Delta Q/Q)\times100$. Multiply/divide: add $\%$. Power $Q^n$: multiply by $n$. Add/subtract: add absolute uncertainties.</td></tr>
+      <tr><td>2.2.1d</td><td>Consistency: $\%\text{diff} = |E_\text{calc}-E_\text{ref}|/E_\text{ref}\times100$. Consistent if $\%\text{diff} < \%\text{unc}$.</td></tr>
+      <tr><td>2.3.1d</td><td>$F_x = F\cos\theta$, $F_y = F\sin\theta$</td></tr>
+      <tr><td>3.1.2</td><td>$v=u+at$. $s=ut+\frac{1}{2}at^2$. $v^2=u^2+2as$. $s=(u+v)t/2$. Free fall: $v=\sqrt{2gh}$, $g=2s/t^2$</td></tr>
+      <tr><td>3.2.2</td><td>At terminal velocity: $W = F_\text{drag} + F_\text{upthrust}$, resultant $= 0$, $a = 0$</td></tr>
+      <tr><td>3.2.3</td><td>Moment $= Fd_\perp$. Couple torque $= Fd$. $\sum F = 0$, $\sum M = 0$ (equilibrium). $W = 2T\cos\theta$ (hanging picture)</td></tr>
+      <tr><td>3.2.4</td><td>$\rho = m/V$. $p = F/A$. $p = h\rho g$. Upthrust $= \rho_\text{fluid}Vg$</td></tr>
+      <tr><td>3.3.1–2</td><td>$W = Fx\cos\theta$. $E_k = \frac{1}{2}mv^2$. $E_p = mgh$. $P = W/t = Fv$. Efficiency $= E_\text{useful}/E_\text{total}\times100\%$</td></tr>
+      <tr><td>3.4.1</td><td>$F = kx$. $E_\text{el} = \frac{1}{2}kx^2 = $ area under $F$-$x$ graph</td></tr>
+      <tr><td>3.4.2</td><td>$\sigma = F/A$, $\varepsilon = x/L$, $E = \sigma/\varepsilon = FL/Ax = kL/A$</td></tr>
+      <tr><td>3.5.1</td><td>$p = mv$. Impulse $= F\Delta t = m(v_2-v_1)$. $F = \Delta p/\Delta t$</td></tr>
+      <tr><td>4.1.1</td><td>$I = \Delta Q/\Delta t$. $Q = ne$ ($e = 1.6\times10^{-19}$ C)</td></tr>
+      <tr><td>4.1.2</td><td>$I = Anev$. $v_d = I/(Ane)$. $n$ is a material property</td></tr>
+      <tr><td>4.2.2</td><td>$V = W/Q$. $W = VQ = EQ$. $eV = \frac{1}{2}mv^2$ (electron acceleration)</td></tr>
+      <tr><td>4.2.3–4</td><td>$R = V/I = \rho L/A$. Gradient of $R$-$L$ graph $= \rho/A$</td></tr>
+      <tr><td>4.2.5</td><td>$P = VI = I^2R = V^2/R$. $W = VIt$. $1\ \mathrm{kWh} = 3.6\times10^6\ \mathrm{J}$</td></tr>
+      <tr><td>4.3.1</td><td>Series: $R_T = R_1+R_2$. Parallel: $1/R_T = 1/R_1+1/R_2$. Divider: $V_\text{out} = R_2V/(R_1+R_2)$</td></tr>
+      <tr><td>4.3.2</td><td>$\varepsilon = I(R+r)$. $V = \varepsilon - Ir$. "Lost volts" $= Ir$</td></tr>
+      <tr><td>4.4.1</td><td>$v = f\lambda$. $f = 1/T$. $I \propto A^2$</td></tr>
+      <tr><td>4.4.2</td><td>$n = c/v$. $n_1\sin\theta_1 = n_2\sin\theta_2$. $\sin\theta_c = 1/n$</td></tr>
+      <tr><td>4.4.3</td><td>Young: $w = \lambda D/d$. Constructive: path diff $= n\lambda$. Destructive: $(n+\frac{1}{2})\lambda$</td></tr>
+      <tr><td>4.4.4</td><td>Node spacing $= \lambda/2$. $v = 2fd_\text{node}$. Stationary: two waves same freq, opposite directions. Fundamental on wire: $\lambda = 2L$, $v = f\lambda$. $T = 4f^2mL$ (tension formula). $\%\text{unc}(T) = 2\%f + \%m + \%L$.</td></tr>
+      <tr><td>4.5.1</td><td>$E = hf = hc/\lambda$. LED: $eV_0 = hf$. Plot $V_0$ vs $f$: gradient $= h/e$</td></tr>
+      <tr><td>4.5.2</td><td>$hf = \phi + KE_\text{max}$. $hf_0 = \phi$. Intensity $= P/A = \dot{n}hf/A$</td></tr>
+      <tr><td>4.5.3</td><td>$\lambda = h/p = h/mv$ (de Broglie). $\lambda \approx d$ for significant diffraction</td></tr>
     </tbody>
   </table>
 
   <div class="objectives">
-    <h3>Learning objectives — after these notes you should be able to:</h3>
+    <h3>Spec coverage checklist</h3>
     <ul>
-      <li>Define SI base unit, EMF, work function, threshold frequency, $KE_\text{max}$, resistivity, coherence and stationary wave using OCR-exact language.</li>
-      <li>Explain terminal velocity with the three-step causal chain: weight = drag → resultant force = 0 → acceleration = 0 → constant velocity.</li>
-      <li>Explain why a node is not exactly zero (reflected amplitude lower → incomplete destructive interference).</li>
-      <li>Explain why the frequency must exceed a threshold for photoelectric emission (E = hf must exceed work function; one-to-one photon-electron interaction).</li>
-      <li>Explain why current is proportional to intensity (intensity proportional to photon rate; one-to-one interaction; current = rate of charge flow).</li>
-      <li>Calculate collision force using impulse and handle sign reversal for rebounds; verify projectile lands in a target zone numerically.</li>
-      <li>Use Stokes' law to find particle radius and classify soil type; verify terminal velocity from displacement data from 0.2 s onwards only.</li>
-      <li>Describe the R–T experiment circuit correctly (ammeter in series, voltmeter in parallel, thermometer, at least 5 readings, R = V/I).</li>
-      <li>Apply the potential divider formula and compare $V_\text{LED}$ to the switch-on threshold with an explicit inequality.</li>
-      <li>Distinguish the two polarisation MCQ types and identify which applies from the question wording.</li>
-      <li>Structure a 6-mark LoR answer as: mechanism → logical chain → observed outcome → extension; use OCR precision vocabulary throughout.</li>
-      <li>Suggest experimental improvements naming specific techniques (measure more node spacings, use electronic timer, repeat and average) with a reason for each.</li>
+      <li><strong>2.1–2.3:</strong> SI base units, prefixes, homogeneity, scalars/vectors, resolution of vectors.</li>
+      <li><strong>2.2:</strong> Random vs systematic error, precision vs accuracy, % uncertainty rules, graphical error bars, worst-line gradient, consistency check.</li>
+      <li><strong>3.1:</strong> SUVAT, s–t and v–t graphs, projectile motion (independent components).</li>
+      <li><strong>3.2:</strong> Free-body diagrams, terminal velocity explanation (3-step chain), moments, torque of couple, equilibrium conditions, density, pressure, upthrust.</li>
+      <li><strong>3.3:</strong> Work $= Fx\cos\theta$, $E_k$, $E_p$, power $= Fv$, efficiency. Derive $E_k$ from first principles.</li>
+      <li><strong>3.4:</strong> Hooke's Law, elastic PE, stress, strain, Young modulus ($E = kL/A$), ductile/brittle/polymeric stress–strain graphs.</li>
+      <li><strong>3.5:</strong> Newton's 3 laws, impulse $= \Delta p$, conservation of momentum, elastic vs inelastic collisions.</li>
+      <li><strong>4.1:</strong> $I = \Delta Q/\Delta t$, $Q = ne$, charge quantisation, Kirchhoff's 1st law, $I = Anev$, conductors/semiconductors/insulators by $n$.</li>
+      <li><strong>4.2:</strong> E.m.f. definition, p.d. definition, $W = VQ$, $R = \rho L/A$, NTC thermistor, $P = VI = I^2R = V^2/R$.</li>
+      <li><strong>4.3:</strong> Series/parallel resistors, Kirchhoff's 2nd law, potential divider, internal resistance, terminal p.d., "show that" derivations.</li>
+      <li><strong>4.4:</strong> Longitudinal/transverse, wave equation, polarisation MCQ types, Snell's law, TIR, superposition, interference, Young's slits, stationary waves (formation, imperfect nodes, node spacing, harmonics).</li>
+      <li><strong>4.5:</strong> $E = hf$, eV unit, LED experiment for $h$, photoelectric effect, work function, threshold frequency, $KE_\text{max}$ independent of intensity, emission rate ∝ intensity, de Broglie equation, electron diffraction evidence.</li>
     </ul>
   </div>
+</div>
 
-</section>
+</div><!-- /content -->
+</div><!-- /page-body -->
 </div><!-- /wrap -->
+
+<script>
+/* Sidebar active link highlighting */
+(function() {
+  var sections = document.querySelectorAll('[id]');
+  var links = document.querySelectorAll('.sidebar a');
+  
+  function onScroll() {
+    var scrollY = window.scrollY + 100;
+    var current = '';
+    sections.forEach(function(sec) {
+      if (sec.offsetTop <= scrollY) current = sec.id;
+    });
+    links.forEach(function(a) {
+      var href = a.getAttribute('href').replace('#','');
+      a.classList.toggle('active', href === current);
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+})();
+</script>
+
 </body>
 </html>
